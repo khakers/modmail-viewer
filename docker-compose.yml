@@ -1,0 +1,30 @@
+version: "3.7"
+services:
+  bot:
+    image: kyb3rr/modmail
+    restart: always
+    env_file:
+      - .env
+    environment:
+      - CONNECTION_URI=mongodb://mongo
+    depends_on:
+      - mongo
+  logviewer:
+    image: kyb3rr/logviewer
+    restart: always
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_URI=mongodb://mongo:27017
+    ports:
+      - "80:8000"
+  mongo:
+    image: mongo:4.4
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - F:\mongo_volume:/data/db
+
+volumes:
+  mongodb:
