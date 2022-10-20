@@ -80,10 +80,11 @@ public final class ModMailLogEntry {
     ) {
         this.key = key;
         this.open = open;
+        //todo incorrect parsing of nanos
         //2020-09-01 17:54:09.214000
         var formatter = new DateTimeFormatterBuilder()
                 .parseCaseInsensitive()
-                .appendPattern("yyyy-MM-dd HH:mm:ss.n")
+                .appendPattern("yyyy-MM-dd HH:mm:ss.nnnnnn")
                 .toFormatter()
                 .withZone(ZoneId.of("UTC"));
 
@@ -97,8 +98,6 @@ public final class ModMailLogEntry {
         this.closer = closer;
         this.closeMessage = Optional.ofNullable(closeMessage);
         this.messages = messages;
-//        this.internalMessages = internalMessages;
-//        this.threadMessages = threadMessages;
         this.nsfw = Objects.requireNonNullElse(nsfw, false);
         this.title = Optional.ofNullable(title);
     }
