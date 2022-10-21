@@ -1,5 +1,7 @@
 plugins {
     id 'java'
+    id 'application'
+
 }
 
 group 'com.github.khakers'
@@ -7,9 +9,14 @@ version '1.0-SNAPSHOT'
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(18)
+        languageVersion = JavaLanguageVersion.of(19)
     }
 }
+
+application {
+    mainClass = 'com.github.khakers.Main'
+}
+
 
 repositories {
     mavenCentral()
@@ -17,13 +24,14 @@ repositories {
 
 dependencies {
     implementation("io.javalin:javalin:5.1.1")
+    implementation("io.javalin:javalin-rendering:5.1.1")
 
     implementation('gg.jte:jte:2.2.2')
     implementation 'org.mongodb:mongodb-driver-sync:4.7.2'
 
     implementation 'org.apache.logging.log4j:log4j-api:2.19.0'
     implementation 'org.apache.logging.log4j:log4j-core:2.19.0'
-    implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.19.0'
+    implementation 'org.apache.logging.log4j:log4j-slf4j2-impl:2.19.0'
 
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.4'
     implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.13.4'
