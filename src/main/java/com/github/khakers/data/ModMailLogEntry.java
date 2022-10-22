@@ -3,17 +3,14 @@ package com.github.khakers.data;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.bson.BsonType;
-import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonProperty;
-import org.bson.codecs.pojo.annotations.BsonRepresentation;
 
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatterBuilder;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
+import static com.github.khakers.util.DateFormatters.DATABASE_TIMESTAMP_FORMAT;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class ModMailLogEntry {
@@ -80,16 +77,8 @@ public final class ModMailLogEntry {
     ) {
         this.key = key;
         this.open = open;
-        //todo incorrect parsing of nanos
-        //2020-09-01 17:54:09.214000
-        var formatter = new DateTimeFormatterBuilder()
-                .parseCaseInsensitive()
-                .appendPattern("yyyy-MM-dd HH:mm:ss.nnnnnn")
-                .toFormatter()
-                .withZone(ZoneId.of("UTC"));
-
-        this.creationTime = formatter.parse(creationTime, Instant::from);
-        this.closedTime = formatter.parse(closedTime, Instant::from);
+        this.creationTime = DATABASE_TIMESTAMP_FORMAT.parse(creationTime, Instant::from);
+        this.closedTime = DATABASE_TIMESTAMP_FORMAT.parse(closedTime, Instant::from);
         this.botId = Long.parseLong(botId);
         this.channelId = Long.parseLong(channelId);
         this.guildId = Long.parseLong(guildId);

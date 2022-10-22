@@ -8,7 +8,7 @@ import org.bson.codecs.pojo.annotations.BsonRepresentation;
 public enum MessageType {
     @BsonProperty(value = "thread_message")
     @BsonRepresentation(BsonType.STRING)
-            @JsonProperty("thread_message")
+    @JsonProperty("thread_message")
     thread,
     internal,
     anonymous

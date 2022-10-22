@@ -10,7 +10,9 @@
           integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
 </head>
-<body>
+<body style="padding-top: 56px;">
+
+@template.navbar()
 
 <div class="container py-4">
     <div class="row">
@@ -18,13 +20,18 @@
     </div>
     <div class="row">
         <div class="col">
+            @if(modmailLog.isNsfw())
+                <span class="badge rounded-pill text-bg-danger fs-6"><i
+                            class="bi bi-exclamation-triangle"></i> Closed</span>
+            @endif
             @if(modmailLog.isOpen())
                 <span class="badge rounded-pill text-bg-success fs-6">Open</span>
             @else
                 <span class="badge rounded-pill text-bg-danger fs-6"><i class="bi bi-x-circle"></i> Closed</span>
             @endif
             <span>Created by:</span>
-            <span>${modmailLog.getCreator().name()}</span><span class="text-muted">#${modmailLog.getCreator().discriminator()}</span>
+            <span class="fw-semibold">${modmailLog.getCreator().name()}</span><span
+                    class="text-muted">#${modmailLog.getCreator().discriminator()}</span>
             <span>on ${modmailLog.getCreationTime().toString()}</span>
             ·
             <span>${modmailLog.getMessages().size()} messages</span>
@@ -35,65 +42,100 @@
 
 <div class="container">
     <ol class="list-group">
-        @for(com.github.khakers.data.Message message : modmailLog.getMessages())
-            <li class="list-group-item">
-                <%--                <div class="container">--%>
-                <div class="row ">
-                    <div class="col-1 text-center">
-                        <img width="50" src="${message.author().avatarUrl()}"
-                             onerror="this.src='https://cdn.discordapp.com/embed/avatars/${Integer.parseInt(message.author().discriminator()) % 5}.png'"
-                             class="rounded-circle" style="height: inherit;" alt="user avatar">
+        @for(var message : gg.jte.support.ForSupport.of(modmailLog.getMessages()))
+            !{String style = null;}
+            !{String classes = null;}
+            @if(!message.isLast() && message.get().canMergeMessages(modmailLog.getMessages().get(message.getIndex()+1)))
+                !{style = "border-bottom-style: hidden;";}
+                !{classes = "mb-0 pb-0";}
+            @endif
+            <%-- Merged message --%>
+            @if(!message.isFirst() && message.get().canMergeMessages(modmailLog.getMessages().get(message.getIndex()-1)))
+                <li class="list-group-item mt-0 pt-0 ${classes}" style="border-top-style: hidden; ${style}">
+                    <div class="row">
+                        <div class="col-2 col-md-1 text-center">
+                            <span class="fs-6 fs-light text-muted">${java.time.LocalTime.ofInstant(message.get().getCreationTime(), java.time.ZoneOffset.UTC).format(com.github.khakers.util.DateFormatters.SIMPLE_TIME_FORMAT)}</span>
+                        </div>
+                        <div class="col">
+                            <p class="mb-0">${message.get().getContent()}</p>
+                            @if(!message.get().getAttachments().isEmpty())
+                                @if(message.get().getAttachments().get(0).isImage())
+                                    <img src="${message.get().getAttachments().get(0).url()}"
+                                         alt="Image uploaded by ${message.get().getAuthor().name()}">
+                                @endif
+                            @endif
+                        </div>
                     </div>
-                    <div class="col">
-                        <div class="row ">
-                            <div class="col">
-                                <h3>
+                </li>
+            <%-- Unmergable message --%>
+            @else
+                <li class="list-group-item ${classes}"
+                    style="${style}">
+                    <div class="row ">
+                        <div class="col-2 col-md-1 text-center">
+                            <img width="50" src="${message.get().getAuthor().avatarUrl()}"
+                                 onerror="this.src='https://cdn.discordapp.com/embed/avatars/${Integer.parseInt(message.get().getAuthor().discriminator()) % 5}.png';this.onerror=null"
+                                 class="rounded-circle" style="height: inherit;" alt="user avatar">
+                        </div>
+                        <div class="col">
+                            <div class="row ">
+                                <div class="col">
+                                    <h3>
                                     <span data-bs-toggle="tooltip"
-                                          title="${message.author().name()+"#"+message.author().discriminator()}">${message.author().name()}</span>
-                                    @if(message.author().mod())
-                                        <span class="badge rounded-pill text-bg-primary align-middle fst-normal"
-                                              style="font-size: 12px;">
-                                            <i class="bi bi-shield"></i>
+                                          title="${message.get().getAuthor().name()+"#"+message.get().getAuthor().discriminator()}">${message.get().getAuthor().name()}</span>
+                                        @if(message.get().getAuthor().mod())
+                                            <span class="badge rounded-pill text-bg-primary align-middle fst-normal"
+                                                  style="font-size: 12px;">
+                                            <i class="bi bi-shield-shaded"></i>
                                             Moderator
                                         </span>
-                                    @endif
-                                    @if(message.type()==com.github.khakers.data.MessageType.anonymous)
-                                        <span class="badge rounded-pill text-bg-secondary align-middle fst-normal"
-                                              style="font-size: 12px;">
+                                        @endif
+                                        @if(message.get().getType()==com.github.khakers.data.MessageType.anonymous)
+                                            <span class="badge rounded-pill text-bg-secondary align-middle fst-normal"
+                                                  style="font-size: 12px;">
                                             <i class="bi bi-incognito"></i>
                                             Anonymous
                                         </span>
-                                    @endif
-                                    @if(message.type()==com.github.khakers.data.MessageType.internal)
-                                        <span class="badge rounded-pill text-bg-secondary align-middle fst-normal"
-                                              style="font-size: 12px;">
+                                        @endif
+                                        @if(message.get().getType()==com.github.khakers.data.MessageType.internal)
+                                            <span class="badge rounded-pill text-bg-secondary align-middle fst-normal"
+                                                  style="font-size: 12px;">
                                             <i class="bi bi-eye-slash"></i>
                                             Internal
                                         </span>
-                                    @endif
-                                    <span class="fs-6" data-bs-toggle="tooltip"
-                                          title="${message.creationTime()}">${message.creationTime()}</span>
-                                </h3>
+                                        @endif
+                                        <span class="fs-6" data-bs-toggle="tooltip"
+                                              title="${message.get().getCreationTime().toString()}">${message.get().getCreationTime().toString()}</span>
+                                    </h3>
+                                </div>
+                                <%--                            <div class="col d-flex justify-content-end">--%>
+                                <%--                                <button type="button" class="btn btn-light" href="https://discord.com/channels/655478055497760778/715242843609759852/1032710569070956667"><i class="bi bi-box-arrow-up-right"></i></button>--%>
+                                <%--                            </div>--%>
                             </div>
-                            <%--                            <div class="col d-flex justify-content-end">--%>
-                            <%--                                <button type="button" class="btn btn-light" href="https://discord.com/channels/655478055497760778/715242843609759852/1032710569070956667"><i class="bi bi-box-arrow-up-right"></i></button>--%>
-                            <%--                            </div>--%>
-                        </div>
-                        <div class="row">
-                            <div class="col">
-                                <p>${message.content()}</p></div>
+                            <div class="row">
+                                <div class="col">
+                                    <p class="mb-0">${message.get().getContent()}</p>
+                                    @if(message.get().isEdited())
+                                        <span class="fw-light">(edited)</span>
+                                    @endif
+                                    @if(!message.get().getAttachments().isEmpty())
+                                        @if(message.get().getAttachments().get(0).isImage())
+                                            <img src="${message.get().getAttachments().get(0).url()}"
+                                                 alt="Image uploaded by ${message.get().getAuthor().name()}">
+                                        @endif                                @endif
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </li>
+                </li>
+            @endif
         @endfor
         @if(!modmailLog.isOpen())
             <li class="list-group-item">
-                <%--                <div class="container">--%>
                 <div class="row ">
-                    <div class="col-1 text-center">
+                    <div class="col-2 col-md-1 text-center">
                         <img width="50" src="${modmailLog.getCloser().avatarUrl()}"
-                             onerror="this.src='https://cdn.discordapp.com/embed/avatars/${Integer.parseInt(modmailLog.getCloser().discriminator()) % 5}.png'"
+                             onerror="this.src='https://cdn.discordapp.com/embed/avatars/${Integer.parseInt(modmailLog.getCloser().discriminator()) % 5}.png';this.onerror=null"
                              class="rounded-circle" style="height: inherit;" alt="user avatar">
                     </div>
                     <div class="col">

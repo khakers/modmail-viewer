@@ -25,7 +25,15 @@ public class Main {
                     javalinConfig.plugins.enableDevLogging();
                     javalinConfig.requestLogger.http((ctx, executionTimeMs) -> logger.info("{} {}:{} {} in {}", ctx.method(), ctx.ip(), ctx.port(), ctx.fullUrl(), executionTimeMs));
                 })
-                .get("/", ctx -> ctx.result("Hello World"))
+                .get("/", ctx -> {
+                    var pageParam = ctx.queryParam("page");
+                    int page = 1;
+                    if (pageParam != null) {
+                        page = Math.max(Integer.parseInt(pageParam),1);
+                    }
+                    logger.info(pageParam);
+                    ctx.render("homepage.jte", Collections.singletonMap("logEntries", db.getPaginatedMostRecentEntries(page)));
+                })
                 .get("/logs/{id}", ctx -> {
                     var entry = db.getModMailLogEntry(ctx.pathParam("id"));
                     entry.ifPresentOrElse(
