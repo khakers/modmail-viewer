@@ -25,6 +25,8 @@ public class ModMailLogDB {
 
     private static final Logger logger = LogManager.getLogger();
 
+    public static final int ITEMS_PER_PAGE = 8;
+
     private MongoDatabase database;
     private final MongoCollection<Document> logs;
 
@@ -80,7 +82,7 @@ public class ModMailLogDB {
 
     public List<ModMailLogEntry> getPaginatedMostRecentEntries(int page) {
         ArrayList<ModMailLogEntry> entries = new ArrayList<>();
-        var foundLogs = logs.find().sort(Sorts.descending("created_at")).skip((page - 1) * 8).limit(8);
+        var foundLogs = logs.find().sort(Sorts.descending("created_at")).skip((page - 1) * ITEMS_PER_PAGE).limit(ITEMS_PER_PAGE);
         foundLogs.forEach(document -> {
             try {
                 entries.add(objectMapper.readValue(document.toJson(), ModMailLogEntry.class));
@@ -89,6 +91,10 @@ public class ModMailLogDB {
             }
         });
         return entries;
+    }
+
+    public int getPaginationCount() {
+        return (int) (Math.ceil(logs.estimatedDocumentCount() / (double)(ITEMS_PER_PAGE)));
     }
 
 }

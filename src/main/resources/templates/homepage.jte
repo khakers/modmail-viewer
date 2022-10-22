@@ -1,4 +1,6 @@
 @param java.util.List<com.github.khakers.data.ModMailLogEntry> logEntries
+@param int page
+@param int pageCount
 <!doctype html>
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
@@ -36,6 +38,36 @@
         @endfor
 
     </ol>
+</div>
+!{String previousClass = null;}
+@if(page==1)
+    !{previousClass="disabled";}
+@endif
+!{String nextClass = null;}
+@if(page==pageCount)
+    !{nextClass="disabled";}
+@endif
+<div class="container col d-flex justify-content-center p-4">
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="page-item"><a class="page-link ${previousClass}" href="?page=${Math.max(page-1, 1)}">Previous</a>
+            </li>
+            @for(int i = 1; i < pageCount+1; ++i)
+                !{String isActive = null;}
+                @if(i == page)
+                    !{isActive="active";}
+                @endif
+                <li class="page-item">
+                    @if(i == page)
+                        <span class="page-link ${isActive}">${i}</span>
+                    @else
+                        <a class="page-link" href="?page=${i}">${i}</a>
+                    @endif
+                </li>
+            @endfor
+            <li class="page-item"><a class="page-link ${nextClass}" href="?page=${page+1}">Next</a></li>
+        </ul>
+    </nav>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"

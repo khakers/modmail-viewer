@@ -41,7 +41,7 @@
 </div>
 
 <div class="container">
-    <ol class="list-group">
+    <ol class="list-group pb-5">
         @for(var message : gg.jte.support.ForSupport.of(modmailLog.getMessages()))
             !{String style = null;}
             !{String classes = null;}
@@ -60,7 +60,7 @@
                             <p class="mb-0">${message.get().getContent()}</p>
                             @if(!message.get().getAttachments().isEmpty())
                                 @if(message.get().getAttachments().get(0).isImage())
-                                    <img src="${message.get().getAttachments().get(0).url()}"
+                                    <img class="img-fluid" src="${message.get().getAttachments().get(0).url()}"
                                          alt="Image uploaded by ${message.get().getAuthor().name()}">
                                 @endif
                             @endif
@@ -120,7 +120,7 @@
                                     @endif
                                     @if(!message.get().getAttachments().isEmpty())
                                         @if(message.get().getAttachments().get(0).isImage())
-                                            <img src="${message.get().getAttachments().get(0).url()}"
+                                            <img class="img-fluid" src="${message.get().getAttachments().get(0).url()}"
                                                  alt="Image uploaded by ${message.get().getAuthor().name()}">
                                         @endif                                @endif
                                 </div>
@@ -148,7 +148,7 @@
                                     @if(modmailLog.getCloser().mod())
                                         <span class="badge rounded-pill text-bg-primary align-middle fst-normal"
                                               style="font-size: 12px;">
-                                            <i class="bi bi-shield"></i>
+                                            <i class="bi bi-shield-shaded"></i>
                                             Moderator
                                         </span>
                                     @endif

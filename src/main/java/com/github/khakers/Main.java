@@ -11,6 +11,8 @@ import org.apache.logging.log4j.Logger;
 import java.nio.file.Path;
 import java.util.Collections;
 
+import static io.javalin.rendering.template.TemplateUtil.model;
+
 public class Main {
 
     private static final Logger logger = LogManager.getLogger();
@@ -27,12 +29,11 @@ public class Main {
                 })
                 .get("/", ctx -> {
                     var pageParam = ctx.queryParam("page");
-                    int page = 1;
-                    if (pageParam != null) {
-                        page = Math.max(Integer.parseInt(pageParam),1);
-                    }
-                    logger.info(pageParam);
-                    ctx.render("homepage.jte", Collections.singletonMap("logEntries", db.getPaginatedMostRecentEntries(page)));
+                    Integer page = ctx.queryParamAsClass("page", Integer.class)
+                            .check(integer -> integer >= 1, "page must be at least 1")
+                            .getOrDefault(1);
+                    logger.debug(pageParam);
+                    ctx.render("homepage.jte", model("logEntries", db.getPaginatedMostRecentEntries(page), "page", page, "pageCount", db.getPaginationCount()));
                 })
                 .get("/logs/{id}", ctx -> {
                     var entry = db.getModMailLogEntry(ctx.pathParam("id"));
