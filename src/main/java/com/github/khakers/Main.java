@@ -4,6 +4,7 @@ import gg.jte.ContentType;
 import gg.jte.TemplateEngine;
 import gg.jte.resolve.DirectoryCodeResolver;
 import io.javalin.Javalin;
+import io.javalin.http.staticfiles.Location;
 import io.javalin.rendering.template.JavalinJte;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,7 +24,7 @@ public class Main {
         var templateEngine = TemplateEngine.create(new DirectoryCodeResolver(Path.of("src", "main", "resources", "templates")), ContentType.Html);
         var app = Javalin.create(javalinConfig -> {
                     javalinConfig.jsonMapper(new JacksonJavalinJsonMapper());
-//                    javalinConfig.staticFiles.add("src/main/resources/static", Location.CLASSPATH);
+                    javalinConfig.staticFiles.add("/static", Location.CLASSPATH);
                     javalinConfig.plugins.enableDevLogging();
                     javalinConfig.requestLogger.http((ctx, executionTimeMs) -> logger.info("{} {}:{} {} in {}", ctx.method(), ctx.ip(), ctx.port(), ctx.fullUrl(), executionTimeMs));
                 })

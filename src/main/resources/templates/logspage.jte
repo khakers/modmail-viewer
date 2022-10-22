@@ -31,8 +31,9 @@
             @endif
             <span>Created by:</span>
             <span class="fw-semibold">${modmailLog.getCreator().name()}</span><span
-                    class="text-muted">#${modmailLog.getCreator().discriminator()}</span>
-            <span>on ${modmailLog.getCreationTime().toString()}</span>
+                    class="text-secondary">#${modmailLog.getCreator().discriminator()}</span>
+            <span>on <span class="text-muted" timestamp="${modmailLog.getCreationTime().toString()}"
+                           timestamp-type="detailed"></span></span>
             ·
             <span>${modmailLog.getMessages().size()} messages</span>
 
@@ -54,7 +55,10 @@
                 <li class="list-group-item mt-0 pt-0 ${classes}" style="border-top-style: hidden; ${style}">
                     <div class="row">
                         <div class="col-2 col-md-1 text-center">
-                            <span class="fs-6 fs-light text-muted">${java.time.LocalTime.ofInstant(message.get().getCreationTime(), java.time.ZoneOffset.UTC).format(com.github.khakers.util.DateFormatters.SIMPLE_TIME_FORMAT)}</span>
+                            <span class="fs-6 fs-light text-muted"
+                                  timestamp="${message.get().getCreationTime().toString()}"
+                                  timestamp-type="basic" timestamp-title-type="detailed"
+                                  data-bs-toggle="tooltip"></span>
                         </div>
                         <div class="col">
                             <p class="mb-0">${message.get().getContent()}</p>
@@ -104,8 +108,10 @@
                                             Internal
                                         </span>
                                         @endif
-                                        <span class="fs-6" data-bs-toggle="tooltip"
-                                              title="${message.get().getCreationTime().toString()}">${message.get().getCreationTime().toString()}</span>
+                                        <span class="fs-6 text-muted" data-bs-toggle="tooltip"
+                                              timestamp="${message.get().getCreationTime().toString()}"
+                                              timestamp-type="relative" timestamp-title-type="detailed"
+                                        ></span>
                                     </h3>
                                 </div>
                                 <%--                            <div class="col d-flex justify-content-end">--%>
@@ -158,8 +164,10 @@
                                         System
                                     </span>
 
-                                    <span class="fs-6" data-bs-toggle="tooltip"
-                                          title="${modmailLog.getClosedTime().toString()}">${modmailLog.getClosedTime().toString()}</span>
+                                    <span class="fs-6 text-muted" data-bs-toggle="tooltip"
+                                          timestamp="${modmailLog.getClosedTime().toString()}" timestamp-type="relative"
+                                          timestamp-title-type="detailed"
+                                    >${modmailLog.getClosedTime().toString()}</span>
                                 </h3>
                             </div>
                         </div>
@@ -176,6 +184,7 @@
     </ol>
 </div>
 
+<script src="/timeformat.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
