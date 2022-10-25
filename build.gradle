@@ -9,7 +9,7 @@ version '1.0-SNAPSHOT'
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(19)
+        languageVersion = JavaLanguageVersion.of(17)
     }
 }
 
@@ -27,16 +27,19 @@ dependencies {
     implementation("io.javalin:javalin-rendering:5.1.1")
 
     implementation('gg.jte:jte:2.2.2')
+
     implementation 'org.mongodb:mongodb-driver-sync:4.7.2'
 
     implementation 'org.apache.logging.log4j:log4j-api:2.19.0'
     implementation 'org.apache.logging.log4j:log4j-core:2.19.0'
     implementation 'org.apache.logging.log4j:log4j-slf4j2-impl:2.19.0'
 
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.4'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.4.2'
     implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.13.4'
     implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: '2.13.4'
 
+    implementation 'com.auth0:java-jwt:4.2.0'
+    implementation 'com.github.scribejava:scribejava-apis:8.3.2'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'

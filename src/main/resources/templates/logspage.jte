@@ -1,4 +1,7 @@
+@import com.github.khakers.auth.SiteUser
+
 @param com.github.khakers.data.ModMailLogEntry modmailLog
+@param SiteUser user
 
 <!doctype html>
 <html lang="en" xmlns="http://www.w3.org/1999/html">
@@ -12,7 +15,7 @@
 </head>
 <body style="padding-top: 56px;">
 
-@template.navbar()
+@template.navbar(user = user)
 
 <div class="container py-4">
     <div class="row">

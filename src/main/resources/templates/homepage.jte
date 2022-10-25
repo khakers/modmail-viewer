@@ -1,6 +1,10 @@
+@import com.github.khakers.auth.SiteUser
 @param java.util.List<com.github.khakers.data.ModMailLogEntry> logEntries
+
 @param int page
 @param int pageCount
+@param SiteUser user
+
 <!doctype html>
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
@@ -14,7 +18,7 @@
 </head>
 <body style="padding-top: 56px;">
 
-@template.navbar()
+@template.navbar(user = user)
 
 <div class="container pt-5">
     <ol class="list-group">

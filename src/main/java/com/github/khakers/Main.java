@@ -1,5 +1,9 @@
 package com.github.khakers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.khakers.auth.AuthHandler;
+import com.github.khakers.auth.Role;
+import com.github.khakers.util.RoleUtils;
 import gg.jte.ContentType;
 import gg.jte.TemplateEngine;
 import gg.jte.resolve.DirectoryCodeResolver;
@@ -10,8 +14,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.nio.file.Path;
-import java.util.Collections;
 
+import static com.github.khakers.auth.AuthHandler.getUser;
 import static io.javalin.rendering.template.TemplateUtil.model;
 
 public class Main {
@@ -20,32 +24,53 @@ public class Main {
 
     public static void main(String[] args) {
 
-        var db = new ModMailLogDB("mongodb://127.0.0.1:27017");
+        var db = new ModMailLogDB(System.getenv("modmail.viewer.mongodb.url"));
         var templateEngine = TemplateEngine.create(new DirectoryCodeResolver(Path.of("src", "main", "resources", "templates")), ContentType.Html);
+
+        var authHandler = new AuthHandler("http://127.0.0.1:7070/callback",
+                System.getenv("modmail.viewer.discord.oauth.client.id"),
+                System.getenv("modmail.viewer.discord.oauth.client.secret"),
+                System.getenv("modmail.viewer.secretkey"),
+                db);
+
+        JavalinJte.init(templateEngine);
+        //todo logout endpoint
         var app = Javalin.create(javalinConfig -> {
                     javalinConfig.jsonMapper(new JacksonJavalinJsonMapper());
                     javalinConfig.staticFiles.add("/static", Location.CLASSPATH);
                     javalinConfig.plugins.enableDevLogging();
-                    javalinConfig.requestLogger.http((ctx, executionTimeMs) -> logger.info("{} {}:{} {} in {}", ctx.method(), ctx.ip(), ctx.port(), ctx.fullUrl(), executionTimeMs));
+                    javalinConfig.accessManager(authHandler::HandleAuth);
                 })
+                .get("/callback", authHandler::handleCallback, Role.ANYONE)
                 .get("/", ctx -> {
                     var pageParam = ctx.queryParam("page");
                     Integer page = ctx.queryParamAsClass("page", Integer.class)
                             .check(integer -> integer >= 1, "page must be at least 1")
                             .getOrDefault(1);
-                    logger.debug(pageParam);
-                    ctx.render("homepage.jte", model("logEntries", db.getPaginatedMostRecentEntries(page), "page", page, "pageCount", db.getPaginationCount()));
-                })
+                    ctx.render("homepage.jte",
+                            model("logEntries", db.getPaginatedMostRecentEntries(page),
+                                    "page", page,
+                                    "pageCount", db.getPaginationCount(),
+                                    "user", getUser(ctx)));
+                }, RoleUtils.atLeastModerator())
                 .get("/logs/{id}", ctx -> {
                     var entry = db.getModMailLogEntry(ctx.pathParam("id"));
                     entry.ifPresentOrElse(
-                            modMailLogEntry -> ctx.render("logspage.jte", Collections.singletonMap("modmailLog", modMailLogEntry)),
+                            modMailLogEntry -> {
+                                try {
+                                    ctx.render("logspage.jte", model(
+                                            "modmailLog", modMailLogEntry,
+                                            "user", getUser(ctx)));
+                                } catch (JsonProcessingException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            },
                             () -> {
                                 ctx.status(404);
                                 ctx.result();
                             });
 
-                })
+                }, RoleUtils.atLeastModerator())
                 .get("/api/logs/{id}", ctx -> {
                     var entry = db.getModMailLogEntry(ctx.pathParam("id"));
                     entry.ifPresentOrElse(
@@ -55,13 +80,21 @@ public class Main {
                                 ctx.result();
                             });
 
-                })
-//                .error(404, ctx -> ctx.result("Generic 404 message"))
+                }, RoleUtils.atLeastAdministrator())
+                .get("/api/config", ctx -> ctx.json(db.getConfig()), RoleUtils.atLeastModerator())
                 .start(7070);
-        JavalinJte.init(templateEngine);
-//        var output = new StringOutput();
-//        templateEngine.render("hello.jte", "World", output);
-//        System.out.println(output);
+
         app.get("/potato/{id}", ctx -> ctx.result("Your id was " + ctx.pathParam("id")));
     }
+
+//    private static void accessManager(Handler handler, Context ctx, Set<? extends RouteRole> routeRoles) throws Exception {
+//        new SecurityHandler()
+//        var userRole = getUserRole(ctx);
+//        if (routeRoles.contains(userRole)) {
+//            handler.handle(ctx);
+//        } else {
+//            ctx.status(401).result("unauthorized");
+//        }
+//    }
+
 }

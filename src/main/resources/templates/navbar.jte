@@ -1,3 +1,6 @@
+@import com.github.khakers.auth.SiteUser
+@param SiteUser user
+
 <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">Modmail-Logviewer</a>
@@ -12,10 +15,16 @@
                 </li>
 
             </ul>
-            <form class="d-flex" role="search">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
-            </form>
+<%--            <form class="d-flex" role="search">--%>
+<%--                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">--%>
+<%--                <button class="btn btn-outline-success" type="submit">Search</button>--%>
+<%--            </form>--%>
+            <span class="navbar-text">
+                Signed in as <span>${user.getUsername()}</span><span>#${user.getDiscriminator()}</span>
+            </span>
+<%--            <div>--%>
+<%--                <img src="${user.getAvatarUrl()}" class="navbar-brand rounded-circle img-fluid pl-2" width="40" style="size: inherit;">--%>
+<%--            </div>--%>
         </div>
     </div>
 </nav>
