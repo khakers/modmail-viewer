@@ -35,6 +35,7 @@ public class JwtAuth {
                 .withClaim("id", user.id)
                 .withClaim("discriminator", user.discriminator)
                 .withClaim("avatar", user.getAvatar().orElse(null))
+                .withIssuedAt(Instant.now())
                 .withExpiresAt(Instant.now().plus(3, ChronoUnit.HOURS))
                 .sign(algorithm);
     }
