@@ -26,7 +26,7 @@ public class Main {
 
     public static void main(String[] args) {
         Assert.requireNonEmpty(System.getenv("modmail.viewer.url"), "No URL provided. provide one with the option \"modmail.viewer.url\"");
-        Assert.requireNonEmpty(System.getenv("modmail.viewer.mongodb.url"), "No mongodb URI provided. provide one with the option \\\"modmail.viewer.mongodb.url\\\"");
+        Assert.requireNonEmpty(System.getenv("modmail.viewer.mongodb.uri"), "No mongodb URI provided. provide one with the option \\\"modmail.viewer.mongodb.url\\\"");
         Assert.requireNonEmpty(System.getenv("modmail.viewer.discord.oauth.client.id"), "No Discord client ID provided. provide one with the option \\\"modmail.viewer.discord.oauth.client.id\\\"");
         Assert.requireNonEmpty(System.getenv("modmail.viewer.discord.oauth.client.secret"), "No Discord client secret provided. provide one with the option \\\"modmail.viewer.discord.oauth.client.secret\\\"");
 
@@ -37,7 +37,7 @@ public class Main {
             jwtSecretKey = new BigInteger(256, new SecureRandom()).toString(32);
         }
 
-        var db = new ModMailLogDB(System.getenv("modmail.viewer.mongodb.url"));
+        var db = new ModMailLogDB(System.getenv("modmail.viewer.mongodb.uri"));
         var templateEngine = TemplateEngine.create(new DirectoryCodeResolver(Path.of("src", "main", "resources", "templates")), ContentType.Html);
 
 

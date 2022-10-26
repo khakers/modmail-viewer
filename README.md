@@ -42,12 +42,12 @@ To run the webserver in the background, it's recommended you use a service manag
 
 ### Environment Variables
 
-| Environment Variable                       | Value                                                                            |
-|--------------------------------------------|----------------------------------------------------------------------------------|
-| modmail.viewer.url                         | The URL your modmail viewer instance is reachable at (i.e http://127.0.0.1:7070) |
-| modmail.viewer.mongodb.url                 | URL for the MongoDB instance                                                     |
-| modmail.viewer.discord.oauth.client.id     | Your Discord Application ID                                                      |
-| modmail.viewer.discord.oauth.client.secret | Your Discord OAuth2 client secret                                                |
-| modmail.viewer.secretkey                   | A randomly generated secret key used for signing JWTs                            |
+| Environment Variable                       | Description                                                                                                                                                                                                                                                  |
+|--------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| modmail.viewer.url                         | The URL your modmail viewer instance is reachable at (i.e http://127.0.0.1:7070)                                                                                                                                                                             |
+| modmail.viewer.mongodb.uri                 | URI for the MongoDB instance                                                                                                                                                                                                                                 |
+| modmail.viewer.discord.oauth.client.id     | Your Discord Application ID                                                                                                                                                                                                                                  |
+| modmail.viewer.discord.oauth.client.secret | Your Discord OAuth2 client secret                                                                                                                                                                                                                            |
+| modmail.viewer.secretkey                   | A randomly generated secret key used for signing auth tokens. <br/>**ANYONE WITH THIS KEY CAN FORGE AUTHENTICATION TOKENS** and impersonate any user. Should be at least 32 characters. If you don't provide one, sessions will not persist across restarts. |
 
 
