@@ -12,8 +12,11 @@ import io.javalin.http.staticfiles.Location;
 import io.javalin.rendering.template.JavalinJte;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.util.Assert;
 
+import java.math.BigInteger;
 import java.nio.file.Path;
+import java.security.SecureRandom;
 
 import static io.javalin.rendering.template.TemplateUtil.model;
 
@@ -22,15 +25,29 @@ public class Main {
     private static final Logger logger = LogManager.getLogger();
 
     public static void main(String[] args) {
+        Assert.requireNonEmpty(System.getenv("modmail.viewer.url"), "No URL provided. provide one with the option \"modmail.viewer.url\"");
+        Assert.requireNonEmpty(System.getenv("modmail.viewer.mongodb.url"), "No mongodb URI provided. provide one with the option \\\"modmail.viewer.mongodb.url\\\"");
+        Assert.requireNonEmpty(System.getenv("modmail.viewer.discord.oauth.client.id"), "No Discord client ID provided. provide one with the option \\\"modmail.viewer.discord.oauth.client.id\\\"");
+        Assert.requireNonEmpty(System.getenv("modmail.viewer.discord.oauth.client.secret"), "No Discord client secret provided. provide one with the option \\\"modmail.viewer.discord.oauth.client.secret\\\"");
+
+        String jwtSecretKey = System.getenv("modmail.viewer.secretkey");
+
+        if (jwtSecretKey == null || jwtSecretKey.isEmpty()) {
+            logger.warn("Generated a random key for signing tokens. Sessions will not persist between restarts");
+            jwtSecretKey = new BigInteger(256, new SecureRandom()).toString(32);
+        }
 
         var db = new ModMailLogDB(System.getenv("modmail.viewer.mongodb.url"));
         var templateEngine = TemplateEngine.create(new DirectoryCodeResolver(Path.of("src", "main", "resources", "templates")), ContentType.Html);
 
+
         var authHandler = new AuthHandler(System.getenv("modmail.viewer.url") + "/callback",
                 System.getenv("modmail.viewer.discord.oauth.client.id"),
                 System.getenv("modmail.viewer.discord.oauth.client.secret"),
-                System.getenv("modmail.viewer.secretkey"),
+                jwtSecretKey,
                 db);
+
+
 
         JavalinJte.init(templateEngine);
         //todo logout endpoint

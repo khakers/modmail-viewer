@@ -95,9 +95,10 @@ public class AuthHandler {
             handler.handle(ctx);
             logger.debug("User {} was authorized and had request handled", ctx.ip());
         } else if (userRole != Role.ANYONE) {
+            logger.debug("User {} was not authorized was given a 403", ctx.ip());
             ctx.status(403).result();
         } else {
-            logger.debug("Redirected to auth URL from {}", ctx.url());
+            logger.debug("Redirected {} to auth URL from {}",ctx.ip(), ctx.url());
             ctx.redirect(service.getAuthorizationUrl(generateOuathState(ctx)));
         }
     }
@@ -106,8 +107,7 @@ public class AuthHandler {
         var key = new BigInteger(130, secureRandom).toString(32);
         var state = new ClientState(ctx.fullUrl());
         ouathState.put(key, state);
-        ctx.cookie("state", key);
-        new Cookie("state", key, "", 240, true, 1, true);
+        ctx.cookie(new Cookie("state", key, "", 240, true, 1, true));
 
         return key;
     }
@@ -127,8 +127,8 @@ public class AuthHandler {
         return state;
     }
 
-    public void handleGenerateJWT(Context ctx, String identify) throws JsonProcessingException {
-        var user = objectMapper.readValue(identify, SiteUser.class);
+    public void handleGenerateJWT(Context ctx, SiteUser user) throws JsonProcessingException {
+
         // Same site strict cause browser not to send the cookie upon redirect from oauth
         // Which would mean we would need load a page that redirects the user with js
         ctx.cookie(new Cookie("jwt", jwtAuth.generateJWT(user), "/", 10800, true, 1, true, "", "", SameSite.LAX));
@@ -152,9 +152,21 @@ public class AuthHandler {
                 try (Response response = service.execute(request)) {
                     logger.debug(response.getCode());
                     logger.debug(response.getBody());
+
+                    var user = objectMapper.readValue( response.getBody(), SiteUser.class);
+
+                    // The user is not authorized for any role and thus does not need to be given a token
+                    if (modMailLogDB.getUserRole(user) == Role.ANYONE) {
+                        logger.debug("User signed in through discord but was not authorized");
+                        ctx.status(403).result();
+                        return;
+                    }
+
                     ctx.result(response.getBody());
-                    handleGenerateJWT(ctx, response.getBody());
+                    handleGenerateJWT(ctx, user);
                     ctx.redirect(clientState.getRedirectedFrom());
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
                 }
             } else {
                 ctx.status(400).result("invalid redirect, no code present");
