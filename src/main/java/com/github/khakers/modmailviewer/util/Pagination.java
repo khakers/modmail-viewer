@@ -1,4 +1,4 @@
-package com.github.khakers.util;
+package com.github.khakers.modmailviewer.util;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,27 +16,27 @@ public class Pagination {
      */
     public static boolean shouldDisplayPage(int paginationValue, int userPage, int pageCount) {
         if (!needsPaginationCulling(pageCount)) {
-            logger.debug("pagination result: 1 on page {} {} {}", paginationValue, userPage, pageCount);
+            logger.trace("pagination result: 1 on page {} {} {}", paginationValue, userPage, pageCount);
             return true;
         }
 
         if (paginationValue > userPage - 2 && paginationValue < userPage + 2) {
-            logger.debug("pagination result: 2 on page {} {} {}", paginationValue, userPage, pageCount);
+            logger.trace("pagination result: 2 on page {} {} {}", paginationValue, userPage, pageCount);
             return true;
         }
 
         if (userPage > pageCount - 4 && paginationValue > pageCount - 5) {
-            logger.debug("pagination result: 3 on page {} {} {}", paginationValue, userPage, pageCount);
+            logger.trace("pagination result: 3 on page {} {} {}", paginationValue, userPage, pageCount);
             return true;
         }
 
         if (userPage <= 4 && paginationValue < 6) {
-            logger.debug("pagination result: 4 on page {} {} {}", paginationValue, userPage, pageCount);
+            logger.trace("pagination result: 4 on page {} {} {}", paginationValue, userPage, pageCount);
             return true;
         }
 
         if (userPage > pageCount - 3 && paginationValue > pageCount - 3) {
-            logger.debug("pagination result: 5 on page {} {} {}", paginationValue, userPage, pageCount);
+            logger.trace("pagination result: 5 on page {} {} {}", paginationValue, userPage, pageCount);
             return true;
         }
         return false;

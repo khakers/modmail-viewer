@@ -1,4 +1,4 @@
-package com.github.khakers;
+package com.github.khakers.modmailviewer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;

@@ -1,9 +1,9 @@
-package com.github.khakers;
+package com.github.khakers.modmailviewer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.github.khakers.auth.AuthHandler;
-import com.github.khakers.auth.Role;
-import com.github.khakers.util.RoleUtils;
+import com.github.khakers.modmailviewer.auth.AuthHandler;
+import com.github.khakers.modmailviewer.auth.Role;
+import com.github.khakers.modmailviewer.util.RoleUtils;
 import gg.jte.ContentType;
 import gg.jte.TemplateEngine;
 import gg.jte.resolve.DirectoryCodeResolver;
@@ -15,7 +15,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.nio.file.Path;
 
-import static com.github.khakers.auth.AuthHandler.getUser;
 import static io.javalin.rendering.template.TemplateUtil.model;
 
 public class Main {
@@ -27,7 +26,7 @@ public class Main {
         var db = new ModMailLogDB(System.getenv("modmail.viewer.mongodb.url"));
         var templateEngine = TemplateEngine.create(new DirectoryCodeResolver(Path.of("src", "main", "resources", "templates")), ContentType.Html);
 
-        var authHandler = new AuthHandler("http://127.0.0.1:7070/callback",
+        var authHandler = new AuthHandler(System.getenv("modmail.viewer.url") + "/callback",
                 System.getenv("modmail.viewer.discord.oauth.client.id"),
                 System.getenv("modmail.viewer.discord.oauth.client.secret"),
                 System.getenv("modmail.viewer.secretkey"),
@@ -42,6 +41,10 @@ public class Main {
                     javalinConfig.accessManager(authHandler::HandleAuth);
                 })
                 .get("/callback", authHandler::handleCallback, Role.ANYONE)
+                .get("/logout", ctx -> {
+                    ctx.removeCookie("jwt");
+                    ctx.result("logout successful");
+                }, RoleUtils.atLeastRegular())
                 .get("/", ctx -> {
                     var pageParam = ctx.queryParam("page");
                     Integer page = ctx.queryParamAsClass("page", Integer.class)
@@ -51,7 +54,7 @@ public class Main {
                             model("logEntries", db.getPaginatedMostRecentEntries(page),
                                     "page", page,
                                     "pageCount", db.getPaginationCount(),
-                                    "user", getUser(ctx)));
+                                    "user", AuthHandler.getUser(ctx)));
                 }, RoleUtils.atLeastModerator())
                 .get("/logs/{id}", ctx -> {
                     var entry = db.getModMailLogEntry(ctx.pathParam("id"));
@@ -60,7 +63,7 @@ public class Main {
                                 try {
                                     ctx.render("logspage.jte", model(
                                             "modmailLog", modMailLogEntry,
-                                            "user", getUser(ctx)));
+                                            "user", AuthHandler.getUser(ctx)));
                                 } catch (JsonProcessingException e) {
                                     throw new RuntimeException(e);
                                 }

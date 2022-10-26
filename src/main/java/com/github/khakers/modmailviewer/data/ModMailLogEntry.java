@@ -1,4 +1,4 @@
-package com.github.khakers.data;
+package com.github.khakers.modmailviewer.data;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static com.github.khakers.util.DateFormatters.DATABASE_TIMESTAMP_FORMAT;
+import static com.github.khakers.modmailviewer.util.DateFormatters.DATABASE_TIMESTAMP_FORMAT;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class ModMailLogEntry {

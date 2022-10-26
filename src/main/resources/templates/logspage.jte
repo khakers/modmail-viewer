@@ -1,6 +1,6 @@
-@import com.github.khakers.auth.SiteUser
+@import com.github.khakers.modmailviewer.auth.SiteUser
 
-@param com.github.khakers.data.ModMailLogEntry modmailLog
+@param com.github.khakers.modmailviewer.data.ModMailLogEntry modmailLog
 @param SiteUser user
 
 <!doctype html>
@@ -97,14 +97,14 @@
                                             Moderator
                                         </span>
                                         @endif
-                                        @if(message.get().getType()==com.github.khakers.data.MessageType.anonymous)
+                                        @if(message.get().getType()==com.github.khakers.modmailviewer.data.MessageType.anonymous)
                                             <span class="badge rounded-pill text-bg-secondary align-middle fst-normal"
                                                   style="font-size: 12px;">
                                             <i class="bi bi-incognito"></i>
                                             Anonymous
                                         </span>
                                         @endif
-                                        @if(message.get().getType()==com.github.khakers.data.MessageType.internal)
+                                        @if(message.get().getType()==com.github.khakers.modmailviewer.data.MessageType.internal)
                                             <span class="badge rounded-pill text-bg-secondary align-middle fst-normal"
                                                   style="font-size: 12px;">
                                             <i class="bi bi-eye-slash"></i>

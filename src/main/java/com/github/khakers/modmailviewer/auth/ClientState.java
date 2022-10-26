@@ -1,4 +1,4 @@
-package com.github.khakers.auth;
+package com.github.khakers.modmailviewer.auth;
 
 import java.time.Instant;
 import java.util.Objects;

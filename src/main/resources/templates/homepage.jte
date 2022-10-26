@@ -1,7 +1,8 @@
-@import com.github.khakers.auth.SiteUser
-@import com.github.khakers.util.Pagination
+@import com.github.khakers.modmailviewer.auth.SiteUser
+@import com.github.khakers.modmailviewer.util.Pagination
+@import com.github.khakers.modmailviewer.data.ModMailLogEntry
 
-@param java.util.List<com.github.khakers.data.ModMailLogEntry> logEntries
+@param java.util.List<com.github.khakers.modmailviewer.data.ModMailLogEntry> logEntries
 
 @param int page
 @param int pageCount
@@ -24,7 +25,7 @@
 
 <div class="container pt-5">
     <ol class="list-group">
-        @for(com.github.khakers.data.ModMailLogEntry entry : logEntries)
+        @for(ModMailLogEntry entry : logEntries)
             <li class="list-group-item">
                 <h2><a href="/logs/${entry.getKey()}">${entry.getKey()}</a></h2>
                 @if(entry.isNsfw())

@@ -1,4 +1,4 @@
-package com.github.khakers.auth;
+package com.github.khakers.modmailviewer.auth;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;

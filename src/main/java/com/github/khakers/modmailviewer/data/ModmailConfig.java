@@ -1,8 +1,8 @@
-package com.github.khakers.data;
+package com.github.khakers.modmailviewer.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.github.khakers.auth.Role;
+import com.github.khakers.modmailviewer.auth.Role;
 
 import java.util.List;
 import java.util.Map;

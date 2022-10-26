@@ -1,4 +1,4 @@
-package com.github.khakers.util;
+package com.github.khakers.modmailviewer.util;
 
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;

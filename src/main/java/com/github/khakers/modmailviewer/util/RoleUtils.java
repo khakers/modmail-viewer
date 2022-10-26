@@ -1,6 +1,6 @@
-package com.github.khakers.util;
+package com.github.khakers.modmailviewer.util;
 
-import com.github.khakers.auth.Role;
+import com.github.khakers.modmailviewer.auth.Role;
 import io.javalin.security.RouteRole;
 
 public class RoleUtils {

@@ -1,4 +1,4 @@
-package com.github.khakers.auth;
+package com.github.khakers.modmailviewer.auth;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

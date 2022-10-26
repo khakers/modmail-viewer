@@ -1,4 +1,4 @@
-package com.github.khakers.data;
+package com.github.khakers.modmailviewer.data;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.bson.BsonType;

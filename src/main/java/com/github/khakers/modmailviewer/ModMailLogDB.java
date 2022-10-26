@@ -1,13 +1,13 @@
-package com.github.khakers;
+package com.github.khakers.modmailviewer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.github.khakers.auth.Role;
-import com.github.khakers.auth.SiteUser;
-import com.github.khakers.data.ModMailLogEntry;
-import com.github.khakers.data.ModmailConfig;
+import com.github.khakers.modmailviewer.auth.Role;
+import com.github.khakers.modmailviewer.auth.SiteUser;
+import com.github.khakers.modmailviewer.data.ModMailLogEntry;
+import com.github.khakers.modmailviewer.data.ModmailConfig;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;

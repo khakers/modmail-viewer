@@ -1,4 +1,4 @@
-@import com.github.khakers.auth.SiteUser
+@import com.github.khakers.modmailviewer.auth.SiteUser
 @param SiteUser user
 
 <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
@@ -15,16 +15,20 @@
                 </li>
 
             </ul>
-<%--            <form class="d-flex" role="search">--%>
-<%--                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">--%>
-<%--                <button class="btn btn-outline-success" type="submit">Search</button>--%>
-<%--            </form>--%>
-            <span class="navbar-text">
-                Signed in as <span>${user.getUsername()}</span><span>#${user.getDiscriminator()}</span>
-            </span>
-<%--            <div>--%>
-<%--                <img src="${user.getAvatarUrl()}" class="navbar-brand rounded-circle img-fluid pl-2" width="40" style="size: inherit;">--%>
-<%--            </div>--%>
+            <%--            <form class="d-flex" role="search">--%>
+            <%--                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">--%>
+            <%--                <button class="btn btn-outline-success" type="submit">Search</button>--%>
+            <%--            </form>--%>
+            <div class="d-flex me-2">
+                <span class="navbar-text me-3">
+                    Signed in as <span>${user.getUsername()}</span><span>#${user.getDiscriminator()}</span>
+                </span>
+                <a class="btn btn-outline-danger" href="/logout">signout</a>
+            </div>
+
+            <%--            <div>--%>
+            <%--                <img src="${user.getAvatarUrl()}" class="navbar-brand rounded-circle img-fluid pl-2" width="40" style="size: inherit;">--%>
+            <%--            </div>--%>
         </div>
     </div>
 </nav>

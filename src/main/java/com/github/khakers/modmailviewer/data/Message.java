@@ -1,6 +1,7 @@
-package com.github.khakers.data;
+package com.github.khakers.modmailviewer.data;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.khakers.modmailviewer.util.DateFormatters;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -8,8 +9,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
-
-import static com.github.khakers.util.DateFormatters.DATABASE_TIMESTAMP_FORMAT;
 
 public final class Message {
     private final String id;
@@ -39,7 +38,7 @@ public final class Message {
             boolean isEdited
     ) {
         this.id = id;
-        this.creationTime = DATABASE_TIMESTAMP_FORMAT.parse(creationTime, Instant::from);
+        this.creationTime = DateFormatters.DATABASE_TIMESTAMP_FORMAT.parse(creationTime, Instant::from);
         this.content = content;
         this.attachments = attachments;
         this.author = author;

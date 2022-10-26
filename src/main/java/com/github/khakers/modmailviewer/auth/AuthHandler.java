@@ -1,9 +1,8 @@
-package com.github.khakers.auth;
+package com.github.khakers.modmailviewer.auth;
 
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.khakers.ModMailLogDB;
+import com.github.khakers.modmailviewer.ModMailLogDB;
 import com.github.scribejava.apis.DiscordApi;
 import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.exceptions.OAuthException;
@@ -65,7 +64,8 @@ public class AuthHandler {
                 var verifiedJWT = JwtAuth.verifyJWT((String) jwtCookie);
                 var user = objectMapper.readValue(verifiedJWT, SiteUser.class);
                 return modMailLogDB.getUserRole(user);
-            } catch (JWTVerificationException e) {
+            } catch (Exception e) {
+                logger.error(e);
                 return Role.ANYONE;
             }
         } else {
@@ -123,6 +123,7 @@ public class AuthHandler {
             throw new OAuthException("Invalid state: expired");
         }
         ouathState.remove(stateKey);
+        ctx.removeCookie("state");
         return state;
     }
 
