@@ -35,6 +35,8 @@ public class Main {
         if (jwtSecretKey == null || jwtSecretKey.isEmpty()) {
             logger.warn("Generated a random key for signing tokens. Sessions will not persist between restarts");
             jwtSecretKey = new BigInteger(256, new SecureRandom()).toString(32);
+        } else if (jwtSecretKey.length() < 32) {
+            logger.warn("Your secret key is too short! it should be at least 32 characters (256 bits). Short keys can be trivially brute forced allowing an attacker to create their own auth tokens");
         }
 
         var db = new ModMailLogDB(System.getenv("modmail.viewer.mongodb.uri"));
