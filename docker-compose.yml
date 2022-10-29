@@ -1,24 +1,14 @@
 version: "3.7"
 services:
-#  bot:
-#    image: kyb3rr/modmail
-#    restart: always
-#    env_file:
-#      - .env
-#    environment:
-#      - CONNECTION_URI=mongodb://mongo
-#    depends_on:
-#      - mongo
-  logviewer:
-    image: kyb3rr/logviewer
+  bot:
+    image: kyb3rr/modmail
     restart: always
+    env_file:
+      - .env
+    environment:
+      - CONNECTION_URI=mongodb://mongo
     depends_on:
       - mongo
-    environment:
-      - MONGO_URI=mongodb://mongo:27017
-      - DEBUG=true
-    ports:
-      - "80:8000"
   viewer:
     image: modmailviewer:latest
     depends_on:
@@ -26,17 +16,17 @@ services:
     env_file:
       - .env
     ports:
-      - "7070:7070"
+      - "80:7070"
     environment:
       - "MODMAIL_VIEWER_MONGODB_URI=mongodb://mongo:27017"
-      - "MODMAIL_VIEWER_URL=http://127.0.0.1:7070"
+      - "MODMAIL_VIEWER_URL=http://127.0.0.1:80"
   mongo:
     image: mongo:4.4
     restart: always
     ports:
       - "27017:27017"
     volumes:
-      - F:\mongo_volume:/data/db
+      - mongodb:/data/db
 
 volumes:
   mongodb:
