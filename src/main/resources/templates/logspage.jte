@@ -91,21 +91,21 @@
                                     <span data-bs-toggle="tooltip"
                                           title="${message.get().getAuthor().name()+"#"+message.get().getAuthor().discriminator()}">${message.get().getAuthor().name()}</span>
                                         @if(message.get().getAuthor().mod())
-                                            <span class="badge rounded-pill text-bg-primary align-middle fst-normal"
+                                            <span class="badge text-bg-primary align-middle fst-normal"
                                                   style="font-size: 12px;">
                                             <i class="bi bi-shield-shaded"></i>
                                             Moderator
                                         </span>
                                         @endif
                                         @if(message.get().getType()==com.github.khakers.modmailviewer.data.MessageType.anonymous)
-                                            <span class="badge rounded-pill text-bg-secondary align-middle fst-normal"
+                                            <span class="badge text-bg-secondary align-middle fst-normal"
                                                   style="font-size: 12px;">
                                             <i class="bi bi-incognito"></i>
                                             Anonymous
                                         </span>
                                         @endif
                                         @if(message.get().getType()==com.github.khakers.modmailviewer.data.MessageType.internal)
-                                            <span class="badge rounded-pill text-bg-secondary align-middle fst-normal"
+                                            <span class="badge text-bg-secondary align-middle fst-normal"
                                                   style="font-size: 12px;">
                                             <i class="bi bi-eye-slash"></i>
                                             Internal
@@ -155,13 +155,13 @@
                                           title="${modmailLog.getCloser().name()+"#"+modmailLog.getCloser().discriminator()}">${modmailLog.getCloser().name()}</span>
                                     <span class="fw-normal fs-5">closed the thread</span>
                                     @if(modmailLog.getCloser().mod())
-                                        <span class="badge rounded-pill text-bg-primary align-middle fst-normal"
+                                        <span class="badge text-bg-primary align-middle fst-normal"
                                               style="font-size: 12px;">
                                             <i class="bi bi-shield-shaded"></i>
                                             Moderator
                                         </span>
                                     @endif
-                                    <span class="badge rounded-pill text-bg-info align-middle fst-normal"
+                                    <span class="badge text-bg-info align-middle fst-normal"
                                           style="font-size: 12px;">
                                         <i class="bi bi-gear"></i>
                                         System
