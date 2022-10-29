@@ -24,13 +24,15 @@ public class Main {
 
     private static final Logger logger = LogManager.getLogger();
 
-    public static void main(String[] args) {
-        Assert.requireNonEmpty(System.getenv("modmail.viewer.url"), "No URL provided. provide one with the option \"modmail.viewer.url\"");
-        Assert.requireNonEmpty(System.getenv("modmail.viewer.mongodb.uri"), "No mongodb URI provided. provide one with the option \\\"modmail.viewer.mongodb.url\\\"");
-        Assert.requireNonEmpty(System.getenv("modmail.viewer.discord.oauth.client.id"), "No Discord client ID provided. provide one with the option \\\"modmail.viewer.discord.oauth.client.id\\\"");
-        Assert.requireNonEmpty(System.getenv("modmail.viewer.discord.oauth.client.secret"), "No Discord client secret provided. provide one with the option \\\"modmail.viewer.discord.oauth.client.secret\\\"");
+    private static final String envPrepend = "MODMAIL_VIEWER";
 
-        String jwtSecretKey = System.getenv("modmail.viewer.secretkey");
+    public static void main(String[] args) {
+        Assert.requireNonEmpty(System.getenv(envPrepend+"_URL"), "No URL provided. provide one with the option \"MODMAIL_VIEWER_URL\"");
+        Assert.requireNonEmpty(System.getenv(envPrepend+"_MONGODB_URI"), "No mongodb URI provided. provide one with the option \"MODMAIL_VIEWER_MONGODB_URI\"");
+        Assert.requireNonEmpty(System.getenv(envPrepend+"_DISCORD_OAUTH_CLIENT_ID"), "No Discord client ID provided. provide one with the option \"MODMAIL_VIEWER_DISCORD_OAUTH_CLIENT_ID\"");
+        Assert.requireNonEmpty(System.getenv(envPrepend+"_DISCORD_OAUTH_CLIENT_SECRET"), "No Discord client secret provided. provide one with the option \"MODMAIL_VIEWER_DISCORD_OAUTH_CLIENT_SECRET\"");
+
+        String jwtSecretKey = System.getenv("MODMAIL_VIEWER_SECRETKEY");
 
         if (jwtSecretKey == null || jwtSecretKey.isEmpty()) {
             logger.warn("Generated a random key for signing tokens. Sessions will not persist between restarts");
@@ -39,20 +41,19 @@ public class Main {
             logger.warn("Your secret key is too short! it should be at least 32 characters (256 bits). Short keys can be trivially brute forced allowing an attacker to create their own auth tokens");
         }
 
-        var db = new ModMailLogDB(System.getenv("modmail.viewer.mongodb.uri"));
+        var db = new ModMailLogDB(System.getenv(envPrepend+"_MONGODB_URI"));
         var templateEngine = TemplateEngine.create(new DirectoryCodeResolver(Path.of("src", "main", "resources", "templates")), ContentType.Html);
 
 
-        var authHandler = new AuthHandler(System.getenv("modmail.viewer.url") + "/callback",
-                System.getenv("modmail.viewer.discord.oauth.client.id"),
-                System.getenv("modmail.viewer.discord.oauth.client.secret"),
+        var authHandler = new AuthHandler(System.getenv(envPrepend+"_URL") + "/callback",
+                System.getenv(envPrepend+"_DISCORD_OAUTH_CLIENT_ID"),
+                System.getenv(envPrepend+"_DISCORD_OAUTH_CLIENT_SECRET"),
                 jwtSecretKey,
                 db);
 
 
 
         JavalinJte.init(templateEngine);
-        //todo logout endpoint
         var app = Javalin.create(javalinConfig -> {
                     javalinConfig.jsonMapper(new JacksonJavalinJsonMapper());
                     javalinConfig.staticFiles.add("/static", Location.CLASSPATH);
