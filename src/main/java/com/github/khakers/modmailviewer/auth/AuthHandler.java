@@ -77,7 +77,8 @@ public class AuthHandler {
     public static SiteUser getUser(Context ctx) throws JsonProcessingException {
         var jwtCookie = ctx.cookie("jwt");
         if (jwtCookie == null) {
-            logger.debug("could not get user, no jwt cookie present, users role is ANYONE");
+            logger.debug("could not get user, no jwt cookie present");
+            return new SiteUser(0L, "anonymous", "0000", "");
         }
         return JwtAuth.decodeJWT(jwtCookie, objectMapper);
     }

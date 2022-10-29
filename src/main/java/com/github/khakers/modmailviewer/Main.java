@@ -17,6 +17,7 @@ import org.apache.logging.log4j.core.util.Assert;
 import java.math.BigInteger;
 import java.nio.file.Path;
 import java.security.SecureRandom;
+import java.util.Objects;
 
 import static io.javalin.rendering.template.TemplateUtil.model;
 
@@ -27,12 +28,19 @@ public class Main {
     private static final String envPrepend = "MODMAIL_VIEWER";
 
     public static void main(String[] args) {
+
+        boolean enableAuth = !(Objects.nonNull(System.getenv(envPrepend + "_AUTH_ENABLED")) && System.getenv(envPrepend + "_AUTH_ENABLED").equalsIgnoreCase("false"));
+
         Assert.requireNonEmpty(System.getenv(envPrepend+"_URL"), "No URL provided. provide one with the option \"MODMAIL_VIEWER_URL\"");
         Assert.requireNonEmpty(System.getenv(envPrepend+"_MONGODB_URI"), "No mongodb URI provided. provide one with the option \"MODMAIL_VIEWER_MONGODB_URI\"");
-        Assert.requireNonEmpty(System.getenv(envPrepend+"_DISCORD_OAUTH_CLIENT_ID"), "No Discord client ID provided. provide one with the option \"MODMAIL_VIEWER_DISCORD_OAUTH_CLIENT_ID\"");
-        Assert.requireNonEmpty(System.getenv(envPrepend+"_DISCORD_OAUTH_CLIENT_SECRET"), "No Discord client secret provided. provide one with the option \"MODMAIL_VIEWER_DISCORD_OAUTH_CLIENT_SECRET\"");
+        if (!enableAuth) {
+            Assert.requireNonEmpty(System.getenv(envPrepend + "_DISCORD_OAUTH_CLIENT_ID"), "No Discord client ID provided. provide one with the option \"MODMAIL_VIEWER_DISCORD_OAUTH_CLIENT_ID\"");
+            Assert.requireNonEmpty(System.getenv(envPrepend + "_DISCORD_OAUTH_CLIENT_SECRET"), "No Discord client secret provided. provide one with the option \"MODMAIL_VIEWER_DISCORD_OAUTH_CLIENT_SECRET\"");
+        }
 
         String jwtSecretKey = System.getenv("MODMAIL_VIEWER_SECRETKEY");
+
+        boolean dev = Objects.nonNull(System.getenv(envPrepend+"_DEV"));
 
         if (jwtSecretKey == null || jwtSecretKey.isEmpty()) {
             logger.warn("Generated a random key for signing tokens. Sessions will not persist between restarts");
@@ -57,8 +65,16 @@ public class Main {
         var app = Javalin.create(javalinConfig -> {
                     javalinConfig.jsonMapper(new JacksonJavalinJsonMapper());
                     javalinConfig.staticFiles.add("/static", Location.CLASSPATH);
-                    javalinConfig.plugins.enableDevLogging();
-                    javalinConfig.accessManager(authHandler::HandleAuth);
+                    if (dev) {
+                        logger.info("Dev mode enabled");
+                        javalinConfig.plugins.enableDevLogging();
+                    }
+                    if (enableAuth) {
+                        javalinConfig.accessManager(authHandler::HandleAuth);
+                    } else {
+                        logger.warn("Authentication is DISABLED");
+                        javalinConfig.accessManager((handler, context, set) -> handler.handle(context));
+                    }
                 })
                 .get("/callback", authHandler::handleCallback, Role.ANYONE)
                 .get("/logout", ctx -> {
