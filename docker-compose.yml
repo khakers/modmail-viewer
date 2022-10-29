@@ -19,6 +19,17 @@ services:
       - DEBUG=true
     ports:
       - "80:8000"
+  viewer:
+    image: modmailviewer:latest
+    depends_on:
+      - mongo
+    env_file:
+      - .env
+    ports:
+      - "7070:7070"
+    environment:
+      - "MODMAIL_VIEWER_MONGODB_URI=mongodb://mongo:27017"
+      - "MODMAIL_VIEWER_URL=http://127.0.0.1:7070"
   mongo:
     image: mongo:4.4
     restart: always

@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'application'
+    id 'com.bmuschko.docker-java-application' version '8.1.0'
 }
 
 group 'com.github.khakers'
@@ -51,4 +52,11 @@ test {
 compileJava {
     options.incremental = true
 
+}
+
+docker {
+    javaApplication {
+        baseImage = 'eclipse-temurin:17-jre'
+        ports = [7070]
+    }
 }
