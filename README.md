@@ -22,10 +22,12 @@ Built using Javalin, JTE, and Bootstrap 5.
 
 ## Self hosting
 
+You should place your modmail-viewer instance behind Cloudflare or some other reverse proxy (such as Caddy) to provide
+automatic https if you plan on using authentication.
+
 ### Docker
 
-Running the application with docker is
-
+Running the application with Docker is the fastest and best supported way to run modmail-viewer.
 
 #### Docker Run
 
