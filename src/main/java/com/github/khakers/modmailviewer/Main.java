@@ -31,8 +31,8 @@ public class Main {
 
         boolean enableAuth = !(Objects.nonNull(System.getenv(envPrepend + "_AUTH_ENABLED")) && System.getenv(envPrepend + "_AUTH_ENABLED").equalsIgnoreCase("false"));
 
-        Assert.requireNonEmpty(System.getenv(envPrepend+"_URL"), "No URL provided. provide one with the option \"MODMAIL_VIEWER_URL\"");
-        Assert.requireNonEmpty(System.getenv(envPrepend+"_MONGODB_URI"), "No mongodb URI provided. provide one with the option \"MODMAIL_VIEWER_MONGODB_URI\"");
+        Assert.requireNonEmpty(System.getenv(envPrepend + "_URL"), "No URL provided. provide one with the option \"MODMAIL_VIEWER_URL\"");
+        Assert.requireNonEmpty(System.getenv(envPrepend + "_MONGODB_URI"), "No mongodb URI provided. provide one with the option \"MODMAIL_VIEWER_MONGODB_URI\"");
         if (!enableAuth) {
             Assert.requireNonEmpty(System.getenv(envPrepend + "_DISCORD_OAUTH_CLIENT_ID"), "No Discord client ID provided. provide one with the option \"MODMAIL_VIEWER_DISCORD_OAUTH_CLIENT_ID\"");
             Assert.requireNonEmpty(System.getenv(envPrepend + "_DISCORD_OAUTH_CLIENT_SECRET"), "No Discord client secret provided. provide one with the option \"MODMAIL_VIEWER_DISCORD_OAUTH_CLIENT_SECRET\"");
@@ -40,7 +40,7 @@ public class Main {
 
         String jwtSecretKey = System.getenv("MODMAIL_VIEWER_SECRETKEY");
 
-        boolean dev = Objects.nonNull(System.getenv(envPrepend+"_DEV"));
+        boolean dev = Objects.nonNull(System.getenv(envPrepend + "_DEV"));
 
         if (jwtSecretKey == null || jwtSecretKey.isEmpty()) {
             logger.warn("Generated a random key for signing tokens. Sessions will not persist between restarts");
@@ -49,17 +49,14 @@ public class Main {
             logger.warn("Your secret key is too short! it should be at least 32 characters (256 bits). Short keys can be trivially brute forced allowing an attacker to create their own auth tokens");
         }
 
-        var db = new ModMailLogDB(System.getenv(envPrepend+"_MONGODB_URI"));
+        var db = new ModMailLogDB(System.getenv(envPrepend + "_MONGODB_URI"));
         var templateEngine = TemplateEngine.create(new DirectoryCodeResolver(Path.of("src", "main", "resources", "templates")), ContentType.Html);
 
-
-        var authHandler = new AuthHandler(System.getenv(envPrepend+"_URL") + "/callback",
-                System.getenv(envPrepend+"_DISCORD_OAUTH_CLIENT_ID"),
-                System.getenv(envPrepend+"_DISCORD_OAUTH_CLIENT_SECRET"),
+        var authHandler = new AuthHandler(System.getenv(envPrepend + "_URL") + "/callback",
+                System.getenv(envPrepend + "_DISCORD_OAUTH_CLIENT_ID"),
+                System.getenv(envPrepend + "_DISCORD_OAUTH_CLIENT_SECRET"),
                 jwtSecretKey,
                 db);
-
-
 
         JavalinJte.init(templateEngine);
         var app = Javalin.create(javalinConfig -> {
@@ -82,7 +79,6 @@ public class Main {
                     ctx.result("logout successful");
                 }, RoleUtils.atLeastRegular())
                 .get("/", ctx -> {
-                    var pageParam = ctx.queryParam("page");
                     Integer page = ctx.queryParamAsClass("page", Integer.class)
                             .check(integer -> integer >= 1, "page must be at least 1")
                             .getOrDefault(1);
@@ -125,15 +121,5 @@ public class Main {
 
         app.get("/potato/{id}", ctx -> ctx.result("Your id was " + ctx.pathParam("id")));
     }
-
-//    private static void accessManager(Handler handler, Context ctx, Set<? extends RouteRole> routeRoles) throws Exception {
-//        new SecurityHandler()
-//        var userRole = getUserRole(ctx);
-//        if (routeRoles.contains(userRole)) {
-//            handler.handle(ctx);
-//        } else {
-//            ctx.status(401).result("unauthorized");
-//        }
-//    }
 
 }
