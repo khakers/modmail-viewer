@@ -8,6 +8,10 @@ public class RoleUtils {
     public static RouteRole[] atLeastRegular() {
         return new RouteRole[]{Role.REGULAR, Role.MODERATOR, Role.ADMINISTRATOR, Role.OWNER};
     }
+
+    public static RouteRole[] atLeasRouteSupporter() {
+        return new RouteRole[]{Role.SUPPORTER, Role.MODERATOR, Role.ADMINISTRATOR, Role.OWNER};
+    }
     public static RouteRole[] atLeastModerator() {
         return new RouteRole[]{Role.MODERATOR, Role.ADMINISTRATOR, Role.OWNER};
     }
