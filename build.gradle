@@ -6,7 +6,6 @@ plugins {
 }
 
 group 'com.github.khakers'
-version '1.0-SNAPSHOT'
 
 java {
     toolchain {
