@@ -10,7 +10,7 @@ services:
     depends_on:
       - mongo
   viewer:
-    image: modmailviewer:latest
+    image: ghcr.io/khakers/modmail-viewer:latest
     depends_on:
       - mongo
     env_file:
