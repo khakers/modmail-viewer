@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'application'
     id 'com.bmuschko.docker-java-application' version '8.1.0'
+    id 'net.researchgate.release' version '3.0.2'
 }
 
 group 'com.github.khakers'
@@ -58,5 +59,11 @@ docker {
     javaApplication {
         baseImage = 'eclipse-temurin:17-jre'
         ports = [7070]
+    }
+}
+
+release {
+    git {
+        requireBranch.set('master')
     }
 }
