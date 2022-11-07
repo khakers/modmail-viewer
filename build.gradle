@@ -36,7 +36,7 @@ dependencies {
 
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.4.2'
     implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.13.4'
-    implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: '2.13.4'
+    implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: '2.14.0'
 
     implementation 'com.auth0:java-jwt:4.2.1'
     implementation 'com.github.scribejava:scribejava-apis:8.3.2'
