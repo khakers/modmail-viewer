@@ -26,14 +26,13 @@ Built using Javalin, JTE, and Bootstrap 5.
 
 Running the application with docker is
 
-
 #### Docker Run
 
-To quickly test modmail-viewer, you can use this docker run command. Make sure to substitute the environment variables
+To quickly test _modmail-viewer_, you can use this docker run command. Make sure to substitute the environment variables
 for what is applicable to you.
 
 ```shell
-docker run --name modmail-viewer -p 80:7070 \
+docker run --name modmail-viewer -p 80:80 \
   --env "MODMAIL_VIEWER_MONGODB_URI=mongodb://mongo:27017" \
   --env "MODMAIL_VIEWER_URL=http://127.0.0.1" \
   --env "MODMAIL_VIEWER_DISCORD_OAUTH_CLIENT_ID=1234" \
@@ -58,10 +57,12 @@ services:
     env_file:
       - .env
     ports:
-      - "7070:7070"
+      - "80:80"
+      # uncomment if using SSL
+      #- "443:443"
     environment:
       - "MODMAIL_VIEWER_MONGODB_URI=mongodb://mongo:27017"
-      - "MODMAIL_VIEWER_URL=http://127.0.0.1:7070"
+      - "MODMAIL_VIEWER_URL=http://127.0.0.1"
 ```
 
 ##### .env example
@@ -84,20 +85,26 @@ Download the latest release from GitHub and unzip/tar the modmail-viewer archive
 
 Run the webserver via the included scripts `bin/modmail-viewer` on linux, and `bin/modmail-viewer.bat` on windows.
 
-You should set up a reverse proxy or cloudflare in front of your instance to provide https
+It's recommended to either set up a reverse proxy (such as Cloudflare or Caddy) in front of your _modmail-logviewer_
+instance, or enable SSL and provide your own certificate and private key. You can generate one for your domain
+automatically with Certbot.
 
-To run the webserver in the background, it's recommended you use a service manager such as systemd.
+To run the webserver in the background, it's recommended you use a service manager such as Systemd.
 
 ### Environment Variables
 
 | Environment Variable                       | Description                                                                                                                                                                                                                                                  |
 |--------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| MODMAIL_VIEWER_URL                         | The URL your modmail viewer instance is reachable at (i.e http://127.0.0.1:7070)                                                                                                                                                                             |
+| MODMAIL_VIEWER_URL                         | The URL your modmail viewer instance is reachable at (i.e http://127.0.0.1)                                                                                                                                                                                  |
 | MODMAIL_VIEWER_MONGODB_URI                 | URI for the MongoDB instance                                                                                                                                                                                                                                 |
-| MODMAIL_VIEWER_DISCORD_OAUTH_CLIENT_ID     | Your Discord Application ID                                                                                                                                                                                                                                  |
+| MODMAIL_VIEWER_DISCORD_OAUTH_CLIENT_ID     | Your Discord Application ID. Can be skipped if authentication is disable.                                                                                                                                                                                    |
 | MODMAIL_VIEWER_DISCORD_OAUTH_CLIENT_SECRET | Your Discord OAuth2 client secret                                                                                                                                                                                                                            |
 | MODMAIL_VIEWER_SECRETKEY                   | A randomly generated secret key used for signing auth tokens. <br/>**ANYONE WITH THIS KEY CAN FORGE AUTHENTICATION TOKENS** and impersonate any user. Should be at least 32 characters. If you don't provide one, sessions will not persist across restarts. |
-| MODMAIL_VIEWER_DEV                         | Enabled development features                                                                                                                                                                                                                                 |
-| MODMAIL_VIEWER_AUTH_ENABLED                | Set to `false` to completely disable authentication. May break some features                                                                                                                                                                                 |
+| MODMAIL_VIEWER_DEV                         | Enables development features. Do not enable in production.                                                                                                                                                                                                   |
+| MODMAIL_VIEWER_AUTH_ENABLED                | Set to `false` to completely disable authentication. May break some features.                                                                                                                                                                                |
+| MODMAIL_VIEWER_SSL                         | Enables SSL and HTTP/2 when connected via https.                                                                                                                                                                                                             |
+| MODMAIL_VIEWER_HTTPS_ONLY                  | Disables the http port and redirects all connections to https. SSL must be enabled. Does not function on localhost.                                                                                                                                          |
+| MODMAIL_VIEWER_SSL_CERT                    | Path to the SSL certificate pem file. Does not hot reload.                                                                                                                                                                                                   |
+| MODMAIL_VIEWER_SSL_KEY                     | Path to the SSL certificate private key pem file. Does not hot reload.                                                                                                                                                                                       |
 
 
