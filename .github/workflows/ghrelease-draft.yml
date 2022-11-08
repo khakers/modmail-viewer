@@ -12,7 +12,7 @@ name: Release
 on:
   push:
     tags:
-      - "v*.*.*"
+      - "*.*.*"
 
 
 permissions:
@@ -32,7 +32,7 @@ jobs:
         distribution: 'temurin'
         cache: gradle
     - name: Build with Gradle
-      uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
+      uses: gradle/gradle-build-action@3fbe033aaae657f011f88f29be9e65ed26bd29ef
       with:
         arguments: assembleDist
         

@@ -161,3 +161,4 @@ jte-classes
 
 dev.docker-compose.yml
 *.pem
+/.env
