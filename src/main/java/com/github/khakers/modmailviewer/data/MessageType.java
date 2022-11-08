@@ -11,5 +11,6 @@ public enum MessageType {
     @JsonProperty("thread_message")
     thread,
     internal,
+    system,
     anonymous
 }
