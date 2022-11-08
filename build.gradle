@@ -24,7 +24,7 @@ repositories {
 
 dependencies {
     implementation("io.javalin:javalin:5.1.1")
-    implementation("io.javalin:javalin-rendering:5.1.1")
+    implementation("io.javalin:javalin-rendering:5.1.3")
     implementation 'io.javalin.community.ssl:ssl-plugin:5.1.1'
 
     implementation('gg.jte:jte:2.2.2')
