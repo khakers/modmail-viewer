@@ -49,8 +49,13 @@ public class Main {
             logger.info("SSL is ENABLED");
             isSecure = true;
         }
-        boolean httpsOnly = !(Objects.nonNull(System.getenv(envPrepend + "_HTTPS_ONLY")) && System.getenv(envPrepend + "_HTTPS_ONLY").equalsIgnoreCase("false"));
-
+        boolean httpsOnly = isSecure;
+        if ((Objects.nonNull(System.getenv(envPrepend + "_HTTPS_ONLY")) && System.getenv(envPrepend + "_HTTPS_ONLY").equalsIgnoreCase("true"))) {
+            isSecure = true;
+        }
+        if (httpsOnly) {
+            logger.info("HTTPS only is ENABLED");
+        }
         if (isSecure) {
             Assert.requireNonEmpty(System.getenv(envPrepend + "_SSL_CERT"), "SSL was enabled but no certificate file path was provided. Provide one with the option \"MODMAIL_VIEWER_SSL_CERT\"");
             Assert.requireNonEmpty(System.getenv(envPrepend + "_SSL_KEY"), "SSL was enabled but no key file path was provided. Provide one with the option \"MODMAIL_VIEWER_DISCORD_SSL_KEY\"");
@@ -77,7 +82,7 @@ public class Main {
                     javalinConfig.jsonMapper(new JacksonJavalinJsonMapper());
                     javalinConfig.staticFiles.add("/static", Location.CLASSPATH);
                     if (dev) {
-                        logger.info("Dev mode enabled");
+                        logger.info("Dev mode is ENABLED");
                         javalinConfig.plugins.enableDevLogging();
                     }
                     if (enableAuth) {
@@ -95,10 +100,10 @@ public class Main {
                             }
                         });
                         javalinConfig.plugins.register(sslPlugin);
-                        if (httpsOnly) {
-                            logger.info("HTTPS only enabled");
-                            javalinConfig.plugins.enableSslRedirects();
-                        }
+                    }
+                    if (httpsOnly) {
+                        logger.info("HTTPS only enabled");
+                        javalinConfig.plugins.enableSslRedirects();
                     }
                 })
                 .get("/callback", authHandler::handleCallback, Role.ANYONE)
