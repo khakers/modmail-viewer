@@ -48,7 +48,7 @@ public final class Message {
 
     /**
      * Returns true if the given message and this message can be merged
-     * Messages are merged if the Authors are the same and they were sent less than 7 minutes apart
+     * Messages are merged if the Authors are the same, and they were sent less than 7 minutes apart
      *
      * @param message Previous message to evaluate for mergeability
      * @return True if the messages can be merged
@@ -56,7 +56,7 @@ public final class Message {
     public boolean canMergeMessages(Message message) {
         return message.getAuthor().equals(this.author)
                 && this.type == message.getType()
-                && (Duration.between(this.creationTime, message.getCreationTime()).toSecondsPart() < 60 * 7);
+                && (Math.abs(Duration.between(message.getCreationTime(), this.creationTime).getSeconds()) < 60 * 7);
     }
 
     public String getId() {
