@@ -143,8 +143,8 @@
             <li class="list-group-item">
                 <div class="row ">
                     <div class="col-2 col-md-1 text-center">
-                        <img width="50" src="${modmailLog.getCloser().avatarUrl()}"
-                             onerror="this.src='https://cdn.discordapp.com/embed/avatars/${Integer.parseInt(modmailLog.getCloser().discriminator()) % 5}.png';this.onerror=null"
+                        <img width="50" src="${modmailLog.getCloser().get().avatarUrl()}"
+                             onerror="this.src='https://cdn.discordapp.com/embed/avatars/${Integer.parseInt(modmailLog.getCloser().get().discriminator()) % 5}.png';this.onerror=null"
                              class="rounded-circle" style="height: inherit;" alt="user avatar">
                     </div>
                     <div class="col">
@@ -152,9 +152,9 @@
                             <div class="col">
                                 <h3>
                                     <span data-bs-toggle="tooltip"
-                                          title="${modmailLog.getCloser().name()+"#"+modmailLog.getCloser().discriminator()}">${modmailLog.getCloser().name()}</span>
+                                          title="${modmailLog.getCloser().get().name()+"#"+modmailLog.getCloser().get().discriminator()}">${modmailLog.getCloser().get().name()}</span>
                                     <span class="fw-normal fs-5">closed the thread</span>
-                                    @if(modmailLog.getCloser().mod())
+                                    @if(modmailLog.getCloser().get().mod())
                                         <span class="badge text-bg-primary align-middle fst-normal"
                                               style="font-size: 12px;">
                                             <i class="bi bi-shield-shaded"></i>
@@ -168,9 +168,9 @@
                                     </span>
 
                                     <span class="fs-6 text-muted" data-bs-toggle="tooltip"
-                                          timestamp="${modmailLog.getClosedTime().toString()}" timestamp-type="relative"
+                                          timestamp="${modmailLog.getClosedTime().get().toString()}" timestamp-type="relative"
                                           timestamp-title-type="detailed"
-                                    >${modmailLog.getClosedTime().toString()}</span>
+                                    >${modmailLog.getClosedTime().get().toString()}</span>
                                 </h3>
                             </div>
                         </div>

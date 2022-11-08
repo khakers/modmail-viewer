@@ -3,7 +3,7 @@ package com.github.khakers.modmailviewer.data;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.bson.codecs.pojo.annotations.BsonProperty;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
 import java.util.List;
@@ -17,68 +17,62 @@ public final class ModMailLogEntry {
     private final String key;
     private final boolean open;
     private final Instant creationTime;
+    @Nullable
     private final Instant closedTime;
     private final long botId;
     private final long channelId;
     private final long guildId;
     private final User recipient;
     private final User creator;
+    @Nullable
     private final User closer;
     private final Optional<String> closeMessage;
     private final List<Message> messages;
     private final boolean nsfw;
     private final Optional<String> title;
 
-//    @BsonCreator
+    //    @BsonCreator
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public ModMailLogEntry(
-            @BsonProperty(value = "key")
             @JsonProperty("key")
             String key,
-            @BsonProperty(value = "open")
             @JsonProperty("open")
             boolean open,
-            @BsonProperty(value = "created_at")
             @JsonProperty("created_at")
             String creationTime,
-            @BsonProperty(value = "closed_at")
             @JsonProperty("closed_at")
+            @Nullable
             String closedTime,
-            @BsonProperty(value = "bot_id")
             @JsonProperty("bot_id")
             String botId,
-            @BsonProperty(value = "channel_id")
             @JsonProperty("channel_id")
             String channelId,
-            @BsonProperty(value = "guild_id")
             @JsonProperty("guild_id")
             String guildId,
-            @BsonProperty(value = "recipient")
             @JsonProperty("recipient")
             User recipient,
-            @BsonProperty(value = "creator")
             @JsonProperty("creator")
             User creator,
-            @BsonProperty(value = "closer")
             @JsonProperty("closer")
+            @Nullable
             User closer,
-            @BsonProperty(value = "close_message")
             @JsonProperty("close_message")
             String closeMessage,
-            @BsonProperty(value = "messages")
             @JsonProperty("message")
             List<Message> messages,
-            @BsonProperty(value = "nsfw")
             @JsonProperty("nsfw")
             Boolean nsfw,
-            @BsonProperty(value = "title")
             @JsonProperty("title")
             String title
     ) {
         this.key = key;
         this.open = open;
         this.creationTime = DATABASE_TIMESTAMP_FORMAT.parse(creationTime, Instant::from);
-        this.closedTime = DATABASE_TIMESTAMP_FORMAT.parse(closedTime, Instant::from);
+        if (closedTime != null) {
+            this.closedTime = DATABASE_TIMESTAMP_FORMAT.parse(closedTime, Instant::from);
+        } else {
+            this.closedTime = null;
+        }
         this.botId = Long.parseLong(botId);
         this.channelId = Long.parseLong(channelId);
         this.guildId = Long.parseLong(guildId);
@@ -103,8 +97,8 @@ public final class ModMailLogEntry {
         return creationTime;
     }
 
-    public Instant getClosedTime() {
-        return closedTime;
+    public Optional<Instant> getClosedTime() {
+        return Optional.ofNullable(closedTime);
     }
 
     public long getBotId() {
@@ -127,8 +121,8 @@ public final class ModMailLogEntry {
         return creator;
     }
 
-    public User getCloser() {
-        return closer;
+    public Optional<User> getCloser() {
+        return Optional.ofNullable(closer);
     }
 
     public Optional<String> getCloseMessage() {
