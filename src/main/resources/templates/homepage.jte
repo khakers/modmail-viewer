@@ -24,17 +24,21 @@
 @template.navbar(user = user)
 
 <div class="container pt-5">
+    @if(logEntries.isEmpty())
+        <p class="text-center">Looks like you don't have any modmail threads</p>
+        <p class="text-center text-muted">¯\_(ツ)_/¯</p>
+    @endif
     <ol class="list-group">
         @for(ModMailLogEntry entry : logEntries)
             <li class="list-group-item">
                 <h2><a href="/logs/${entry.getKey()}">${entry.getKey()}</a></h2>
-                @if(entry.isNsfw())
-                    <span class="badge rounded-pill text-bg-danger fs-6"><i class="bi bi-exclamation-triangle"></i> Closed</span>
-                @endif
                 @if(entry.isOpen())
-                    <span class="badge rounded-pill text-bg-success fs-6">Open</span>
+                    <span class="badge rounded-pill text-bg-success fs-6"><i class="bi bi-record-circle"></i> Open</span>
                 @else
                     <span class="badge rounded-pill text-bg-danger fs-6"><i class="bi bi-x-circle"></i> Closed</span>
+                @endif
+                @if(entry.isNsfw())
+                    <span class="badge rounded-pill text-bg-danger fs-6"><i class="bi bi-exclamation-triangle"></i> NSFW</span>
                 @endif
                 <span>Created by:</span>
                 <span class="fw-semibold">${entry.getCreator().name()}</span><span

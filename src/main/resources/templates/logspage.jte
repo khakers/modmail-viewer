@@ -1,4 +1,5 @@
 @import com.github.khakers.modmailviewer.auth.SiteUser
+@import com.github.khakers.modmailviewer.data.MessageType
 
 @param com.github.khakers.modmailviewer.data.ModMailLogEntry modmailLog
 @param SiteUser user
@@ -23,14 +24,14 @@
     </div>
     <div class="row">
         <div class="col">
-            @if(modmailLog.isNsfw())
-                <span class="badge rounded-pill text-bg-danger fs-6"><i
-                            class="bi bi-exclamation-triangle"></i> Closed</span>
-            @endif
             @if(modmailLog.isOpen())
                 <span class="badge rounded-pill text-bg-success fs-6">Open</span>
             @else
                 <span class="badge rounded-pill text-bg-danger fs-6"><i class="bi bi-x-circle"></i> Closed</span>
+            @endif
+            @if(modmailLog.isNsfw())
+                <span class="badge rounded-pill text-bg-danger fs-6"><i
+                            class="bi bi-exclamation-triangle"></i> NFSW</span>
             @endif
             <span>Created by:</span>
             <span class="fw-semibold">${modmailLog.getCreator().name()}</span><span
@@ -102,6 +103,13 @@
                                                   style="font-size: 12px;">
                                             <i class="bi bi-incognito"></i>
                                             Anonymous
+                                        </span>
+                                        @endif
+                                        @if(message.get().getType()==MessageType.system)
+                                            <span class="badge text-bg-info align-middle fst-normal"
+                                                  style="font-size: 12px;">
+                                            <i class="bi bi-gear-fill"></i>
+                                            System
                                         </span>
                                         @endif
                                         @if(message.get().getType()==com.github.khakers.modmailviewer.data.MessageType.internal)
