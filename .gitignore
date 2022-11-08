@@ -160,4 +160,5 @@ jte-classes
 .idea
 
 dev.docker-compose.yml
+*.pem
 /.env

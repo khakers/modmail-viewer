@@ -8,6 +8,7 @@ import gg.jte.ContentType;
 import gg.jte.TemplateEngine;
 import gg.jte.resolve.DirectoryCodeResolver;
 import io.javalin.Javalin;
+import io.javalin.community.ssl.SSLPlugin;
 import io.javalin.http.staticfiles.Location;
 import io.javalin.rendering.template.JavalinJte;
 import org.apache.logging.log4j.LogManager;
@@ -27,6 +28,8 @@ public class Main {
 
     private static final String envPrepend = "MODMAIL_VIEWER";
 
+    public static boolean isSecure = false;
+
     public static void main(String[] args) {
 
         boolean enableAuth = !(Objects.nonNull(System.getenv(envPrepend + "_AUTH_ENABLED")) && System.getenv(envPrepend + "_AUTH_ENABLED").equalsIgnoreCase("false"));
@@ -34,13 +37,29 @@ public class Main {
         Assert.requireNonEmpty(System.getenv(envPrepend + "_URL"), "No URL provided. provide one with the option \"MODMAIL_VIEWER_URL\"");
         Assert.requireNonEmpty(System.getenv(envPrepend + "_MONGODB_URI"), "No mongodb URI provided. provide one with the option \"MODMAIL_VIEWER_MONGODB_URI\"");
         if (!enableAuth) {
-            Assert.requireNonEmpty(System.getenv(envPrepend + "_DISCORD_OAUTH_CLIENT_ID"), "No Discord client ID provided. provide one with the option \"MODMAIL_VIEWER_DISCORD_OAUTH_CLIENT_ID\"");
-            Assert.requireNonEmpty(System.getenv(envPrepend + "_DISCORD_OAUTH_CLIENT_SECRET"), "No Discord client secret provided. provide one with the option \"MODMAIL_VIEWER_DISCORD_OAUTH_CLIENT_SECRET\"");
+            Assert.requireNonEmpty(System.getenv(envPrepend + "_DISCORD_OAUTH_CLIENT_ID"), "No Discord client ID provided. Provide one with the option \"MODMAIL_VIEWER_DISCORD_OAUTH_CLIENT_ID\"");
+            Assert.requireNonEmpty(System.getenv(envPrepend + "_DISCORD_OAUTH_CLIENT_SECRET"), "No Discord client secret provided. Provide one with the option \"MODMAIL_VIEWER_DISCORD_OAUTH_CLIENT_SECRET\"");
         }
 
         String jwtSecretKey = System.getenv("MODMAIL_VIEWER_SECRETKEY");
 
         boolean dev = Objects.nonNull(System.getenv(envPrepend + "_DEV"));
+
+        if (Objects.nonNull(System.getenv(envPrepend + "_SSL")) && System.getenv(envPrepend + "_SSL").equalsIgnoreCase("true")) {
+            logger.info("SSL is ENABLED");
+            isSecure = true;
+        }
+        boolean httpsOnly = isSecure;
+        if ((Objects.nonNull(System.getenv(envPrepend + "_HTTPS_ONLY")) && System.getenv(envPrepend + "_HTTPS_ONLY").equalsIgnoreCase("true"))) {
+            isSecure = true;
+        }
+        if (httpsOnly) {
+            logger.info("HTTPS only is ENABLED");
+        }
+        if (isSecure) {
+            Assert.requireNonEmpty(System.getenv(envPrepend + "_SSL_CERT"), "SSL was enabled but no certificate file path was provided. Provide one with the option \"MODMAIL_VIEWER_SSL_CERT\"");
+            Assert.requireNonEmpty(System.getenv(envPrepend + "_SSL_KEY"), "SSL was enabled but no key file path was provided. Provide one with the option \"MODMAIL_VIEWER_DISCORD_SSL_KEY\"");
+        }
 
         if (jwtSecretKey == null || jwtSecretKey.isEmpty()) {
             logger.warn("Generated a random key for signing tokens. Sessions will not persist between restarts");
@@ -63,7 +82,7 @@ public class Main {
                     javalinConfig.jsonMapper(new JacksonJavalinJsonMapper());
                     javalinConfig.staticFiles.add("/static", Location.CLASSPATH);
                     if (dev) {
-                        logger.info("Dev mode enabled");
+                        logger.info("Dev mode is ENABLED");
                         javalinConfig.plugins.enableDevLogging();
                     }
                     if (enableAuth) {
@@ -72,11 +91,28 @@ public class Main {
                         logger.warn("Authentication is DISABLED");
                         javalinConfig.accessManager((handler, context, set) -> handler.handle(context));
                     }
+
+                    if (isSecure) {
+                        SSLPlugin sslPlugin = new SSLPlugin(sslConfig -> {
+                            sslConfig.pemFromPath(System.getenv(envPrepend + "_SSL_CERT"), System.getenv(envPrepend + "_SSL_KEY"));
+                            if (dev) {
+                                sslConfig.sniHostCheck = false;
+                            }
+                        });
+                        javalinConfig.plugins.register(sslPlugin);
+                    }
+                    if (httpsOnly) {
+                        logger.info("HTTPS only enabled");
+                        javalinConfig.plugins.enableSslRedirects();
+                    }
                 })
                 .get("/callback", authHandler::handleCallback, Role.ANYONE)
                 .get("/logout", ctx -> {
                     ctx.removeCookie("jwt");
                     ctx.result("logout successful");
+                    if (!enableAuth) {
+                        ctx.redirect("/");
+                    }
                 }, RoleUtils.atLeastRegular())
                 .get("/", ctx -> {
                     Integer page = ctx.queryParamAsClass("page", Integer.class)
@@ -117,9 +153,7 @@ public class Main {
 
                 }, RoleUtils.atLeastAdministrator())
                 .get("/api/config", ctx -> ctx.json(db.getConfig()), RoleUtils.atLeastModerator())
-                .start(7070);
+                .start(80);
 
-        app.get("/potato/{id}", ctx -> ctx.result("Your id was " + ctx.pathParam("id")));
     }
-
 }
