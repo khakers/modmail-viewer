@@ -61,38 +61,41 @@
 @if(page==pageCount)
     !{nextClass="disabled";}
 @endif
-<div class="container col d-flex justify-content-center p-4">
-    <nav aria-label="Page navigation example">
-        <ul class="pagination">
-            <li class="page-item"><a class="page-link ${previousClass}" href="?page=${Math.max(page-1, 1)}">Previous</a>
-            </li>
-            @if(Pagination.needsPaginationCulling(pageCount) && page > 4)
-                <a class="page-link" href="?page=1">1</a>
-                <li class="page-item"><a class="page-link disabled">...</a></li>
-            @endif
-            @for(int i = 1; i < pageCount+1; ++i)
-                @if(Pagination.shouldDisplayPage(i, page, pageCount))
-                    !{String isActive = null;}
-                    @if(i == page)
-                        !{isActive="active";}
-                    @endif
-                    <li class="page-item">
-                        @if(i == page)
-                            <span class="page-link ${isActive}">${i}</span>
-                        @else
-                            <a class="page-link" href="?page=${i}">${i}</a>
-                        @endif
-                    </li>
+@if(pageCount > 1)
+    <div class="container col d-flex justify-content-center p-4">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                <li class="page-item"><a class="page-link ${previousClass}"
+                                         href="?page=${Math.max(page-1, 1)}">Previous</a>
+                </li>
+                @if(Pagination.needsPaginationCulling(pageCount) && page > 4)
+                    <a class="page-link" href="?page=1">1</a>
+                    <li class="page-item"><a class="page-link disabled">...</a></li>
                 @endif
-            @endfor
-            @if(Pagination.needsPaginationCulling(pageCount) && page < pageCount-3)
-                <li class="page-item"><a class="page-link disabled">...</a></li>
-                <a class="page-link sm-visually-hidden" href="?page=${pageCount}">${pageCount}</a>
-            @endif
-            <li class="page-item"><a class="page-link ${nextClass}" href="?page=${page+1}">Next</a></li>
-        </ul>
-    </nav>
-</div>
+                @for(int i = 1; i < pageCount+1; ++i)
+                    @if(Pagination.shouldDisplayPage(i, page, pageCount))
+                        !{String isActive = null;}
+                        @if(i == page)
+                            !{isActive="active";}
+                        @endif
+                        <li class="page-item">
+                            @if(i == page)
+                                <span class="page-link ${isActive}">${i}</span>
+                            @else
+                                <a class="page-link" href="?page=${i}">${i}</a>
+                            @endif
+                        </li>
+                    @endif
+                @endfor
+                @if(Pagination.needsPaginationCulling(pageCount) && page < pageCount-3)
+                    <li class="page-item"><a class="page-link disabled">...</a></li>
+                    <a class="page-link sm-visually-hidden" href="?page=${pageCount}">${pageCount}</a>
+                @endif
+                <li class="page-item"><a class="page-link ${nextClass}" href="?page=${page+1}">Next</a></li>
+            </ul>
+        </nav>
+    </div>
+@endif
 
 <script src="timeformat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
