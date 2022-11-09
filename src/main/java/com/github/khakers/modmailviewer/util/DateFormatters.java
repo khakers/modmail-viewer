@@ -8,7 +8,10 @@ public class DateFormatters {
     //todo incorrect parsing of nanos
     public static final DateTimeFormatter DATABASE_TIMESTAMP_FORMAT = new DateTimeFormatterBuilder()
             .parseCaseInsensitive()
-            .appendPattern("yyyy-MM-dd HH:mm:ss.nnnnnn")
+            .parseLenient()
+            .appendPattern("yyyy-MM-dd HH:mm:ss.SSSSSS")
+            .optionalStart()
+            .appendPattern("xxx")
             .toFormatter()
             .withZone(ZoneId.of("UTC"));
 
