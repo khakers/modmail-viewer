@@ -5,29 +5,34 @@ to [logviewer](https://github.com/kyb3r/logviewer).
 
 Built using Javalin, JTE, and Bootstrap 5.
 
+_Modmail-viewer_ is currently in beta. There may be breaking or otherwise significant changes between versions and the
+application may be unstable in some circumstances.
+
 ## Features
 
-* Discord authentication
+* Discord OAuth2 authentication based on your modmail roles
 * Browsable paginated logs
 * (mostly) Mobile friendly design
 
 ## Roadmap
 
 * Stats dashboard
-* Filtering logs by open/closed
+* Filtering logs
 * Basic API
 * Dark theme
 * Message markdown and mention formatting
 * Search
 
-## Self hosting
+## Self-hosting
 
-You should place your modmail-viewer instance behind Cloudflare or some other reverse proxy (such as Caddy) to provide
+You should place your _modmail-viewer_ instance behind Cloudflare or some other reverse proxy (such as Caddy) to provide
 automatic https if you plan on using authentication.
 
 ### Docker
 
-Running the application with Docker is the fastest and best supported way to run modmail-viewer.
+Running the application with Docker is the fastest and best supported way to run _modmail-viewer_. Additionally, you
+easily can
+run it using any 3rd party service that supports running docker containers.
 
 #### Docker Run
 
@@ -46,7 +51,7 @@ docker run --name modmail-viewer -p 80:80 \
 #### Docker Compose
 
 For long term ease of use, it's highly recommended that you use docker compose.
-An example docker compose for running only modmail-logviewer.
+An example docker compose for running only _modmail-logviewer_.
 > **Note**
 > See [docker-compose.yml](docker-compose.yml) for a compose file that can run modmail, modmail-viewer, and mongodb.
 
