@@ -25,7 +25,8 @@
     <div class="row">
         <div class="col">
             @if(modmailLog.isOpen())
-                <span class="badge rounded-pill text-bg-success fs-6">Open</span>
+                <span class="badge rounded-pill text-bg-success fs-6"><i
+                            class="bi bi-record-circle"></i> Open</span>
             @else
                 <span class="badge rounded-pill text-bg-danger fs-6"><i class="bi bi-x-circle"></i> Closed</span>
             @endif
@@ -67,10 +68,13 @@
                         <div class="col">
                             <p class="mb-0">${message.get().getContent()}</p>
                             @if(!message.get().getAttachments().isEmpty())
-                                @if(message.get().getAttachments().get(0).isImage())
-                                    <img class="img-fluid" src="${message.get().getAttachments().get(0).url()}"
-                                         alt="Image uploaded by ${message.get().getAuthor().name()}">
-                                @endif
+                                @for(var attachment: message.get().getAttachments())
+                                    @if(attachment.isImage())
+                                        <img class="img-fluid rounded-2" src="${attachment.url()}"
+                                             alt="Image ${attachment.filename()} uploaded by ${message.get().getAuthor().name()}">
+
+                                    @endif
+                                @endfor
                             @endif
                         </div>
                     </div>
@@ -136,10 +140,13 @@
                                         <span class="fw-light">(edited)</span>
                                     @endif
                                     @if(!message.get().getAttachments().isEmpty())
-                                        @if(message.get().getAttachments().get(0).isImage())
-                                            <img class="img-fluid" src="${message.get().getAttachments().get(0).url()}"
-                                                 alt="Image uploaded by ${message.get().getAuthor().name()}">
-                                        @endif                                @endif
+                                        @for(var attachment: message.get().getAttachments())
+                                            @if(attachment.isImage())
+                                                <img class="img-fluid rounded-2" src="${attachment.url()}"
+                                                     alt="Image ${attachment.filename()} uploaded by ${message.get().getAuthor().name()}">
+                                            @endif
+                                        @endfor
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -171,12 +178,13 @@
                                     @endif
                                     <span class="badge text-bg-info align-middle fst-normal"
                                           style="font-size: 12px;">
-                                        <i class="bi bi-gear"></i>
+                                        <i class="bi bi-gear-fill"></i>
                                         System
                                     </span>
 
                                     <span class="fs-6 text-muted" data-bs-toggle="tooltip"
-                                          timestamp="${modmailLog.getClosedTime().get().toString()}" timestamp-type="relative"
+                                          timestamp="${modmailLog.getClosedTime().get().toString()}"
+                                          timestamp-type="relative"
                                           timestamp-title-type="detailed"
                                     >${modmailLog.getClosedTime().get().toString()}</span>
                                 </h3>
