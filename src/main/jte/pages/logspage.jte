@@ -73,7 +73,10 @@
                                   data-bs-toggle="tooltip"></span>
                         </div>
                         <div class="col">
-                            <p class="mb-0">$unsafe{renderer.render(parser.parse(message.get().getContent()))}</p>
+<%--                            <p class="mb-0"></p>--%>
+                            $unsafe{renderer.render(parser.parse(message.get().getContent()))}                                    @if(message.get().isEdited())
+                                <span class="fw-light">(edited)</span>
+                            @endif
                             @if(!message.get().getAttachments().isEmpty())
                                 @for(var attachment: message.get().getAttachments())
                                     @if(attachment.isImage())
@@ -142,7 +145,8 @@
                             </div>
                             <div class="row">
                                 <div class="col">
-                                    <p class="mb-0">$unsafe{renderer.render(parser.parse(message.get().getContent()))}</p>
+<%--                                    <p class="mb-0"></p>--%>
+                                    $unsafe{renderer.render(parser.parse(message.get().getContent()))}
                                     @if(message.get().isEdited())
                                         <span class="fw-light">(edited)</span>
                                     @endif

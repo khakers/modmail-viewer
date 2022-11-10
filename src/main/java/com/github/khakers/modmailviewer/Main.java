@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.khakers.modmailviewer.auth.AuthHandler;
 import com.github.khakers.modmailviewer.auth.Role;
 import com.github.khakers.modmailviewer.auth.SiteUser;
+import com.github.khakers.modmailviewer.auth.SiteUser;
 import com.github.khakers.modmailviewer.util.RoleUtils;
 import com.vladsch.flexmark.ext.autolink.AutolinkExtension;
 import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
@@ -23,14 +24,28 @@ import org.apache.logging.log4j.core.util.Assert;
 import java.math.BigInteger;
 import java.nio.file.Path;
 import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.Objects;
 
 import static io.javalin.rendering.template.TemplateUtil.model;
 
 public class Main {
 
+    static final DataHolder OPTIONS = new MutableDataSet()
+            .set(Parser.EXTENSIONS, Arrays.asList(StrikethroughExtension.create(), AutolinkExtension.create()))
+            .set(Parser.HEADING_PARSER, false)
+            .set(Parser.HTML_BLOCK_PARSER, false)
+            .set(Parser.INDENTED_CODE_BLOCK_PARSER, false)
+//            .set(StrikethroughExtension.STRIKETHROUGH_STYLE_HTML_OPEN, "<span class=\"text-decoration-line-through\">")
+//            .set(StrikethroughExtension.STRIKETHROUGH_STYLE_HTML_CLOSE, "</span>")
+            .set(HtmlRenderer.SOFT_BREAK, "<br />\n")
+            .toImmutable();
+    static final Parser PARSER = Parser.builder(OPTIONS)
+            .build();
+    static final HtmlRenderer RENDERER = HtmlRenderer.builder(OPTIONS)
+            .escapeHtml(true)
+            .build();
     private static final Logger logger = LogManager.getLogger();
-
     private static final String envPrepend = "MODMAIL_VIEWER";
     static final int httpPort = Objects.nonNull(System.getenv(envPrepend + "_HTTP_PORT")) ? Integer.parseInt(System.getenv(envPrepend + "_HTTP_PORT")) : 80;
     static final int httpsPort = Objects.nonNull(System.getenv(envPrepend + "_HTTPS_PORT")) ? Integer.parseInt(System.getenv(envPrepend + "_HTTPs_PORT")) : 443;
@@ -96,12 +111,6 @@ public class Main {
             authHandler = null;
         }
 
-        Parser parser = Parser.builder()
-                .extensions(List.of(StrikethroughExtension.create(), AutolinkExtension.create()))
-                .build();
-        HtmlRenderer renderer = HtmlRenderer.builder().build();
-
-
         JavalinJte.init(templateEngine);
         var app = Javalin.create(javalinConfig -> {
                     javalinConfig.jsonMapper(new JacksonJavalinJsonMapper());
@@ -158,8 +167,8 @@ public class Main {
                                     ctx.render("pages/logspage.jte", model(
                                             "modmailLog", modMailLogEntry,
                                             "user", authHandler != null ? AuthHandler.getUser(ctx) : new SiteUser(0L, "anonymous", "0000", ""),
-                                            "parser",parser,
-                                            "renderer", renderer);
+                                            "parser", PARSER,
+                                            "renderer", RENDERER));
                                 } catch (JsonProcessingException e) {
                                     throw new RuntimeException(e);
                                 }
