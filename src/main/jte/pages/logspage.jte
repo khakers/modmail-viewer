@@ -234,5 +234,15 @@
         base: "https://cdn.jsdelivr.net/gh/twitter/twemoji@v14.0.2/assets/"
     });
 </script>
+<script>
+    let spoilerTags = document.querySelectorAll('.spoiler');
+    spoilerTags.forEach((item) => {
+        item.addEventListener("click", (event) => {
+            let target = event.target;
+            let container = target.parentElement;
+            container.classList.remove("hidden")
+        })
+    })
+</script>
 </body>
 </html>

@@ -19,8 +19,16 @@ code {
     white-space: pre-wrap;
 }
 
-.spoiler{
+.spoiler {
+    border-radius: 3px;
+    background-color: rgb(220, 221, 222);
+}
 
+.spoiler.hidden {
+    background-color: rgb(32, 34, 37);
+}
+.spoiler.hidden.content {
+    opacity: 0;
 }
 
 img.emoji {

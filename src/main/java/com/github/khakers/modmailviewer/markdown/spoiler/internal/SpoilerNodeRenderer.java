@@ -34,12 +34,14 @@ public class SpoilerNodeRenderer implements NodeRenderer {
     private void render(Spoiler node, NodeRendererContext context, HtmlWriter html) {
         if (spoilerStyleHtmlOpen == null || spoilerStyleHtmlClose == null) {
             if (context.getHtmlOptions().sourcePositionParagraphLines) {
-                html.attr("class","spoiler").withAttr().tag("span");
+                html.attr("class","spoiler").withAttr().tag("span").tag("span");
             } else {
-                html.srcPos(node.getText()).attr("class","spoiler").withAttr().tag("span");
+                html.srcPos(node.getText())
+                        .attr("class","spoiler hidden").attr("role", "button").withAttr().tag("span")
+                        .attr("class", "content").withAttr().tag("span");
             }
             context.renderChildren(node);
-            html.tag("/span");
+            html.tag("/span").tag("/span");
         } else {
             html.raw(spoilerStyleHtmlOpen);
             context.renderChildren(node);
