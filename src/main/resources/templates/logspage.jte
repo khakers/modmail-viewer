@@ -60,7 +60,7 @@
                 <li class="list-group-item mt-0 pt-0 ${classes}" style="border-top-style: hidden; ${style}">
                     <div class="row">
                         <div class="col-2 col-md-1 text-center">
-                            <span class="fs-6 fs-light text-muted user-select-none"
+                            <span class="d-none d-xl-inline fs-6 fs-light text-muted user-select-none"
                                   timestamp="${message.get().getCreationTime().toString()}"
                                   timestamp-type="basic" timestamp-title-type="detailed"
                                   data-bs-toggle="tooltip"></span>
