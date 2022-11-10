@@ -5,6 +5,10 @@ import com.github.khakers.modmailviewer.auth.AuthHandler;
 import com.github.khakers.modmailviewer.auth.Role;
 import com.github.khakers.modmailviewer.auth.SiteUser;
 import com.github.khakers.modmailviewer.util.RoleUtils;
+import com.vladsch.flexmark.ext.autolink.AutolinkExtension;
+import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
+import com.vladsch.flexmark.html.HtmlRenderer;
+import com.vladsch.flexmark.parser.Parser;
 import gg.jte.ContentType;
 import gg.jte.TemplateEngine;
 import gg.jte.resolve.DirectoryCodeResolver;
@@ -92,6 +96,12 @@ public class Main {
             authHandler = null;
         }
 
+        Parser parser = Parser.builder()
+                .extensions(List.of(StrikethroughExtension.create(), AutolinkExtension.create()))
+                .build();
+        HtmlRenderer renderer = HtmlRenderer.builder().build();
+
+
         JavalinJte.init(templateEngine);
         var app = Javalin.create(javalinConfig -> {
                     javalinConfig.jsonMapper(new JacksonJavalinJsonMapper());
@@ -147,7 +157,9 @@ public class Main {
                                 try {
                                     ctx.render("pages/logspage.jte", model(
                                             "modmailLog", modMailLogEntry,
-                                            "user", authHandler != null ? AuthHandler.getUser(ctx) : new SiteUser(0L, "anonymous", "0000", "")));
+                                            "user", authHandler != null ? AuthHandler.getUser(ctx) : new SiteUser(0L, "anonymous", "0000", ""),
+                                            "parser",parser,
+                                            "renderer", renderer);
                                 } catch (JsonProcessingException e) {
                                     throw new RuntimeException(e);
                                 }

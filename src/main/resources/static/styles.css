@@ -1,3 +1,32 @@
 .timestamp {
     color: rgb(163, 166, 170);
 }
+
+blockquote {
+    border-left: 5px solid rgba(123, 123, 123, 0.8);
+    padding: 0 10px;
+    border-radius: 3px;
+}
+
+blockquote p {
+    display: inline;
+    white-space: pre-line;
+}
+
+code {
+    background-color: #f3f3f3;
+    border-radius: 3px;
+    padding: 0.2em;
+    white-space: pre-wrap;
+}
+
+.spoiler{
+
+}
+
+img.emoji {
+    height: 1em;
+    width: 1em;
+    margin: 0 .05em 0 .1em;
+    vertical-align: -0.1em;
+}
