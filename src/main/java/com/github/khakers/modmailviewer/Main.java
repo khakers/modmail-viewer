@@ -3,13 +3,15 @@ package com.github.khakers.modmailviewer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.khakers.modmailviewer.auth.AuthHandler;
 import com.github.khakers.modmailviewer.auth.Role;
-import com.github.khakers.modmailviewer.auth.SiteUser;
+import com.github.khakers.modmailviewer.markdown.spoiler.SpoilerExtension;
 import com.github.khakers.modmailviewer.auth.SiteUser;
 import com.github.khakers.modmailviewer.util.RoleUtils;
 import com.vladsch.flexmark.ext.autolink.AutolinkExtension;
 import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
+import com.vladsch.flexmark.util.data.DataHolder;
+import com.vladsch.flexmark.util.data.MutableDataSet;
 import gg.jte.ContentType;
 import gg.jte.TemplateEngine;
 import gg.jte.resolve.DirectoryCodeResolver;
@@ -32,7 +34,7 @@ import static io.javalin.rendering.template.TemplateUtil.model;
 public class Main {
 
     static final DataHolder OPTIONS = new MutableDataSet()
-            .set(Parser.EXTENSIONS, Arrays.asList(StrikethroughExtension.create(), AutolinkExtension.create()))
+            .set(Parser.EXTENSIONS, Arrays.asList(StrikethroughExtension.create(), AutolinkExtension.create(), SpoilerExtension.create()))
             .set(Parser.HEADING_PARSER, false)
             .set(Parser.HTML_BLOCK_PARSER, false)
             .set(Parser.INDENTED_CODE_BLOCK_PARSER, false)

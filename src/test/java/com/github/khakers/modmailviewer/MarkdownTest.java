@@ -20,8 +20,20 @@ class MarkdownTest {
                 Underline	__underline__
                 Strikethrough	 ~~Strikethrough~~
                 """;
-
         var rendered= Main.RENDERER.render(Main.PARSER.parse(s));
+        System.out.println(rendered);
+    }
+
+    @Test
+    void testSpoilerRendering() {
+        String s = """
+                |asf||
+                ||Some text inside a spoiler||
+                ||asdf|
+                |asdf|
+                """;
+        var rendered= Main.RENDERER.render(Main.PARSER.parse(s));
+        System.out.println("Spoiler text:");
         System.out.println(rendered);
     }
 

@@ -10,7 +10,6 @@ blockquote {
 
 blockquote p {
     display: inline;
-    white-space: pre-line;
 }
 
 code {
