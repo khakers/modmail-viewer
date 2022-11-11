@@ -34,10 +34,10 @@ public class SpoilerNodeRenderer implements NodeRenderer {
     private void render(Spoiler node, NodeRendererContext context, HtmlWriter html) {
         if (spoilerStyleHtmlOpen == null || spoilerStyleHtmlClose == null) {
             if (context.getHtmlOptions().sourcePositionParagraphLines) {
-                html.attr("class","spoiler").withAttr().tag("span").tag("span");
+                html.attr("class","spoilerText").withAttr().tag("span").tag("span");
             } else {
                 html.srcPos(node.getText())
-                        .attr("class","spoiler hidden").attr("role", "button").withAttr().tag("span")
+                        .attr("class","spoilerText hidden").attr("role", "button").withAttr().tag("span")
                         .attr("class", "content").withAttr().tag("span");
             }
             context.renderChildren(node);

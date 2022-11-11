@@ -23,7 +23,7 @@
 </head>
 <body style="padding-top: 56px;">
 
-@template.pages.navbar(user = user)
+@template.macros.navbar(user = user)
 
 <div class="container py-4">
     <div class="row">
@@ -80,9 +80,7 @@
                             @if(!message.get().getAttachments().isEmpty())
                                 @for(var attachment: message.get().getAttachments())
                                     @if(attachment.isImage())
-                                        <img class="img-fluid rounded-2" src="${attachment.url()}"
-                                             alt="Image ${attachment.filename()} uploaded by ${message.get().getAuthor().name()}">
-
+                                        @template.macros.imageAttachment(attachment = attachment, message = message.get())
                                     @endif
                                 @endfor
                             @endif
@@ -153,8 +151,7 @@
                                     @if(!message.get().getAttachments().isEmpty())
                                         @for(var attachment: message.get().getAttachments())
                                             @if(attachment.isImage())
-                                                <img class="img-fluid rounded-2" src="${attachment.url()}"
-                                                     alt="Image ${attachment.filename()} uploaded by ${message.get().getAuthor().name()}">
+                                                @template.macros.imageAttachment(attachment = attachment, message = message.get())
                                             @endif
                                         @endfor
                                     @endif
@@ -235,7 +232,7 @@
     });
 </script>
 <script>
-    let spoilerTags = document.querySelectorAll('.spoiler');
+    let spoilerTags = document.querySelectorAll('.spoilerText');
     spoilerTags.forEach((item) => {
         item.addEventListener("click", (event) => {
             let target = event.target;
