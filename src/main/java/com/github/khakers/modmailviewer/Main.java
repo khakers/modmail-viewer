@@ -3,8 +3,9 @@ package com.github.khakers.modmailviewer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.khakers.modmailviewer.auth.AuthHandler;
 import com.github.khakers.modmailviewer.auth.Role;
-import com.github.khakers.modmailviewer.markdown.spoiler.SpoilerExtension;
 import com.github.khakers.modmailviewer.auth.SiteUser;
+import com.github.khakers.modmailviewer.markdown.spoiler.SpoilerExtension;
+import com.github.khakers.modmailviewer.markdown.underline.UnderlineExtension;
 import com.github.khakers.modmailviewer.util.RoleUtils;
 import com.vladsch.flexmark.ext.autolink.AutolinkExtension;
 import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
@@ -34,12 +35,13 @@ import static io.javalin.rendering.template.TemplateUtil.model;
 public class Main {
 
     static final DataHolder OPTIONS = new MutableDataSet()
-            .set(Parser.EXTENSIONS, Arrays.asList(StrikethroughExtension.create(), AutolinkExtension.create(), SpoilerExtension.create()))
+            .set(Parser.EXTENSIONS, Arrays.asList(StrikethroughExtension.create(), AutolinkExtension.create(), SpoilerExtension.create(), UnderlineExtension.create()))
             .set(Parser.HEADING_PARSER, false)
+            //Required to enable underlines to function
+            //Otherwise the '_' delimiter conflicts
+            .set(Parser.UNDERSCORE_DELIMITER_PROCESSOR, false)
             .set(Parser.HTML_BLOCK_PARSER, false)
             .set(Parser.INDENTED_CODE_BLOCK_PARSER, false)
-//            .set(StrikethroughExtension.STRIKETHROUGH_STYLE_HTML_OPEN, "<span class=\"text-decoration-line-through\">")
-//            .set(StrikethroughExtension.STRIKETHROUGH_STYLE_HTML_CLOSE, "</span>")
             .set(HtmlRenderer.SOFT_BREAK, "<br />\n")
             .toImmutable();
     static final Parser PARSER = Parser.builder(OPTIONS)
