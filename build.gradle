@@ -35,7 +35,10 @@ dependencies {
 
     implementation('gg.jte:jte:2.2.3')
 
-    implementation 'com.vladsch.flexmark:flexmark-all:0.64.0'
+    implementation 'com.vladsch.flexmark:flexmark:0.64.0'
+    implementation 'com.vladsch.flexmark:flexmark-ext-gfm-strikethrough:0.64.0'
+    implementation 'com.vladsch.flexmark:flexmark-ext-autolink:0.64.0'
+
 
     implementation 'org.mongodb:mongodb-driver-sync:4.7.2'
 
