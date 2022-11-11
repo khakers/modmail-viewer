@@ -239,8 +239,8 @@
     spoilerTags.forEach((item) => {
         item.addEventListener("click", (event) => {
             let target = event.target;
-            let container = target.parentElement;
-            container.classList.remove("hidden")
+            target.classList.remove("hidden");
+            target.setAttribute("role", "presentation")
         })
     })
 </script>

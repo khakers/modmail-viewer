@@ -22,13 +22,19 @@ code {
 .spoiler {
     border-radius: 3px;
     background-color: rgb(220, 221, 222);
+    transition: all .1s ease;
+}
+
+.spoiler.hidden:hover {
+    background-color: rgb(62, 63, 68);
 }
 
 .spoiler.hidden {
     background-color: rgb(32, 34, 37);
 }
-.spoiler.hidden.content {
+.spoiler.hidden .content {
     opacity: 0;
+    pointer-events: none;
 }
 
 img.emoji {
