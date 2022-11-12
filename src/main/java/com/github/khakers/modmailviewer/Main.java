@@ -36,7 +36,7 @@ public class Main {
 
         Assert.requireNonEmpty(System.getenv(envPrepend + "_URL"), "No URL provided. provide one with the option \"MODMAIL_VIEWER_URL\"");
         Assert.requireNonEmpty(System.getenv(envPrepend + "_MONGODB_URI"), "No mongodb URI provided. provide one with the option \"MODMAIL_VIEWER_MONGODB_URI\"");
-        if (!enableAuth) {
+        if (enableAuth) {
             Assert.requireNonEmpty(System.getenv(envPrepend + "_DISCORD_OAUTH_CLIENT_ID"), "No Discord client ID provided. Provide one with the option \"MODMAIL_VIEWER_DISCORD_OAUTH_CLIENT_ID\"");
             Assert.requireNonEmpty(System.getenv(envPrepend + "_DISCORD_OAUTH_CLIENT_SECRET"), "No Discord client secret provided. Provide one with the option \"MODMAIL_VIEWER_DISCORD_OAUTH_CLIENT_SECRET\"");
         }
