@@ -21,7 +21,7 @@
 </head>
 <body style="padding-top: 56px;">
 
-@template.navbar(user = user)
+@template.pages.navbar(user = user)
 
 <div class="container pt-5">
     @if(logEntries.isEmpty())

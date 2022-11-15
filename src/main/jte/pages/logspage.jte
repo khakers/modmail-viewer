@@ -16,7 +16,7 @@
 </head>
 <body style="padding-top: 56px;">
 
-@template.navbar(user = user)
+@template.pages.navbar(user = user)
 
 <div class="container py-4">
     <div class="row">

@@ -43,7 +43,7 @@ public class Main {
 
         String jwtSecretKey = System.getenv("MODMAIL_VIEWER_SECRETKEY");
 
-        boolean dev = Objects.nonNull(System.getenv(envPrepend + "_DEV"));
+        boolean dev = Objects.nonNull(System.getenv(envPrepend + "_DEV")) && !System.getenv(envPrepend + "_DEV").equalsIgnoreCase("false");
 
         if (Objects.nonNull(System.getenv(envPrepend + "_SSL")) && System.getenv(envPrepend + "_SSL").equalsIgnoreCase("true")) {
             logger.info("SSL is ENABLED");
@@ -69,13 +69,26 @@ public class Main {
         }
 
         var db = new ModMailLogDB(System.getenv(envPrepend + "_MONGODB_URI"));
-        var templateEngine = TemplateEngine.create(new DirectoryCodeResolver(Path.of("src", "main", "resources", "templates")), ContentType.Html);
 
-        var authHandler = new AuthHandler(System.getenv(envPrepend + "_URL") + "/callback",
-                System.getenv(envPrepend + "_DISCORD_OAUTH_CLIENT_ID"),
-                System.getenv(envPrepend + "_DISCORD_OAUTH_CLIENT_SECRET"),
-                jwtSecretKey,
-                db);
+        TemplateEngine templateEngine;
+
+        if (dev) {
+            templateEngine = TemplateEngine.create(new DirectoryCodeResolver(Path.of("src", "main", "jte")), ContentType.Html);
+
+        } else {
+            templateEngine = TemplateEngine.createPrecompiled(ContentType.Html);
+        }
+
+        AuthHandler authHandler;
+        if (enableAuth) {
+            authHandler = new AuthHandler(System.getenv(envPrepend + "_URL") + "/callback",
+                    System.getenv(envPrepend + "_DISCORD_OAUTH_CLIENT_ID"),
+                    System.getenv(envPrepend + "_DISCORD_OAUTH_CLIENT_SECRET"),
+                    jwtSecretKey,
+                    db);
+        } else {
+            authHandler = null;
+        }
 
         JavalinJte.init(templateEngine);
         var app = Javalin.create(javalinConfig -> {
@@ -106,7 +119,6 @@ public class Main {
                         javalinConfig.plugins.enableSslRedirects();
                     }
                 })
-                .get("/callback", authHandler::handleCallback, Role.ANYONE)
                 .get("/logout", ctx -> {
                     ctx.removeCookie("jwt");
                     ctx.result("logout successful");
@@ -118,7 +130,7 @@ public class Main {
                     Integer page = ctx.queryParamAsClass("page", Integer.class)
                             .check(integer -> integer >= 1, "page must be at least 1")
                             .getOrDefault(1);
-                    ctx.render("homepage.jte",
+                    ctx.render("pages/homepage.jte",
                             model("logEntries", db.getPaginatedMostRecentEntries(page),
                                     "page", page,
                                     "pageCount", db.getPaginationCount(),
@@ -129,7 +141,7 @@ public class Main {
                     entry.ifPresentOrElse(
                             modMailLogEntry -> {
                                 try {
-                                    ctx.render("logspage.jte", model(
+                                    ctx.render("pages/logspage.jte", model(
                                             "modmailLog", modMailLogEntry,
                                             "user", AuthHandler.getUser(ctx)));
                                 } catch (JsonProcessingException e) {
@@ -154,6 +166,10 @@ public class Main {
                 }, RoleUtils.atLeastAdministrator())
                 .get("/api/config", ctx -> ctx.json(db.getConfig()), RoleUtils.atLeastModerator())
                 .start(80);
+
+        if (enableAuth) {
+            app.get("/callback", authHandler::handleCallback, Role.ANYONE);
+        }
 
     }
 }
