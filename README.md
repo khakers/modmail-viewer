@@ -75,6 +75,9 @@ services:
 
 Should be located next to your docker-compose.yml, contains secrets.
 
+> **Note**
+> You'll need to create a Discord application retrieve your OAuth2 client ID and Client secret from the OAuth2 section of the [developer dashboard](https://discord.com/developers/applications)
+
 ```properties
 MODMAIL_VIEWER_DISCORD_OAUTH_CLIENT_ID=123456789
 MODMAIL_VIEWER_DISCORD_OAUTH_CLIENT_SECRET=67234rtg3b2otgfhbn3298t7h
