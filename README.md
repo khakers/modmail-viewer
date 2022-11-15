@@ -26,7 +26,7 @@ application may be unstable in some circumstances.
 ## Self-hosting
 
 You should place your _modmail-viewer_ instance behind Cloudflare or some other reverse proxy (such as Caddy) to provide
-automatic https if you plan on using authentication.
+automatic https OR provide the required keys to the application yourself if you plan on using authentication.
 
 ### Docker
 
@@ -60,8 +60,6 @@ version: "3.7"
 services:
   viewer:
     image: ghcr.io/khakers/modmail-viewer:latest
-    depends_on:
-      - mongo
     env_file:
       - .env
     ports:
