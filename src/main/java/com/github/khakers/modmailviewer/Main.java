@@ -161,6 +161,19 @@ public class Main {
                 .start(httpPort);
 
         if (enableAuth) {
+            // Register api only if authentication is enabled
+            app.get("/api/logs/{id}", ctx -> {
+                        var entry = db.getModMailLogEntry(ctx.pathParam("id"));
+                        entry.ifPresentOrElse(
+                                ctx::json,
+                                () -> {
+                                    ctx.status(404);
+                                    ctx.result();
+                                });
+
+                    }, RoleUtils.atLeastAdministrator())
+                    .get("/api/config", ctx -> ctx.json(db.getConfig()), RoleUtils.atLeastModerator());
+
             app.get("/callback", authHandler::handleCallback, Role.ANYONE);
         }
 
