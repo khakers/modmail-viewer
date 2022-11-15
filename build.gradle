@@ -3,7 +3,7 @@ plugins {
     id 'application'
     id 'com.bmuschko.docker-java-application' version '9.0.0'
     id 'net.researchgate.release' version '3.0.2'
-    id 'gg.jte.gradle' version '2.2.2'
+    id 'gg.jte.gradle' version '2.2.3'
 }
 
 group 'com.github.khakers'
@@ -32,7 +32,7 @@ dependencies {
     implementation('io.javalin:javalin-rendering:5.1.3')
     implementation 'io.javalin.community.ssl:ssl-plugin:5.1.3'
 
-    implementation('gg.jte:jte:2.2.2')
+    implementation('gg.jte:jte:2.2.3')
 
     implementation 'org.mongodb:mongodb-driver-sync:4.7.2'
 
