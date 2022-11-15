@@ -3,6 +3,7 @@ package com.github.khakers.modmailviewer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.khakers.modmailviewer.auth.AuthHandler;
 import com.github.khakers.modmailviewer.auth.Role;
+import com.github.khakers.modmailviewer.auth.SiteUser;
 import com.github.khakers.modmailviewer.util.RoleUtils;
 import gg.jte.ContentType;
 import gg.jte.TemplateEngine;
@@ -134,7 +135,7 @@ public class Main {
                             model("logEntries", db.getPaginatedMostRecentEntries(page),
                                     "page", page,
                                     "pageCount", db.getPaginationCount(),
-                                    "user", AuthHandler.getUser(ctx)));
+                                    "user", authHandler != null ? AuthHandler.getUser(ctx) : new SiteUser(0L, "anonymous", "0000", "")));
                 }, RoleUtils.atLeastModerator())
                 .get("/logs/{id}", ctx -> {
                     var entry = db.getModMailLogEntry(ctx.pathParam("id"));
@@ -143,7 +144,7 @@ public class Main {
                                 try {
                                     ctx.render("pages/logspage.jte", model(
                                             "modmailLog", modMailLogEntry,
-                                            "user", AuthHandler.getUser(ctx)));
+                                            "user", authHandler != null ? AuthHandler.getUser(ctx) : new SiteUser(0L, "anonymous", "0000", "")));
                                 } catch (JsonProcessingException e) {
                                     throw new RuntimeException(e);
                                 }
