@@ -28,7 +28,8 @@ public class Main {
     private static final Logger logger = LogManager.getLogger();
 
     private static final String envPrepend = "MODMAIL_VIEWER";
-
+    static final int httpPort = Objects.nonNull(System.getenv(envPrepend + "_HTTP_PORT")) ? Integer.parseInt(System.getenv(envPrepend + "_HTTP_PORT")) : 80;
+    static final int httpsPort = Objects.nonNull(System.getenv(envPrepend + "_HTTPS_PORT")) ? Integer.parseInt(System.getenv(envPrepend + "_HTTPs_PORT")) : 443;
     public static boolean isSecure = false;
 
     public static void main(String[] args) {
@@ -109,6 +110,8 @@ public class Main {
                     if (isSecure) {
                         SSLPlugin sslPlugin = new SSLPlugin(sslConfig -> {
                             sslConfig.pemFromPath(System.getenv(envPrepend + "_SSL_CERT"), System.getenv(envPrepend + "_SSL_KEY"));
+                            sslConfig.insecurePort = httpPort;
+                            sslConfig.securePort = httpsPort;
                             if (dev) {
                                 sslConfig.sniHostCheck = false;
                             }
@@ -155,18 +158,7 @@ public class Main {
                             });
 
                 }, RoleUtils.atLeastModerator())
-                .get("/api/logs/{id}", ctx -> {
-                    var entry = db.getModMailLogEntry(ctx.pathParam("id"));
-                    entry.ifPresentOrElse(
-                            ctx::json,
-                            () -> {
-                                ctx.status(404);
-                                ctx.result();
-                            });
-
-                }, RoleUtils.atLeastAdministrator())
-                .get("/api/config", ctx -> ctx.json(db.getConfig()), RoleUtils.atLeastModerator())
-                .start(80);
+                .start(httpPort);
 
         if (enableAuth) {
             app.get("/callback", authHandler::handleCallback, Role.ANYONE);
