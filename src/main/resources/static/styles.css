@@ -23,6 +23,7 @@ code {
     border-radius: 3px;
     background-color: rgb(220, 221, 222);
     transition: all .1s ease;
+    padding: 0 2px;
 }
 
 .spoilerText.hidden:hover {
@@ -39,8 +40,8 @@ code {
 }
 
 img.emoji {
-    height: 1em;
-    width: 1em;
+    height: 1.375em;
+    width: 1.375em;
     margin: 0 .05em 0 .1em;
     vertical-align: -0.1em;
 }

@@ -79,7 +79,7 @@ matches.forEach((element) => {
     // console.log(element.getAttribute("timestamp"))
     let time = Date.parse(element.getAttribute("timestamp"))
     let type = element.getAttribute("timestamp-type")
-    console.log(type)
+    // console.log(type)
     element.textContent = formatType(type, time)
     let titleType = element.getAttribute("timestamp-title-type")
     if (titleType != null) {
