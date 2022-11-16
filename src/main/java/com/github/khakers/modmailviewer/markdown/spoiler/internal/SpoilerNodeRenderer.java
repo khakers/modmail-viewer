@@ -3,7 +3,10 @@ package com.github.khakers.modmailviewer.markdown.spoiler.internal;
 import com.github.khakers.modmailviewer.markdown.spoiler.Spoiler;
 import com.github.khakers.modmailviewer.markdown.spoiler.SpoilerExtension;
 import com.vladsch.flexmark.html.HtmlWriter;
-import com.vladsch.flexmark.html.renderer.*;
+import com.vladsch.flexmark.html.renderer.NodeRenderer;
+import com.vladsch.flexmark.html.renderer.NodeRendererContext;
+import com.vladsch.flexmark.html.renderer.NodeRendererFactory;
+import com.vladsch.flexmark.html.renderer.NodeRenderingHandler;
 import com.vladsch.flexmark.util.data.DataHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -20,7 +23,6 @@ public class SpoilerNodeRenderer implements NodeRenderer {
         this.spoilerStyleHtmlClose = SpoilerExtension.SPOILER_STYLE_HTML_CLOSE.get(options);
     }
 
-
     /**
      * @return the mapping of nodes this renderer handles to rendering function
      */
@@ -33,15 +35,18 @@ public class SpoilerNodeRenderer implements NodeRenderer {
 
     private void render(Spoiler node, NodeRendererContext context, HtmlWriter html) {
         if (spoilerStyleHtmlOpen == null || spoilerStyleHtmlClose == null) {
-            if (context.getHtmlOptions().sourcePositionParagraphLines) {
-                html.attr("class","spoilerText").withAttr().tag("span").tag("span");
-            } else {
-                html.srcPos(node.getText())
-                        .attr("class","spoilerText hidden").attr("role", "button").withAttr().tag("span")
-                        .attr("class", "content").withAttr().tag("span");
-            }
+            html
+                    .attr("class", "spoilerText hidden")
+                    .attr("role", "button")
+                        .withAttr()
+                        .tag("span")
+                    .attr("class", "content")
+                        .withAttr()
+                        .tag("span");
             context.renderChildren(node);
-            html.tag("/span").tag("/span");
+            html
+                    .tag("/span")
+                    .tag("/span");
         } else {
             html.raw(spoilerStyleHtmlOpen);
             context.renderChildren(node);

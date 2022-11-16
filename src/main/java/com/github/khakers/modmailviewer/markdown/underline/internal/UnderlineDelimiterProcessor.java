@@ -84,14 +84,13 @@ public class UnderlineDelimiterProcessor implements DelimiterProcessor {
      */
     @Override
     public void process(Delimiter opener, Delimiter closer, int delimitersUsed) {
-        // We have to disable standard _ delimiter processing since this conflicts directly with it
-        // We still want _italics_ to work so we need handle returning an Emphasis when only one delimiter is present
+        // We have to disable standard _ delimiter processing since this conflicts directly with it.
+        // We still want _italics_ to work, so we need handle returning an Emphasis when only one delimiter is present
         DelimitedNode emphasis;
         if (delimitersUsed == 1)
             emphasis = new Emphasis(opener.getTailChars(delimitersUsed), BasedSequence.NULL, closer.getLeadChars(delimitersUsed));
         else
             emphasis = new Underline(opener.getTailChars(delimitersUsed), BasedSequence.NULL, closer.getLeadChars(delimitersUsed));
-//        var underline = new Underline(opener.getTailChars(delimitersUsed), BasedSequence.NULL, closer.getLeadChars(delimitersUsed));
 
         opener.moveNodesBetweenDelimitersTo(emphasis, closer);
 
