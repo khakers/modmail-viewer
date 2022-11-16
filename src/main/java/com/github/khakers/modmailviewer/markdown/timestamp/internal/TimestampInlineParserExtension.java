@@ -46,7 +46,7 @@ public class TimestampInlineParserExtension implements InlineParserExtension {
         BasedSequence[] matches = inlineParser.matchWithGroups(TIMESTAMP);
         if (matches != null) {
             inlineParser.flushTextNode();
-            logger.debug(Arrays.toString(matches));
+            logger.trace(Arrays.toString(matches));
             BasedSequence openMarker = matches[1];
             BasedSequence timestamp = matches[2];
             BasedSequence style = matches[3];

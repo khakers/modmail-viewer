@@ -24,7 +24,7 @@ public class TimestampNodeRenderer implements NodeRenderer {
     private final Attributes extraAttributes;
 
     public TimestampNodeRenderer(DataHolder options) {
-        this.extraAttributes = TimestampExtension.EXTRA_IMG_ATTRIBUTES.get(options);
+        this.extraAttributes = TimestampExtension.EXTRA_TIMESTAMP_ATTRIBUTES.get(options);
     }
 
     /**
