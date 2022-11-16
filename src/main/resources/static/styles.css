@@ -111,3 +111,6 @@ div.spoilerImage input:checked, div.spoilerImage input:checked ~ label {
         display: none;
     }
 }
+.tooltip {
+    --bs-tooltip-opacity: 1.0;
+}

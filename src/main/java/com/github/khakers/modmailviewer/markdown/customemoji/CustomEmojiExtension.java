@@ -7,11 +7,14 @@ import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.data.DataKey;
 import com.vladsch.flexmark.util.data.MutableDataHolder;
 import com.vladsch.flexmark.util.data.NullableDataKey;
+import com.vladsch.flexmark.util.html.Attributes;
 import org.jetbrains.annotations.NotNull;
 
 public class CustomEmojiExtension implements Parser.ParserExtension, HtmlRenderer.HtmlRendererExtension {
     final public static NullableDataKey<String> EMOJI_STYLE_HTML_OPEN = new NullableDataKey<>("EMOJI_STYLE_HTML_OPEN");
     final public static NullableDataKey<String> EMOJI_STYLE_HTML_CLOSE = new NullableDataKey<>("EMOJI_STYLE_HTML_CLOSE");
+
+    final public static DataKey<Attributes> EXTRA_IMG_ATTRIBUTES =  new DataKey<>("EMOJI_URL_TEMPLATE", Attributes.EMPTY);
 
     public static final DataKey<String> EMOJI_URL_TEMPLATE = new DataKey<>("EMOJI_URL_TEMPLATE", "https://cdn.discordapp.com/emojis/%s.png");
 
