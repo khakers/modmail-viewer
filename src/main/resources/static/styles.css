@@ -122,3 +122,15 @@ div.spoilerImage input:checked, div.spoilerImage input:checked ~ label {
     border-radius: 3px;
     padding: 0 2px;
 }
+
+.userMention {
+    background-color: rgba(88, 101, 242, 0.3);
+    border-radius: 3px;
+    padding: 0 2px;
+}
+
+.userMention:hover {
+    /*background-color: rgb(88, 101, 242);*/
+    background-color: #828cf7;
+    color: rgb(255, 255, 255)
+}

@@ -8,6 +8,7 @@ import com.github.khakers.modmailviewer.markdown.customemoji.CustomEmojiExtensio
 import com.github.khakers.modmailviewer.markdown.spoiler.SpoilerExtension;
 import com.github.khakers.modmailviewer.markdown.timestamp.TimestampExtension;
 import com.github.khakers.modmailviewer.markdown.underline.UnderlineExtension;
+import com.github.khakers.modmailviewer.markdown.usermention.UserMentionExtension;
 import com.github.khakers.modmailviewer.util.RoleUtils;
 import com.vladsch.flexmark.ext.autolink.AutolinkExtension;
 import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
@@ -43,7 +44,8 @@ public class Main {
                     SpoilerExtension.create(),
                     UnderlineExtension.create(),
                     CustomEmojiExtension.create(),
-                    TimestampExtension.create()
+                    TimestampExtension.create(),
+                    UserMentionExtension.create()
             ))
             .set(Parser.HEADING_PARSER, false)
             //Required to enable underlines to function

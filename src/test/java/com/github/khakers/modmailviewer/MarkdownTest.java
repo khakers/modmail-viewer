@@ -4,23 +4,22 @@ import org.junit.jupiter.api.Test;
 
 class MarkdownTest {
 
-
     @Test
     void MarkdownStyleTest() {
         String s = """
                 Italics	*italics* or _italics_
                 Underline italics	__*underline italics*__
-                
+                                
                 Bold	**bold**
                 Underline bold	__**underline bold**__
-                
+                                
                 Bold Italics	***bold italics***
                 underline bold italics	__***underline bold italics***__
-                
+                                
                 Underline	__underline__
                 Strikethrough	 ~~Strikethrough~~
                 """;
-        var rendered= Main.RENDERER.render(Main.PARSER.parse(s));
+        var rendered = Main.RENDERER.render(Main.PARSER.parse(s));
         System.out.println(rendered);
     }
 
@@ -33,7 +32,7 @@ class MarkdownTest {
                 ||asdf|
                 |asdf|
                 """;
-        var rendered= Main.RENDERER.render(Main.PARSER.parse(s));
+        var rendered = Main.RENDERER.render(Main.PARSER.parse(s));
         System.out.println("Spoiler text:");
         System.out.println(rendered);
     }
@@ -45,7 +44,7 @@ class MarkdownTest {
                 <:java:1041989576920678460>
                 text <:java:1041989576920678460> text
                 """;
-        var rendered= Main.RENDERER.render(Main.PARSER.parse(s));
+        var rendered = Main.RENDERER.render(Main.PARSER.parse(s));
         System.out.println("Custom Emoji:");
         System.out.println(rendered);
     }
@@ -63,7 +62,18 @@ class MarkdownTest {
                 Long Date/Time	<t:1543392060:F>	Wednesday, November 28, 2018 9:01 AM	Wednesday, 28 November 2018 09:01
                 Relative Time	<t:1543392060:R>	3 years ago	3 years ago
                 """;
-        var rendered= Main.RENDERER.render(Main.PARSER.parse(s));
+        var rendered = Main.RENDERER.render(Main.PARSER.parse(s));
+        System.out.println("Custom Emoji:");
+        System.out.println(rendered);
+    }
+
+    @Test
+    void testUserMention() {
+        String s = """
+                <@184473972446986240>
+                <@!503283937976778762>
+                """;
+        var rendered = Main.RENDERER.render(Main.PARSER.parse(s));
         System.out.println("Custom Emoji:");
         System.out.println(rendered);
     }
