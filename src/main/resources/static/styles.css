@@ -1,6 +1,6 @@
-.timestamp {
-    color: rgb(163, 166, 170);
-}
+/*.timestamp {*/
+/*    color: rgb(163, 166, 170);*/
+/*}*/
 
 blockquote {
     border-left: 5px solid rgba(123, 123, 123, 0.8);
@@ -111,6 +111,14 @@ div.spoilerImage input:checked, div.spoilerImage input:checked ~ label {
         display: none;
     }
 }
+
 .tooltip {
     --bs-tooltip-opacity: 1.0;
+}
+
+.timestamp {
+    /*background-color: #858585;*/
+    background-color: #B5B5B5;
+    border-radius: 3px;
+    padding: 0 2px;
 }

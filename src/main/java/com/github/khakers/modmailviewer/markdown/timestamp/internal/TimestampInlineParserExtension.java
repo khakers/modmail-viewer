@@ -1,11 +1,13 @@
-package com.github.khakers.modmailviewer.markdown.customemoji.internal;
+package com.github.khakers.modmailviewer.markdown.timestamp.internal;
 
-import com.github.khakers.modmailviewer.markdown.customemoji.CustomEmoji;
+import com.github.khakers.modmailviewer.markdown.timestamp.Timestamp;
 import com.vladsch.flexmark.parser.InlineParser;
 import com.vladsch.flexmark.parser.InlineParserExtension;
 import com.vladsch.flexmark.parser.InlineParserExtensionFactory;
 import com.vladsch.flexmark.parser.LightInlineParser;
 import com.vladsch.flexmark.util.sequence.BasedSequence;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,11 +15,13 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-public class CustomEmojiInlineParserExtension implements InlineParserExtension {
+public class TimestampInlineParserExtension implements InlineParserExtension {
 
-    public static final Pattern CUSTOM_EMOJI = Pattern.compile("(<):(\\w+):(\\d+)(>)", Pattern.CASE_INSENSITIVE);
+    private static final Logger logger = LogManager.getLogger();
 
-    public CustomEmojiInlineParserExtension(LightInlineParser lightInlineParser) {
+    public static final Pattern TIMESTAMP = Pattern.compile("(<)t:(\\d+)(?::([tTdDfFR]))?(>)", Pattern.CASE_INSENSITIVE);
+
+    public TimestampInlineParserExtension(LightInlineParser lightInlineParser) {
 
     }
 
@@ -39,16 +43,16 @@ public class CustomEmojiInlineParserExtension implements InlineParserExtension {
      */
     @Override
     public boolean parse(@NotNull LightInlineParser inlineParser) {
-        BasedSequence[] matches = inlineParser.matchWithGroups(CUSTOM_EMOJI);
+        BasedSequence[] matches = inlineParser.matchWithGroups(TIMESTAMP);
         if (matches != null) {
             inlineParser.flushTextNode();
-            System.out.println(Arrays.toString(matches));
+            logger.debug(Arrays.toString(matches));
             BasedSequence openMarker = matches[1];
-            BasedSequence name = matches[2];
-            BasedSequence id = matches[3];
+            BasedSequence timestamp = matches[2];
+            BasedSequence style = matches[3];
             BasedSequence closeMarker = matches[4];
 
-            inlineParser.getBlock().appendChild(new CustomEmoji(openMarker, name, id, closeMarker));
+            inlineParser.getBlock().appendChild(new Timestamp(openMarker, timestamp, style, closeMarker));
             return true;
         }
         return false;
@@ -76,7 +80,7 @@ public class CustomEmojiInlineParserExtension implements InlineParserExtension {
         @NotNull
         @Override
         public InlineParserExtension apply(@NotNull LightInlineParser lightInlineParser) {
-            return new CustomEmojiInlineParserExtension(lightInlineParser);
+            return new TimestampInlineParserExtension(lightInlineParser);
         }
 
         @Override

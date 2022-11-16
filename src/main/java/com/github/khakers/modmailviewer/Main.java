@@ -6,6 +6,7 @@ import com.github.khakers.modmailviewer.auth.Role;
 import com.github.khakers.modmailviewer.auth.SiteUser;
 import com.github.khakers.modmailviewer.markdown.customemoji.CustomEmojiExtension;
 import com.github.khakers.modmailviewer.markdown.spoiler.SpoilerExtension;
+import com.github.khakers.modmailviewer.markdown.timestamp.TimestampExtension;
 import com.github.khakers.modmailviewer.markdown.underline.UnderlineExtension;
 import com.github.khakers.modmailviewer.util.RoleUtils;
 import com.vladsch.flexmark.ext.autolink.AutolinkExtension;
@@ -41,7 +42,8 @@ public class Main {
                     AutolinkExtension.create(),
                     SpoilerExtension.create(),
                     UnderlineExtension.create(),
-                    CustomEmojiExtension.create()
+                    CustomEmojiExtension.create(),
+                    TimestampExtension.create()
             ))
             .set(Parser.HEADING_PARSER, false)
             //Required to enable underlines to function

@@ -74,7 +74,7 @@
                         </div>
                         <div class="col">
                             <%--                            <p class="mb-0"></p>--%>
-                            <div class="text-wrap text-break">
+                            <div class="text-wrap text-break messageContent">
                                 $unsafe{renderer.render(parser.parse(message.get().getContent()))}
                             </div>
                             @if(message.get().isEdited())
@@ -147,7 +147,7 @@
                             <div class="row">
                                 <div class="col">
                                     <%--                                    <p class="mb-0"></p>--%>
-                                    <div class="text-wrap text-break">
+                                    <div class="text-wrap text-break messageContent">
                                         $unsafe{renderer.render(parser.parse(message.get().getContent()))}
                                     </div>
                                     @if(message.get().isEdited())
