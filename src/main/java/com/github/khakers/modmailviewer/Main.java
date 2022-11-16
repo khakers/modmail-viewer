@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.khakers.modmailviewer.auth.AuthHandler;
 import com.github.khakers.modmailviewer.auth.Role;
 import com.github.khakers.modmailviewer.auth.SiteUser;
+import com.github.khakers.modmailviewer.markdown.customemoji.CustomEmojiExtension;
 import com.github.khakers.modmailviewer.markdown.spoiler.SpoilerExtension;
 import com.github.khakers.modmailviewer.markdown.underline.UnderlineExtension;
 import com.github.khakers.modmailviewer.util.RoleUtils;
@@ -35,7 +36,13 @@ import static io.javalin.rendering.template.TemplateUtil.model;
 public class Main {
 
     static final DataHolder OPTIONS = new MutableDataSet()
-            .set(Parser.EXTENSIONS, Arrays.asList(StrikethroughExtension.create(), AutolinkExtension.create(), SpoilerExtension.create(), UnderlineExtension.create()))
+            .set(Parser.EXTENSIONS, Arrays.asList(
+                    StrikethroughExtension.create(),
+                    AutolinkExtension.create(),
+                    SpoilerExtension.create(),
+                    UnderlineExtension.create(),
+                    CustomEmojiExtension.create()
+            ))
             .set(Parser.HEADING_PARSER, false)
             //Required to enable underlines to function
             //Otherwise the '_' delimiter conflicts
