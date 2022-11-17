@@ -1,25 +1,25 @@
-package com.github.khakers.modmailviewer.markdown.usermention;
+package com.github.khakers.modmailviewer.markdown.channelmention;
 
 import com.vladsch.flexmark.util.ast.DoNotDecorate;
 import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.util.sequence.BasedSequence;
 import org.jetbrains.annotations.NotNull;
 
-public class UserMention extends Node implements DoNotDecorate {
+public class ChannelMention extends Node implements DoNotDecorate {
 
     protected BasedSequence openingMarker = BasedSequence.NULL;
     protected BasedSequence id = BasedSequence.NULL;
     protected BasedSequence closingMarker = BasedSequence.NULL;
 
-    public UserMention() {
+    public ChannelMention() {
 
     }
 
-    public UserMention(BasedSequence chars) {
+    public ChannelMention(BasedSequence chars) {
         super(chars);
     }
 
-    public UserMention(BasedSequence openingMarker, BasedSequence id, BasedSequence closingMarker) {
+    public ChannelMention(BasedSequence openingMarker, BasedSequence id, BasedSequence closingMarker) {
         super(openingMarker.baseSubSequence(openingMarker.getStartOffset(), closingMarker.getEndOffset()));
         this.openingMarker = openingMarker;
         this.id = id;
@@ -65,7 +65,7 @@ public class UserMention extends Node implements DoNotDecorate {
 
     @Override
     public String toString() {
-        return "UserMention{" +
+        return "ChannelMention{" +
                 "openingMarker=" + openingMarker +
                 ", id=" + id +
                 ", closingMarker=" + closingMarker +
@@ -73,10 +73,10 @@ public class UserMention extends Node implements DoNotDecorate {
     }
 
     public String toOriginalMarkdown() {
-        return this.openingMarker + "@" + this.id + this.closingMarker;
+        return this.openingMarker + "#" + this.id + this.closingMarker;
     }
 
     public String toMentionText() {
-        return "@"+this.id;
+        return "#"+this.id;
     }
 }

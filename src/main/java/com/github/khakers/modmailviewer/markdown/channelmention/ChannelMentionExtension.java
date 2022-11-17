@@ -1,7 +1,7 @@
-package com.github.khakers.modmailviewer.markdown.usermention;
+package com.github.khakers.modmailviewer.markdown.channelmention;
 
-import com.github.khakers.modmailviewer.markdown.usermention.internal.UserMentionInlineParserExtension;
-import com.github.khakers.modmailviewer.markdown.usermention.internal.UserMentionNodeRenderer;
+import com.github.khakers.modmailviewer.markdown.channelmention.internal.ChannelMentionInlineParserExtension;
+import com.github.khakers.modmailviewer.markdown.channelmention.internal.ChannelMentionNodeRenderer;
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.data.DataKey;
@@ -10,19 +10,19 @@ import com.vladsch.flexmark.util.data.NullableDataKey;
 import com.vladsch.flexmark.util.html.Attributes;
 import org.jetbrains.annotations.NotNull;
 
-public class UserMentionExtension implements Parser.ParserExtension, HtmlRenderer.HtmlRendererExtension {
-    final public static NullableDataKey<String> MENTION_STYLE_HTML_OPEN = new NullableDataKey<>("MENTION_STYLE_HTML_OPEN");
-    final public static NullableDataKey<String> MENTION_STYLE_HTML_CLOSE = new NullableDataKey<>("MENTION_STYLE_HTML_CLOSE");
+public class ChannelMentionExtension implements Parser.ParserExtension, HtmlRenderer.HtmlRendererExtension {
+    final public static NullableDataKey<String> CHANNEL_STYLE_HTML_OPEN = new NullableDataKey<>("CHANNEL_STYLE_HTML_OPEN");
+    final public static NullableDataKey<String> CHANNEL_STYLE_HTML_CLOSE = new NullableDataKey<>("CHANNEL_STYLE_HTML_CLOSE");
 
-    final public static DataKey<Attributes> EXTRA_MENTION_ATTRIBUTES =  new DataKey<>("EXTRA_MENTION_ATTRIBUTES", Attributes.EMPTY);
+    final public static DataKey<Attributes> EXTRA_CHANNEL_ATTRIBUTES =  new DataKey<>("EXTRA_CHANNEL_ATTRIBUTES", Attributes.EMPTY);
 
 
-    private UserMentionExtension() {
+    private ChannelMentionExtension() {
 
     }
 
-    public static UserMentionExtension create() {
-        return new UserMentionExtension();
+    public static ChannelMentionExtension create() {
+        return new ChannelMentionExtension();
     }
 
     /**
@@ -55,7 +55,7 @@ public class UserMentionExtension implements Parser.ParserExtension, HtmlRendere
     @Override
     public void extend(HtmlRenderer.@NotNull Builder htmlRendererBuilder, @NotNull String rendererType) {
         if (htmlRendererBuilder.isRendererType("HTML")) {
-            htmlRendererBuilder.nodeRendererFactory(new UserMentionNodeRenderer.Factory());
+            htmlRendererBuilder.nodeRendererFactory(new ChannelMentionNodeRenderer.Factory());
         }
     }
 
@@ -66,11 +66,11 @@ public class UserMentionExtension implements Parser.ParserExtension, HtmlRendere
      */
     @Override
     public void extend(Parser.Builder parserBuilder) {
-        parserBuilder.customInlineParserExtensionFactory(new UserMentionInlineParserExtension.Factory());
+        parserBuilder.customInlineParserExtensionFactory(new ChannelMentionInlineParserExtension.Factory());
     }
 
     @Override
     public String toString() {
-        return "UserMentionExtension{}";
+        return "ChannelMentionExtension{}";
     }
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.khakers.modmailviewer.auth.AuthHandler;
 import com.github.khakers.modmailviewer.auth.Role;
 import com.github.khakers.modmailviewer.auth.SiteUser;
+import com.github.khakers.modmailviewer.markdown.channelmention.ChannelMentionExtension;
 import com.github.khakers.modmailviewer.markdown.customemoji.CustomEmojiExtension;
 import com.github.khakers.modmailviewer.markdown.spoiler.SpoilerExtension;
 import com.github.khakers.modmailviewer.markdown.timestamp.TimestampExtension;
@@ -45,7 +46,8 @@ public class Main {
                     UnderlineExtension.create(),
                     CustomEmojiExtension.create(),
                     TimestampExtension.create(),
-                    UserMentionExtension.create()
+                    UserMentionExtension.create(),
+                    ChannelMentionExtension.create()
             ))
             .set(Parser.HEADING_PARSER, false)
             //Required to enable underlines to function

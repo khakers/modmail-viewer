@@ -1,7 +1,7 @@
-package com.github.khakers.modmailviewer.markdown.usermention.internal;
+package com.github.khakers.modmailviewer.markdown.channelmention.internal;
 
-import com.github.khakers.modmailviewer.markdown.usermention.UserMention;
-import com.github.khakers.modmailviewer.markdown.usermention.UserMentionExtension;
+import com.github.khakers.modmailviewer.markdown.channelmention.ChannelMention;
+import com.github.khakers.modmailviewer.markdown.channelmention.ChannelMentionExtension;
 import com.vladsch.flexmark.ast.Text;
 import com.vladsch.flexmark.html.HtmlWriter;
 import com.vladsch.flexmark.html.renderer.NodeRenderer;
@@ -18,20 +18,20 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashSet;
 import java.util.Set;
 
-public class UserMentionNodeRenderer implements NodeRenderer {
+public class ChannelMentionNodeRenderer implements NodeRenderer {
 
     private static final Logger logger = LogManager.getLogger();
 
-    private final String customMentionStyleHtmlOpen;
-    private final String customMentionStyleHtmlClose;
+    private final String customStyleHtmlOpen;
+    private final String customStyleHtmlClose;
 
     private final Attributes extraAttributes;
 
 
-    public UserMentionNodeRenderer(DataHolder options) {
-        this.customMentionStyleHtmlOpen = UserMentionExtension.MENTION_STYLE_HTML_OPEN.get(options);
-        this.customMentionStyleHtmlClose = UserMentionExtension.MENTION_STYLE_HTML_CLOSE.get(options);
-        this.extraAttributes = UserMentionExtension.EXTRA_MENTION_ATTRIBUTES.get(options);
+    public ChannelMentionNodeRenderer(DataHolder options) {
+        this.customStyleHtmlOpen = ChannelMentionExtension.CHANNEL_STYLE_HTML_OPEN.get(options);
+        this.customStyleHtmlClose = ChannelMentionExtension.CHANNEL_STYLE_HTML_CLOSE.get(options);
+        this.extraAttributes = ChannelMentionExtension.EXTRA_CHANNEL_ATTRIBUTES.get(options);
     }
 
     /**
@@ -40,15 +40,15 @@ public class UserMentionNodeRenderer implements NodeRenderer {
     @Override
     public @Nullable Set<NodeRenderingHandler<?>> getNodeRenderingHandlers() {
         Set<NodeRenderingHandler<?>> set = new HashSet<>();
-        set.add(new NodeRenderingHandler<>(UserMention.class, this::render));
+        set.add(new NodeRenderingHandler<>(ChannelMention.class, this::render));
         return set;
     }
 
-    private void render(UserMention node, NodeRendererContext context, HtmlWriter html) {
-        if (customMentionStyleHtmlOpen == null || customMentionStyleHtmlClose == null) {
+    private void render(ChannelMention node, NodeRendererContext context, HtmlWriter html) {
+        if (customStyleHtmlOpen == null || customStyleHtmlClose == null) {
             logger.trace(node.toString());
             html
-                    .attr("class", "userMention")
+                    .attr("class", "channelMention")
 //                    .attr("data-bs-toggle", "tooltip")
 //                    .attr("data-bs-html", "true")
 //                    .attr("data-bs-title", "<strong>:"+node.getName()+":</strong>"+"<br />Custom Server Emoji")
@@ -59,9 +59,9 @@ public class UserMentionNodeRenderer implements NodeRenderer {
             context.renderChildren(node);
             html.tag("/span");
         } else {
-            html.raw(customMentionStyleHtmlOpen);
+            html.raw(customStyleHtmlOpen);
             context.renderChildren(node);
-            html.raw(customMentionStyleHtmlClose);
+            html.raw(customStyleHtmlClose);
         }
     }
 
@@ -69,7 +69,7 @@ public class UserMentionNodeRenderer implements NodeRenderer {
         @NotNull
         @Override
         public NodeRenderer apply(@NotNull DataHolder options) {
-            return new UserMentionNodeRenderer(options);
+            return new ChannelMentionNodeRenderer(options);
         }
     }
 }
