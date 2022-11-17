@@ -9,6 +9,8 @@ import com.vladsch.flexmark.html.renderer.NodeRendererFactory;
 import com.vladsch.flexmark.html.renderer.NodeRenderingHandler;
 import com.vladsch.flexmark.util.data.DataHolder;
 import com.vladsch.flexmark.util.html.Attributes;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,6 +18,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class CustomEmojiNodeRenderer implements NodeRenderer {
+
+    private static final Logger logger = LogManager.getLogger();
 
     private final String customEmojiStyleHtmlOpen;
     private final String customEmojiStyleHtmlClose;
@@ -43,7 +47,7 @@ public class CustomEmojiNodeRenderer implements NodeRenderer {
 
     private void render(CustomEmoji node, NodeRendererContext context, HtmlWriter html) {
         if (customEmojiStyleHtmlOpen == null || customEmojiStyleHtmlClose == null) {
-            System.out.println(node.toString());
+            logger.trace(node.toString());
             html
                     .attr("draggable", "false")
                     .attr("class", "emoji")
