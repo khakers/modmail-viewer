@@ -1,3 +1,150 @@
+/*.timestamp {*/
+/*    color: rgb(163, 166, 170);*/
+/*}*/
+
+blockquote {
+    border-left: 5px solid rgba(123, 123, 123, 0.8);
+    padding: 0 10px;
+    border-radius: 3px;
+}
+
+blockquote p {
+    display: inline;
+}
+
+code {
+    background-color: #f3f3f3;
+    border-radius: 3px;
+    padding: 0.2em;
+    white-space: pre-wrap;
+}
+
+.spoilerText {
+    border-radius: 3px;
+    background-color: rgb(220, 221, 222);
+    transition: all .1s ease;
+    padding: 0 2px;
+}
+
+.spoilerText.hidden:hover {
+    background-color: rgb(74, 75, 80);
+}
+
+.spoilerText.hidden {
+    background-color: rgb(32, 34, 37);
+}
+
+.spoilerText.hidden .content {
+    opacity: 0;
+    pointer-events: none;
+}
+
+img.emoji {
+    height: 1.375em;
+    width: 1.375em;
+    margin: 0 .05em 0 .1em;
+    vertical-align: -0.1em;
+}
+
+.image {
+    max-width: 256px;
+    max-height: 256px;
+}
+
+
+div.spoilerImage {
+    overflow: hidden;
+    position: relative;
+    margin: 0;
+    padding: 0;
+}
+
+div.spoilerImage img {
+    vertical-align: bottom;
+    filter: blur(30px);
+    transition: 0.3s;
+}
+
+.spoilerImageButton {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3rem;
+    line-height: 3rem;
+    width: 50%;
+    padding: 0 1rem;
+    font-size: 1rem;
+    margin: auto;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #FFF;
+    text-align: center;
+    border-radius: 1rem;
+    cursor: pointer;
+}
+
+.spoilerImageButton:hover {
+    background-color: rgb(74, 75, 80);
+}
+
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+    .spoilerImageButton {
+        display: none;
+    }
+}
+
+div.spoilerImage input {
+    width: 0;
+    height: 0;
+}
+
+div.spoilerImage input:checked ~ img {
+    filter: none;
+}
+
+div.spoilerImage input:checked, div.spoilerImage input:checked ~ label {
+    display: none;
+}
+
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+    div.spoilerImage input, .spoilerImageButton {
+        display: none;
+    }
+}
+
+.tooltip {
+    --bs-tooltip-opacity: 1.0;
+}
+
 .timestamp {
-    color: rgb(163, 166, 170);
+    /*background-color: #858585;*/
+    background-color: #B5B5B5;
+    border-radius: 3px;
+    padding: 0 2px;
+}
+
+.userMention {
+    background-color: rgba(88, 101, 242, 0.3);
+    border-radius: 3px;
+    padding: 0 2px;
+}
+
+.userMention:hover {
+    /*background-color: rgb(88, 101, 242);*/
+    background-color: #828cf7;
+    color: rgb(255, 255, 255)
+}
+
+
+.channelMention {
+    background-color: rgba(88, 101, 242, 0.3);
+    border-radius: 3px;
+    padding: 0 2px;
+}
+
+.channelMention:hover {
+    /*background-color: rgb(88, 101, 242);*/
+    background-color: #828cf7;
+    color: rgb(255, 255, 255)
 }

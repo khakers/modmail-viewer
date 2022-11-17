@@ -13,6 +13,8 @@ application may be unstable in some circumstances.
 * Discord OAuth2 authentication based on your modmail roles
 * Browsable paginated logs
 * (mostly) Mobile friendly design
+* Full message Discord Markdown formatting (Including spoilers, custom emojis, and timestamps)
+
 
 ## Roadmap
 
@@ -20,7 +22,6 @@ application may be unstable in some circumstances.
 * Filtering logs
 * Basic API
 * Dark theme
-* Message markdown and mention formatting
 * Search
 
 ## Self-hosting

@@ -35,6 +35,11 @@ dependencies {
 
     implementation('gg.jte:jte:2.2.3')
 
+    implementation 'com.vladsch.flexmark:flexmark:0.64.0'
+    implementation 'com.vladsch.flexmark:flexmark-ext-gfm-strikethrough:0.64.0'
+    implementation 'com.vladsch.flexmark:flexmark-ext-autolink:0.64.0'
+
+
     implementation 'org.mongodb:mongodb-driver-sync:4.7.2'
 
     implementation 'org.apache.logging.log4j:log4j-api:2.19.0'

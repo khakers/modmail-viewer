@@ -4,7 +4,19 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.khakers.modmailviewer.auth.AuthHandler;
 import com.github.khakers.modmailviewer.auth.Role;
 import com.github.khakers.modmailviewer.auth.SiteUser;
+import com.github.khakers.modmailviewer.markdown.channelmention.ChannelMentionExtension;
+import com.github.khakers.modmailviewer.markdown.customemoji.CustomEmojiExtension;
+import com.github.khakers.modmailviewer.markdown.spoiler.SpoilerExtension;
+import com.github.khakers.modmailviewer.markdown.timestamp.TimestampExtension;
+import com.github.khakers.modmailviewer.markdown.underline.UnderlineExtension;
+import com.github.khakers.modmailviewer.markdown.usermention.UserMentionExtension;
 import com.github.khakers.modmailviewer.util.RoleUtils;
+import com.vladsch.flexmark.ext.autolink.AutolinkExtension;
+import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
+import com.vladsch.flexmark.html.HtmlRenderer;
+import com.vladsch.flexmark.parser.Parser;
+import com.vladsch.flexmark.util.data.DataHolder;
+import com.vladsch.flexmark.util.data.MutableDataSet;
 import gg.jte.ContentType;
 import gg.jte.TemplateEngine;
 import gg.jte.resolve.DirectoryCodeResolver;
@@ -19,14 +31,38 @@ import org.apache.logging.log4j.core.util.Assert;
 import java.math.BigInteger;
 import java.nio.file.Path;
 import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.Objects;
 
 import static io.javalin.rendering.template.TemplateUtil.model;
 
 public class Main {
 
+    static final DataHolder OPTIONS = new MutableDataSet()
+            .set(Parser.EXTENSIONS, Arrays.asList(
+                    StrikethroughExtension.create(),
+                    AutolinkExtension.create(),
+                    SpoilerExtension.create(),
+                    UnderlineExtension.create(),
+                    CustomEmojiExtension.create(),
+                    TimestampExtension.create(),
+                    UserMentionExtension.create(),
+                    ChannelMentionExtension.create()
+            ))
+            .set(Parser.HEADING_PARSER, false)
+            //Required to enable underlines to function
+            //Otherwise the '_' delimiter conflicts
+            .set(Parser.UNDERSCORE_DELIMITER_PROCESSOR, false)
+            .set(Parser.HTML_BLOCK_PARSER, false)
+            .set(Parser.INDENTED_CODE_BLOCK_PARSER, false)
+            .set(HtmlRenderer.SOFT_BREAK, "<br />\n")
+            .toImmutable();
+    static final Parser PARSER = Parser.builder(OPTIONS)
+            .build();
+    static final HtmlRenderer RENDERER = HtmlRenderer.builder(OPTIONS)
+            .escapeHtml(true)
+            .build();
     private static final Logger logger = LogManager.getLogger();
-
     private static final String envPrepend = "MODMAIL_VIEWER";
     static final int httpPort = Objects.nonNull(System.getenv(envPrepend + "_HTTP_PORT")) ? Integer.parseInt(System.getenv(envPrepend + "_HTTP_PORT")) : 80;
     static final int httpsPort = Objects.nonNull(System.getenv(envPrepend + "_HTTPS_PORT")) ? Integer.parseInt(System.getenv(envPrepend + "_HTTPs_PORT")) : 443;
@@ -147,7 +183,9 @@ public class Main {
                                 try {
                                     ctx.render("pages/logspage.jte", model(
                                             "modmailLog", modMailLogEntry,
-                                            "user", authHandler != null ? AuthHandler.getUser(ctx) : new SiteUser(0L, "anonymous", "0000", "")));
+                                            "user", authHandler != null ? AuthHandler.getUser(ctx) : new SiteUser(0L, "anonymous", "0000", ""),
+                                            "parser", PARSER,
+                                            "renderer", RENDERER));
                                 } catch (JsonProcessingException e) {
                                     throw new RuntimeException(e);
                                 }

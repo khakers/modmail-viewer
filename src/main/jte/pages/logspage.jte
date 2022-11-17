@@ -3,6 +3,8 @@
 
 @param com.github.khakers.modmailviewer.data.ModMailLogEntry modmailLog
 @param SiteUser user
+@param com.vladsch.flexmark.parser.Parser parser
+@param com.vladsch.flexmark.html.HtmlRenderer renderer
 
 <!doctype html>
 <html lang="en" xmlns="http://www.w3.org/1999/html">
@@ -12,11 +14,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css"
+          integrity="sha384-xeJqLiuOvjUBq3iGOjvSQSIlwrpqjSHXpduPd6rQpuiM3f5/ijby8pCsnbu5S81n" crossorigin="anonymous">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.6.0/build/styles/default.min.css"
+          integrity="sha256-+94KwJIdhsNWxBUy5zGciHojvRuP8ABgyrRHJJ8Dx88=" crossorigin="anonymous">
+    <link rel="stylesheet" href="/styles.css">
+
 </head>
 <body style="padding-top: 56px;">
 
-@template.pages.navbar(user = user)
+@template.macros.navbar(user = user)
 
 <div class="container py-4">
     <div class="row">
@@ -66,13 +74,17 @@
                                   data-bs-toggle="tooltip"></span>
                         </div>
                         <div class="col">
-                            <p class="mb-0">${message.get().getContent()}</p>
+                            <%--                            <p class="mb-0"></p>--%>
+                            <div class="text-wrap text-break messageContent">
+                                $unsafe{renderer.render(parser.parse(message.get().getContent()))}
+                            </div>
+                            @if(message.get().isEdited())
+                                <span class="fw-light">(edited)</span>
+                            @endif
                             @if(!message.get().getAttachments().isEmpty())
                                 @for(var attachment: message.get().getAttachments())
                                     @if(attachment.isImage())
-                                        <img class="img-fluid rounded-2" src="${attachment.url()}"
-                                             alt="Image ${attachment.filename()} uploaded by ${message.get().getAuthor().name()}">
-
+                                        @template.macros.imageAttachment(attachment = attachment, message = message.get())
                                     @endif
                                 @endfor
                             @endif
@@ -135,15 +147,17 @@
                             </div>
                             <div class="row">
                                 <div class="col">
-                                    <p class="mb-0">${message.get().getContent()}</p>
+                                    <%--                                    <p class="mb-0"></p>--%>
+                                    <div class="text-wrap text-break messageContent">
+                                        $unsafe{renderer.render(parser.parse(message.get().getContent()))}
+                                    </div>
                                     @if(message.get().isEdited())
                                         <span class="fw-light">(edited)</span>
                                     @endif
                                     @if(!message.get().getAttachments().isEmpty())
                                         @for(var attachment: message.get().getAttachments())
                                             @if(attachment.isImage())
-                                                <img class="img-fluid rounded-2" src="${attachment.url()}"
-                                                     alt="Image ${attachment.filename()} uploaded by ${message.get().getAuthor().name()}">
+                                                @template.macros.imageAttachment(attachment = attachment, message = message.get())
                                             @endif
                                         @endfor
                                     @endif
@@ -208,9 +222,30 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
         crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.6.0/build/highlight.min.js"
+        integrity="sha256-4v2jQZxK6PbZEeZ2xl2ziov6NHMksBFgBlxtMZVYbQk=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/twemoji@14.0.2/dist/twemoji.min.js"
+        integrity="sha256-cGIk2NxUQEYPjtkcGmqtJdcyr24O5vsxFRsVerSFurs=" crossorigin="anonymous"></script>
 <script>
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    hljs.highlightAll();
+</script>
+<script>
+    twemoji.parse(document.body, {
+        // The default Twemoji CDN will die at the end of the year. This tells it to use jsdelivr for emoji images instead
+        base: "https://cdn.jsdelivr.net/gh/twitter/twemoji@v14.0.2/assets/"
+    });
+</script>
+<script>
+    let spoilerTags = document.querySelectorAll('.spoilerText');
+    spoilerTags.forEach((item) => {
+        item.addEventListener("click", (event) => {
+            let target = event.target;
+            target.classList.remove("hidden");
+            target.setAttribute("role", "presentation")
+        })
+    })
 </script>
 </body>
 </html>
