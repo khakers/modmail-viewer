@@ -168,4 +168,11 @@ public class ModMailLogDB {
         return Role.ANYONE;
     }
 
+    public MongoCollection<Document> getConfigCollection() {
+        return configCollection;
+    }
+
+    public MongoCollection<Document> getLogCollection() {
+        return logCollection;
+    }
 }
