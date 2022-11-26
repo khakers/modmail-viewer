@@ -9,14 +9,16 @@
         <input id="${attachment.id()}" type="checkbox">
         <img class="image img-fluid rounded-2"
              src="${attachment.url()}"
-             alt="Image ${attachment.filename()} uploaded by ${message.getAuthor().name()}">
+             alt="Image ${attachment.filename()} uploaded by ${message.getAuthor().name()}"
+             loading="lazy">
         <label for="${attachment.id()}" class="spoilerImageButton">SPOILER</label>
     </div>
 @else
     <div class="image">
         <img class="image img-fluid rounded-2"
              src="${attachment.url()}"
-             alt="Image ${attachment.filename()} uploaded by ${message.getAuthor().name()}">
+             alt="Image ${attachment.filename()} uploaded by ${message.getAuthor().name()}"
+             loading="lazy">
     </div>
 @endif
 

@@ -132,6 +132,7 @@ public class Main {
         var app = Javalin.create(javalinConfig -> {
                     javalinConfig.jsonMapper(new JacksonJavalinJsonMapper());
                     javalinConfig.staticFiles.add("/static", Location.CLASSPATH);
+                    javalinConfig.staticFiles.enableWebjars();
                     if (dev) {
                         logger.info("Dev mode is ENABLED");
                         javalinConfig.plugins.enableDevLogging();

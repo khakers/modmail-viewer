@@ -39,6 +39,9 @@ dependencies {
     implementation 'com.vladsch.flexmark:flexmark-ext-gfm-strikethrough:0.64.0'
     implementation 'com.vladsch.flexmark:flexmark-ext-autolink:0.64.0'
 
+    implementation 'org.webjars.npm:bootstrap:5.2.2'
+    implementation 'org.webjars.npm:bootstrap-icons:1.10.2'
+    implementation 'org.webjars.npm:highlightjs__cdn-assets:11.6.0'
 
     implementation 'org.mongodb:mongodb-driver-sync:4.7.2'
 
