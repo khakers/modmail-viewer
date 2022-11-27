@@ -6,7 +6,7 @@ docker-tag = "17-jre"
 gradle-release = "3.0.2"
 docker-java-application = "9.0.0"
 
-javalin = "5.1.3"
+javalin = "5.2.0"
 jte = "2.2.3"
 flexmark = "0.64.0"
 log4j = "2.19.0"
