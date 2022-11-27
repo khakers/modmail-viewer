@@ -151,12 +151,29 @@ div.spoilerImage input:checked, div.spoilerImage input:checked ~ label {
 
 .merge-below {
     border-bottom-style: hidden;
-    margin-bottom: 0!important;
-    padding-bottom: 0!important;
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
 }
 
 .merge-above {
     border-top-style: hidden;
-    margin-top: 0!important;
-    padding-top: 0!important;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+.page-container {
+    position: relative;
+    min-height: 100vh;
+}
+
+.content {
+    padding-top: 56px;
+    padding-bottom: 2.5rem;
+}
+
+footer {
+    display: block;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
 }
