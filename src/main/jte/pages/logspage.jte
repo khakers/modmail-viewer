@@ -64,12 +64,11 @@
             !{String style = null;}
             !{String classes = null;}
             @if(!message.isLast() && message.get().canMergeMessages(modmailLog.getMessages().get(message.getIndex()+1)))
-                !{style = "border-bottom-style: hidden;";}
-                !{classes = "mb-0 pb-0";}
+                !{classes = "merge-below";}
             @endif
             <%-- Merged message --%>
             @if(!message.isFirst() && message.get().canMergeMessages(modmailLog.getMessages().get(message.getIndex()-1)))
-                <li class="list-group-item mt-0 pt-0 ${classes}" style="border-top-style: hidden; ${style}">
+                <li class="list-group-item merge-above ${classes}">
                     <div class="row">
                         <div class="col-2 col-md-1 text-center">
                             <span class="d-none d-xl-inline fs-6 fs-light text-muted user-select-none"
@@ -97,8 +96,7 @@
                 </li>
             <%-- Unmergable message --%>
             @else
-                <li class="list-group-item ${classes}"
-                    style="${style}">
+                <li class="list-group-item ${classes}">
                     <div class="row ">
                         <div class="col-2 col-md-1 text-center">
                             <img width="50" src="${message.get().getAuthor().avatarUrl()}"

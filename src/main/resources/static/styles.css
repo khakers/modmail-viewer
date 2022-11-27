@@ -148,3 +148,15 @@ div.spoilerImage input:checked, div.spoilerImage input:checked ~ label {
     background-color: #828cf7;
     color: rgb(255, 255, 255)
 }
+
+.merge-below {
+    border-bottom-style: hidden;
+    margin-bottom: 0!important;
+    padding-bottom: 0!important;
+}
+
+.merge-above {
+    border-top-style: hidden;
+    margin-top: 0!important;
+    padding-top: 0!important;
+}
