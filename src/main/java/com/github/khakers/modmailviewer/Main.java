@@ -26,13 +26,9 @@ import io.javalin.http.staticfiles.Location;
 import io.javalin.rendering.template.JavalinJte;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.util.Assert;
 
-import java.math.BigInteger;
 import java.nio.file.Path;
-import java.security.SecureRandom;
 import java.util.Arrays;
-import java.util.Objects;
 
 import static io.javalin.rendering.template.TemplateUtil.model;
 
@@ -64,53 +60,14 @@ public class Main {
             .build();
     private static final Logger logger = LogManager.getLogger();
     private static final String envPrepend = "MODMAIL_VIEWER";
-    static final int httpPort = Objects.nonNull(System.getenv(envPrepend + "_HTTP_PORT")) ? Integer.parseInt(System.getenv(envPrepend + "_HTTP_PORT")) : 80;
-    static final int httpsPort = Objects.nonNull(System.getenv(envPrepend + "_HTTPS_PORT")) ? Integer.parseInt(System.getenv(envPrepend + "_HTTPs_PORT")) : 443;
-    public static boolean isSecure = false;
 
     public static void main(String[] args) {
 
-        boolean enableAuth = !(Objects.nonNull(System.getenv(envPrepend + "_AUTH_ENABLED")) && System.getenv(envPrepend + "_AUTH_ENABLED").equalsIgnoreCase("false"));
-
-        Assert.requireNonEmpty(System.getenv(envPrepend + "_URL"), "No URL provided. provide one with the option \"MODMAIL_VIEWER_URL\"");
-        Assert.requireNonEmpty(System.getenv(envPrepend + "_MONGODB_URI"), "No mongodb URI provided. provide one with the option \"MODMAIL_VIEWER_MONGODB_URI\"");
-        if (enableAuth) {
-            Assert.requireNonEmpty(System.getenv(envPrepend + "_DISCORD_OAUTH_CLIENT_ID"), "No Discord client ID provided. Provide one with the option \"MODMAIL_VIEWER_DISCORD_OAUTH_CLIENT_ID\"");
-            Assert.requireNonEmpty(System.getenv(envPrepend + "_DISCORD_OAUTH_CLIENT_SECRET"), "No Discord client secret provided. Provide one with the option \"MODMAIL_VIEWER_DISCORD_OAUTH_CLIENT_SECRET\"");
-        }
-
-        String jwtSecretKey = System.getenv("MODMAIL_VIEWER_SECRETKEY");
-
-        boolean dev = Objects.nonNull(System.getenv(envPrepend + "_DEV")) && !System.getenv(envPrepend + "_DEV").equalsIgnoreCase("false");
-
-        if (Objects.nonNull(System.getenv(envPrepend + "_SSL")) && System.getenv(envPrepend + "_SSL").equalsIgnoreCase("true")) {
-            logger.info("SSL is ENABLED");
-            isSecure = true;
-        }
-        boolean httpsOnly = isSecure;
-        if ((Objects.nonNull(System.getenv(envPrepend + "_HTTPS_ONLY")) && System.getenv(envPrepend + "_HTTPS_ONLY").equalsIgnoreCase("true"))) {
-            isSecure = true;
-        }
-        if (httpsOnly) {
-            logger.info("HTTPS only is ENABLED");
-        }
-        if (isSecure) {
-            Assert.requireNonEmpty(System.getenv(envPrepend + "_SSL_CERT"), "SSL was enabled but no certificate file path was provided. Provide one with the option \"MODMAIL_VIEWER_SSL_CERT\"");
-            Assert.requireNonEmpty(System.getenv(envPrepend + "_SSL_KEY"), "SSL was enabled but no key file path was provided. Provide one with the option \"MODMAIL_VIEWER_DISCORD_SSL_KEY\"");
-        }
-
-        if (jwtSecretKey == null || jwtSecretKey.isEmpty()) {
-            logger.warn("Generated a random key for signing tokens. Sessions will not persist between restarts");
-            jwtSecretKey = new BigInteger(256, new SecureRandom()).toString(32);
-        } else if (jwtSecretKey.length() < 32) {
-            logger.warn("Your secret key is too short! it should be at least 32 characters (256 bits). Short keys can be trivially brute forced allowing an attacker to create their own auth tokens");
-        }
-
-        var db = new ModMailLogDB(System.getenv(envPrepend + "_MONGODB_URI"));
+        var db = new ModMailLogDB(Config.MONGODB_URI);
 
         TemplateEngine templateEngine;
 
-        if (dev) {
+        if (Config.isDevMode) {
             templateEngine = TemplateEngine.create(new DirectoryCodeResolver(Path.of("src", "main", "jte")), ContentType.Html);
 
         } else {
@@ -118,11 +75,11 @@ public class Main {
         }
 
         AuthHandler authHandler;
-        if (enableAuth) {
-            authHandler = new AuthHandler(System.getenv(envPrepend + "_URL") + "/callback",
-                    System.getenv(envPrepend + "_DISCORD_OAUTH_CLIENT_ID"),
-                    System.getenv(envPrepend + "_DISCORD_OAUTH_CLIENT_SECRET"),
-                    jwtSecretKey,
+        if (Config.isAuthEnabled) {
+            authHandler = new AuthHandler(Config.WEB_URL + "/callback",
+                    Config.DISCORD_CLIENT_ID,
+                    Config.DISCORD_CLIENT_SECRET,
+                    Config.JWT_SECRET_KEY,
                     db);
         } else {
             authHandler = null;
@@ -133,37 +90,39 @@ public class Main {
                     javalinConfig.jsonMapper(new JacksonJavalinJsonMapper());
                     javalinConfig.staticFiles.add("/static", Location.CLASSPATH);
                     javalinConfig.staticFiles.enableWebjars();
-                    if (dev) {
+                    if (Config.isDevMode) {
                         logger.info("Dev mode is ENABLED");
                         javalinConfig.plugins.enableDevLogging();
                     }
-                    if (enableAuth) {
+                    if (Config.isAuthEnabled) {
                         javalinConfig.accessManager(authHandler::HandleAuth);
                     } else {
                         logger.warn("Authentication is DISABLED");
                         javalinConfig.accessManager((handler, context, set) -> handler.handle(context));
                     }
 
-                    if (isSecure) {
+                    if (Config.isSecure) {
+                        logger.info("SSL is ENABLED");
                         SSLPlugin sslPlugin = new SSLPlugin(sslConfig -> {
-                            sslConfig.pemFromPath(System.getenv(envPrepend + "_SSL_CERT"), System.getenv(envPrepend + "_SSL_KEY"));
-                            sslConfig.insecurePort = httpPort;
-                            sslConfig.securePort = httpsPort;
-                            if (dev) {
-                                sslConfig.sniHostCheck = false;
+                            sslConfig.pemFromPath(Config.SSL_CERT, Config.SSL_KEY);
+                            sslConfig.insecurePort = Config.httpPort;
+                            sslConfig.securePort = Config.httpsPort;
+                            sslConfig.sniHostCheck = Config.isSNIEnabled;
+                            if (Config.isHttpsOnly) {
+                                logger.warn("SSL is ENABLED but HTTPS only is DISABLED");
                             }
-                        });
+                         });
                         javalinConfig.plugins.register(sslPlugin);
-                    }
-                    if (httpsOnly) {
-                        logger.info("HTTPS only enabled");
-                        javalinConfig.plugins.enableSslRedirects();
+                        if (Config.isHttpsOnly) {
+                            logger.info("HTTPS only is ENABLED");
+                            javalinConfig.plugins.enableSslRedirects();
+                        }
                     }
                 })
                 .get("/logout", ctx -> {
                     ctx.removeCookie("jwt");
                     ctx.result("logout successful");
-                    if (!enableAuth) {
+                    if (!Config.isAuthEnabled) {
                         ctx.redirect("/");
                     }
                 }, RoleUtils.atLeastRegular())
@@ -197,9 +156,9 @@ public class Main {
                             });
 
                 }, RoleUtils.atLeastModerator())
-                .start(httpPort);
+                .start(Config.httpPort);
 
-        if (enableAuth) {
+        if (Config.isAuthEnabled) {
             // Register api only if authentication is enabled
             app.get("/api/logs/{id}", ctx -> {
                         var entry = db.getModMailLogEntry(ctx.pathParam("id"));
