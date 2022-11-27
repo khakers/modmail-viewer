@@ -1,9 +1,10 @@
+@import com.github.khakers.modmailviewer.Config
 @import com.github.khakers.modmailviewer.auth.SiteUser
 @param SiteUser user
 
 <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">Modmail-Viewer</a>
+        <a class="navbar-brand" href="#">${Config.BRANDING}</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>

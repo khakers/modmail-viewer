@@ -52,6 +52,8 @@ public class Config {
 
     public static final String JWT_SECRET_KEY;
 
+    public static final String BRANDING = notEmptyOrElse(System.getenv(ENV_PREPEND + "_BRANDING"), "Modmail-Viewer");
+
 
     static {
         var jwtSecretKey = System.getenv("MODMAIL_VIEWER_SECRETKEY");
@@ -68,6 +70,20 @@ public class Config {
 
     private static <T> T notNullObjOrElse(T obj, T defaultObj) {
         if (obj == null) {
+            return defaultObj;
+        }
+        return obj;
+    }
+
+    /**
+     * Returns the value of obj if it's not empty, otherwise returns defaultObj
+     *
+     * @param obj the value to check for emptiness and return if not
+     * @param defaultObj default value to return if obj is empty
+     * @return obj if not empty, otherwise defaultObj
+     */
+    private static <T> T notEmptyOrElse(T obj, T defaultObj) {
+        if (Assert.isEmpty(obj)) {
             return defaultObj;
         }
         return obj;
