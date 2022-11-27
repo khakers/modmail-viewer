@@ -20,10 +20,12 @@
             <%--                <button class="btn btn-outline-success" type="submit">Search</button>--%>
             <%--            </form>--%>
             <div class="d-flex me-2">
+                @if(user.isRealUser())
                 <span class="navbar-text me-3">
                     Signed in as <span>${user.getUsername()}</span><span>#${user.getDiscriminator()}</span>
                 </span>
                 <a class="btn btn-outline-danger" href="/logout">signout</a>
+                @endif
             </div>
 
             <%--            <div>--%>

@@ -14,7 +14,17 @@ public class SiteUser {
     String discriminator;
     String avatar;
 
+    boolean isRealUser;
+
 //    Role role;
+
+    /**
+     * Generates a fake SiteUSer with isRealUser set to false.
+     */
+    public SiteUser() {
+        this(0L, "anonymous", "0000", "");
+        this.isRealUser = false;
+    }
 
     @JsonCreator
     public SiteUser(@JsonProperty("id") long id, @JsonProperty("username") String username, @JsonProperty("discriminator") String discriminator, @JsonProperty("avatar") String avatar) {
@@ -39,6 +49,10 @@ public class SiteUser {
 
     public Optional<String> getAvatar() {
         return Optional.ofNullable(avatar);
+    }
+
+    public boolean isRealUser() {
+        return isRealUser;
     }
 
     public String getAvatarUrl() {

@@ -175,7 +175,7 @@ public class Main {
                             model("logEntries", db.getPaginatedMostRecentEntries(page),
                                     "page", page,
                                     "pageCount", db.getPaginationCount(),
-                                    "user", authHandler != null ? AuthHandler.getUser(ctx) : new SiteUser(0L, "anonymous", "0000", "")));
+                                    "user", authHandler != null ? AuthHandler.getUser(ctx) : new SiteUser()));
                 }, RoleUtils.atLeastModerator())
                 .get("/logs/{id}", ctx -> {
                     var entry = db.getModMailLogEntry(ctx.pathParam("id"));
@@ -184,7 +184,7 @@ public class Main {
                                 try {
                                     ctx.render("pages/logspage.jte", model(
                                             "modmailLog", modMailLogEntry,
-                                            "user", authHandler != null ? AuthHandler.getUser(ctx) : new SiteUser(0L, "anonymous", "0000", ""),
+                                            "user", authHandler != null ? AuthHandler.getUser(ctx) : new SiteUser(),
                                             "parser", PARSER,
                                             "renderer", RENDERER));
                                 } catch (JsonProcessingException e) {
