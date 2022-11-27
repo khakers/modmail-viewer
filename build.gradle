@@ -4,6 +4,8 @@ plugins {
     alias libs.plugins.gradle.release
     alias libs.plugins.docker.java
     alias libs.plugins.jte.gradle
+    alias libs.plugins.license
+    alias libs.plugins.gradle.git.properties
 }
 
 group 'com.github.khakers'
@@ -16,6 +18,7 @@ java {
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
+    dependsOn("copyReport")
 }
 
 
@@ -74,12 +77,35 @@ jte {
     generate()
 }
 
+gitProperties {
+    customProperty("buildTimestamp", Instant.now())
+}
+
 docker {
     javaApplication {
         baseImage = libs.versions.docker.base.get()+':'+libs.versions.docker.tag.get()
         ports = [80]
     }
 }
+
+licenseReport {
+    generateCsvReport = false
+    generateHtmlReport = true
+    generateJsonReport = false
+    generateTextReport = false
+//    ignoredPatterns = []
+}
+
+task('copyReport', type: Copy, dependsOn: 'licenseReport') {
+    from layout.buildDirectory.file("reports/licenses/licenseReport.html")
+    into layout.buildDirectory.dir("resources/main/static")
+}
+
+//processResources {
+//    dependsOn 'copyReport'
+////    from layout.buildDirectory.file("reports/licenses/licenseReport.html")
+//}
+
 
 release {
     git {

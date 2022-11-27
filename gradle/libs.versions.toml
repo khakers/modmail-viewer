@@ -5,6 +5,8 @@ docker-tag = "17-jre"
 
 gradle-release = "3.0.2"
 docker-java-application = "9.0.0"
+gradle-license = "0.9.0"
+gradle-git-properties = "2.4.1"
 
 javalin = "5.2.0"
 jte = "2.2.3"
@@ -48,4 +50,6 @@ scribe-api = { module = "com.github.scribejava:scribejava-apis", version.ref = "
 jte-gradle = { id = "gg.jte.gradle", version.ref = "jte" }
 gradle-release = { id = "net.researchgate.release", version.ref = "gradle-release" }
 docker-java = { id = "com.bmuschko.docker-java-application", version.ref = "docker-java-application" }
+license = { id = "com.jaredsburrows.license", version.ref = "gradle-license"}
+gradle-git-properties = { id = "com.gorylenko.gradle-git-properties", version.ref = "gradle-git-properties"}
 
