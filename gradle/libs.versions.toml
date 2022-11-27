@@ -1,0 +1,51 @@
+[versions]
+java = "17"
+docker-base = "eclipse-temurin"
+docker-tag = "17-jre"
+
+gradle-release = "3.0.2"
+docker-java-application = "9.0.0"
+
+javalin = "5.1.3"
+jte = "2.2.3"
+flexmark = "0.64.0"
+log4j = "2.19.0"
+jackson = "2.13.4"
+junit = "5.9.0"
+jwt = "4.2.1"
+scribe = "8.3.2"
+mongodriver = "4.7.2"
+
+[libraries]
+javalin = { module = "io.javalin:javalin", version.ref = "javalin" }
+javalin-rendering = { module = "io.javalin:javalin-rendering", version.ref = "javalin" }
+javalin-ssl-plugin = { module = "io.javalin.community.ssl:ssl-plugin", version.ref = "javalin" }
+
+jte = { module = "gg.jte:jte", version.ref = "jte" }
+
+flexmark = { module = "com.vladsch.flexmark:flexmark", version.ref = "flexmark" }
+flexmark-ext-gfm-strikethrough = { module = "com.vladsch.flexmark:flexmark-ext-gfm-strikethrough", version.ref = "flexmark" }
+flexmark-ext-autolink = { module = "com.vladsch.flexmark:flexmark-ext-autolink", version.ref = "flexmark" }
+
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
+jackson-databind-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310", version.ref = "jackson" }
+jackson-databind-jdk8 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jdk8", version.ref = "jackson" }
+
+log4j-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "log4j" }
+log4j-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
+log4j-slf4j-impl = { module = "org.apache.logging.log4j:log4j-slf4j-impl", version.ref = "log4j" }
+
+junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
+junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
+junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit" }
+
+mongodb-driver = { module = "org.mongodb:mongodb-driver-sync", version.ref = "mongodriver" }
+
+auth0-jwt = { module = "com.auth0:java-jwt", version.ref =  "jwt"}
+scribe-api = { module = "com.github.scribejava:scribejava-apis", version.ref = "scribe"}
+
+[plugins]
+jte-gradle = { id = "gg.jte.gradle", version.ref = "jte" }
+gradle-release = { id = "net.researchgate.release", version.ref = "gradle-release" }
+docker-java = { id = "com.bmuschko.docker-java-application", version.ref = "docker-java-application" }
+

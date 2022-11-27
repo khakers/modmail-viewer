@@ -1,16 +1,16 @@
 plugins {
     id 'java'
     id 'application'
-    id 'com.bmuschko.docker-java-application' version '9.0.0'
-    id 'net.researchgate.release' version '3.0.2'
-    id 'gg.jte.gradle' version '2.2.3'
+    alias libs.plugins.gradle.release
+    alias libs.plugins.docker.java
+    alias libs.plugins.jte.gradle
 }
 
 group 'com.github.khakers'
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(libs.versions.java.get())
     }
 }
 
@@ -29,36 +29,36 @@ repositories {
 }
 
 dependencies {
-    implementation('io.javalin:javalin:5.1.3')
-    implementation('io.javalin:javalin-rendering:5.1.3')
-    implementation 'io.javalin.community.ssl:ssl-plugin:5.1.3'
+    implementation libs.javalin
+    implementation libs.javalin.rendering
+    implementation libs.javalin.ssl.plugin
 
-    implementation('gg.jte:jte:2.2.3')
+    implementation libs.jte
 
-    implementation 'com.vladsch.flexmark:flexmark:0.64.0'
-    implementation 'com.vladsch.flexmark:flexmark-ext-gfm-strikethrough:0.64.0'
-    implementation 'com.vladsch.flexmark:flexmark-ext-autolink:0.64.0'
+    implementation libs.flexmark
+    implementation libs.flexmark.ext.gfm.strikethrough
+    implementation libs.flexmark.ext.autolink
 
     implementation 'org.webjars.npm:bootstrap:5.2.2'
     implementation 'org.webjars.npm:bootstrap-icons:1.10.2'
     implementation 'org.webjars.npm:highlightjs__cdn-assets:11.6.0'
 
-    implementation 'org.mongodb:mongodb-driver-sync:4.7.2'
+    implementation libs.mongodb.driver
 
-    implementation 'org.apache.logging.log4j:log4j-api:2.19.0'
-    implementation 'org.apache.logging.log4j:log4j-core:2.19.0'
-    implementation 'org.apache.logging.log4j:log4j-slf4j2-impl:2.19.0'
+    implementation libs.log4j.api
+    implementation libs.log4j.core
+    implementation libs.log4j.slf4j.impl
 
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.4.2'
-    implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.13.4'
-    implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: '2.13.4'
+    implementation libs.jackson.databind
+    implementation libs.jackson.databind.jsr310
+    implementation libs.jackson.databind.jdk8
 
-    implementation 'com.auth0:java-jwt:4.2.1'
-    implementation 'com.github.scribejava:scribejava-apis:8.3.2'
+    implementation libs.auth0.jwt
+    implementation libs.scribe.api
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
-    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.9.0'
+    testImplementation libs.junit.jupiter.api
+    testRuntimeOnly libs.junit.jupiter.engine
+    testImplementation libs.junit.jupiter.params
 
 }
 
@@ -76,7 +76,7 @@ jte {
 
 docker {
     javaApplication {
-        baseImage = 'eclipse-temurin:17-jre'
+        baseImage = libs.versions.docker.base.get()+':'+libs.versions.docker.tag.get()
         ports = [80]
     }
 }
