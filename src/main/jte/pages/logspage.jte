@@ -46,7 +46,7 @@
                                     class="bi bi-x-circle"></i> Closed</span>
                     @endif
                     @if(modmailLog.isNsfw())
-                        <span class="badge rounded-pill text-bg-danger fs-6"><i
+                        <span class="badge rounded-pill text-bg-warning fs-6"><i
                                     class="bi bi-exclamation-triangle"></i> NFSW</span>
                     @endif
                     <span>Created by:</span>
@@ -89,7 +89,7 @@
                                     @if(!message.get().getAttachments().isEmpty())
                                         @for(var attachment: message.get().getAttachments())
                                             @if(attachment.isImage())
-                                                @template.macros.imageAttachment(attachment = attachment, message = message.get())
+                                                @template.macros.imageAttachment(attachment = attachment, message = message.get(), nsfw = modmailLog.isNsfw())
                                             @endif
                                         @endfor
                                     @endif
@@ -161,7 +161,7 @@
                                             @if(!message.get().getAttachments().isEmpty())
                                                 @for(var attachment: message.get().getAttachments())
                                                     @if(attachment.isImage())
-                                                        @template.macros.imageAttachment(attachment = attachment, message = message.get())
+                                                        @template.macros.imageAttachment(attachment = attachment, message = message.get(), nsfw = modmailLog.isNsfw())
                                                     @endif
                                                 @endfor
                                             @endif
