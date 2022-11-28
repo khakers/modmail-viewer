@@ -42,7 +42,7 @@
                                         class="bi bi-record-circle"></i> Open</span>
                         @else
                             <span class="badge rounded-pill text-bg-danger fs-6"><i
-                                        class="bi bi-x-circle"></i> Closed</span>
+                                        class="bi bi-check-circle"></i> Closed</span>
                         @endif
                         @if(entry.isNsfw())
                             <span class="badge rounded-pill text-bg-warning fs-6"><i
