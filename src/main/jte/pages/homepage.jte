@@ -55,6 +55,17 @@
                                        timestamp-type="detailed"></span></span>
                         ·
                         <span>${entry.getMessages().size()} messages</span>
+                        ·
+                        <span>Last message sent <span class="text-muted"
+                                                      timestamp="${entry.getMessages().get(entry.getMessages().size()-1).getCreationTime().toString()}"
+                                                      timestamp-type="relative" data-bs-toggle="tooltip"
+                                                      timestamp-title-type="detailed"></span> by
+                            <span class="user-select-all" data-bs-toggle="tooltip"
+                                  data-bs-title="${entry.getMessages().get(entry.getMessages().size()-1).getAuthor().id()}"><span
+                                        class="fw-semibold">${entry.getMessages().get(entry.getMessages().size()-1).getAuthor().name()}</span><span
+                                        class="text-secondary">#${entry.getMessages().get(entry.getMessages().size()-1).getAuthor().discriminator()}</span>
+                            </span>
+                        </span>
                     </li>
                 @endfor
 

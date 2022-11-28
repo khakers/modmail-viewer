@@ -15,6 +15,7 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Indexes;
 import com.mongodb.client.model.Sorts;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -61,9 +62,12 @@ public class ModMailLogDB {
 
         MongoClient mongoClient = MongoClients.create(settings);
         this.database = mongoClient.getDatabase("modmail_bot");
-        database.listCollectionNames().forEach(System.out::println);
+        database.listCollectionNames().forEach(logger::debug);
         this.logCollection = database.getCollection("logs");
         this.configCollection = database.getCollection("config");
+        var result = logCollection.createIndex(Indexes.descending("messages.timestamp"));
+        logger.debug(result);
+
     }
 
     public Optional<ModMailLogEntry> getModMailLogEntry(String id) {
@@ -83,7 +87,10 @@ public class ModMailLogDB {
 
     public List<ModMailLogEntry> getMostRecentEntries(int count) {
         ArrayList<ModMailLogEntry> entries = new ArrayList<>();
-        var foundLogs = logCollection.find().sort(Sorts.descending("created_at")).limit(count);
+        var foundLogs = logCollection
+                .find()
+                .sort(Sorts.descending("created_at"))
+                .limit(count);
         foundLogs.forEach(document -> {
             try {
                 entries.add(objectMapper.readValue(document.toJson(), ModMailLogEntry.class));
@@ -100,7 +107,11 @@ public class ModMailLogDB {
 
     public List<ModMailLogEntry> getPaginatedMostRecentEntries(int page, int itemsPerPage) {
         ArrayList<ModMailLogEntry> entries = new ArrayList<>();
-        var foundLogs = logCollection.find().sort(Sorts.descending("created_at")).skip((page - 1) * itemsPerPage).limit(itemsPerPage);
+        var foundLogs = logCollection
+                .find()
+                .sort(Sorts.descending("created_at"))
+                .skip((page - 1) * itemsPerPage)
+                .limit(itemsPerPage);
         foundLogs.forEach(document -> {
             try {
                 entries.add(objectMapper.readValue(document.toJson(), ModMailLogEntry.class));
@@ -108,6 +119,42 @@ public class ModMailLogDB {
                 logger.error(e);
             }
         });
+        return entries;
+    }
+
+    /**
+     * Returns a list of log entries based on their most recent activity
+     *
+     * @param page
+     * @return
+     */
+    public List<ModMailLogEntry> getPaginatedMostRecentEntriesByMessageActivity(int page) {
+        return getPaginatedMostRecentEntriesByMessageActivity(page, DEFAULT_ITEMS_PER_PAGE);
+    }
+
+    /**
+     * Returns a list of log entries based on their most recent activity
+     *
+     * @param page
+     * @param itemsPerPage
+     * @return
+     */
+    public List<ModMailLogEntry> getPaginatedMostRecentEntriesByMessageActivity(int page, int itemsPerPage) {
+        ArrayList<ModMailLogEntry> entries = new ArrayList<>();
+        var foundLogs = logCollection
+                .find()
+                .filter(Filters.not(Filters.size("messages",0)))
+                .sort(Sorts.descending("messages.timestamp"))
+                .skip((page - 1) * itemsPerPage)
+                .limit(itemsPerPage);
+        foundLogs.forEach(document -> {
+            try {
+                entries.add(objectMapper.readValue(document.toJson(), ModMailLogEntry.class));
+            } catch (JsonProcessingException e) {
+                logger.error(e);
+            }
+        });
+        logger.debug("Entries: {}",entries);
         return entries;
     }
 

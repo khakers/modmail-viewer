@@ -131,7 +131,7 @@ public class Main {
                             .check(integer -> integer >= 1, "page must be at least 1")
                             .getOrDefault(1);
                     ctx.render("pages/homepage.jte",
-                            model("logEntries", db.getPaginatedMostRecentEntries(page),
+                            model("logEntries", db.getPaginatedMostRecentEntriesByMessageActivity(page),
                                     "page", page,
                                     "pageCount", db.getPaginationCount(),
                                     "user", authHandler != null ? AuthHandler.getUser(ctx) : new SiteUser()));
