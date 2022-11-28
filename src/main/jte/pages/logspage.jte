@@ -28,7 +28,6 @@
 </head>
 <body>
 
-@template.macros.navbar(user = user)
 <div class="page-container">
     @template.macros.navbar(user = user)
     <div class="content">
