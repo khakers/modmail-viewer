@@ -176,7 +176,14 @@ div.spoilerImage input:checked, div.spoilerImage input:checked ~ label {
 @media screen and (max-width: 992px) {
     .content {
         padding-top: 56px;
-        padding-bottom: 5rem;
+        padding-bottom: 6rem;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .content {
+        padding-top: 56px;
+        padding-bottom: 10rem;
     }
 }
 
