@@ -1,6 +1,8 @@
 @import com.github.khakers.modmailviewer.auth.SiteUser
 @import com.github.khakers.modmailviewer.util.Pagination
 @import com.github.khakers.modmailviewer.data.ModMailLogEntry
+@import java.time.Instant
+@import java.time.temporal.ChronoUnit
 
 @param java.util.List<com.github.khakers.modmailviewer.data.ModMailLogEntry> logEntries
 
@@ -48,11 +50,23 @@
                             <span class="badge rounded-pill text-bg-warning fs-6"><i
                                         class="bi bi-exclamation-triangle"></i> NSFW</span>
                         @endif
-                        <span>Created by:</span>
-                        <span class="fw-semibold">${entry.getCreator().name()}</span><span
+                        @if(entry.isOpen())
+                            <span>Created by</span>
+                            <span class="fw-semibold">${entry.getCreator().name()}</span><span
                                 class="text-secondary">#${entry.getCreator().discriminator()}</span>
-                        <span>on <span class="text-muted" timestamp="${entry.getCreationTime().toString()}"
-                                       timestamp-type="detailed"></span></span>
+                            <span><span class="text-muted" timestamp="${entry.getCreationTime().toString()}"
+                                        timestamp-type="relative" data-bs-toggle="tooltip"
+                                        timestamp-title-type="detailed"></span></span>
+                        @else
+                            <span>Created by</span>
+                            <span class="fw-semibold">${entry.getCreator().name()}</span><span
+                                class="text-secondary">#${entry.getCreator().discriminator()}</span>
+                            <span>was closed <span class="text-muted"
+                                                   timestamp="${entry.getClosedTime().get().toString()}"
+                                                   timestamp-type="relative" data-bs-toggle="tooltip"
+                                                   timestamp-title-type="detailed"></span></span>
+
+                        @endif
                         ·
                         <span>${entry.getMessages().size()} messages</span>
                         ·
