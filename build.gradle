@@ -92,12 +92,13 @@ licenseReport {
     generateCsvReport = false
     generateHtmlReport = true
     generateJsonReport = false
-    generateTextReport = false
+    generateTextReport = true
 //    ignoredPatterns = []
 }
 
 task('copyReport', type: Copy, dependsOn: 'licenseReport') {
     from layout.buildDirectory.file("reports/licenses/licenseReport.html")
+    from layout.buildDirectory.file("reports/licenses/licenseReport.txt")
     into layout.buildDirectory.dir("resources/main/static")
 }
 
