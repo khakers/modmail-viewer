@@ -192,3 +192,13 @@ footer {
     --bs-nav-link-hover-color: var(--bs-navbar-hover-color);
     --bs-nav-link-disabled-color: var(--bs-navbar-disabled-color);
 }
+
+#nsfw-backdrop {
+    backdrop-filter: blur(75px);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1020;
+    width: 100vw;
+    height: 100vh;
+}
