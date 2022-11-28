@@ -14,7 +14,7 @@ public class SiteUser {
     String discriminator;
     String avatar;
 
-    boolean isRealUser;
+    boolean isRealUser = true;
 
 //    Role role;
 
