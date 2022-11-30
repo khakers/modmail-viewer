@@ -71,6 +71,23 @@ public class ModMailLogDB {
 
     }
 
+    public int getTotalTickets(TicketStatus ticketStatus) {
+        switch (ticketStatus) {
+            case OPEN -> {
+                return Math.toIntExact(logCollection.countDocuments(Filters.eq("open", true)));
+            }
+            case CLOSED -> {
+                return Math.toIntExact(logCollection.countDocuments(Filters.eq("open", false)));
+            }
+            case ALL -> {
+                return (int) logCollection.estimatedDocumentCount();
+            }
+            default -> {
+                return 0;
+            }
+        }
+    }
+
     public Optional<ModMailLogEntry> getModMailLogEntry(String id) {
         try {
             var result = logCollection.find(Filters.eq("_id", id)).limit(1).first();
