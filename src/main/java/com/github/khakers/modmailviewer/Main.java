@@ -131,17 +131,22 @@ public class Main {
                     Integer page = ctx.queryParamAsClass("page", Integer.class)
                             .check(integer -> integer >= 1, "page must be at least 1")
                             .getOrDefault(1);
-                    String filter = ctx.queryParamAsClass("filter", String.class)
+                    String filter = ctx.queryParamAsClass("status", String.class)
                             .check(s -> s.equalsIgnoreCase(String.valueOf(TicketStatus.OPEN))
                                     || s.equalsIgnoreCase(String.valueOf(TicketStatus.CLOSED))
                                     || s.equalsIgnoreCase(String.valueOf(TicketStatus.ALL)), "")
                             .getOrDefault("ALL");
-                    var ticketFilter =  TicketStatus.valueOf(filter.toUpperCase());
+                    Boolean showNSFW = ctx.queryParamAsClass("nsfw", Boolean.class)
+                            .getOrDefault(Boolean.TRUE);
+                    var ticketFilter = TicketStatus.valueOf(filter.toUpperCase());
                     ctx.render("pages/homepage.jte",
                             model("logEntries", db.getPaginatedMostRecentEntriesByMessageActivity(page, ticketFilter),
                                     "page", page,
                                     "pageCount", db.getPaginationCount(),
-                                    "user", authHandler != null ? AuthHandler.getUser(ctx) : new SiteUser()));
+                                    "user", authHandler != null ? AuthHandler.getUser(ctx) : new SiteUser(),
+                                    "modMailLogDB", db,
+                                    "ticketStatusFilter", ticketFilter,
+                                    "showNSFW", showNSFW));
                 }, RoleUtils.atLeastModerator())
                 .get("/logs/{id}", ctx -> {
                     var entry = db.getModMailLogEntry(ctx.pathParam("id"));

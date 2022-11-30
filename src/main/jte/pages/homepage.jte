@@ -1,14 +1,19 @@
 @import com.github.khakers.modmailviewer.auth.SiteUser
+@import com.github.khakers.modmailviewer.data.internal.TicketStatus
 @import com.github.khakers.modmailviewer.util.Pagination
 @import com.github.khakers.modmailviewer.data.ModMailLogEntry
 @import java.time.Instant
 @import java.time.temporal.ChronoUnit
+@import com.github.khakers.modmailviewer.ModMailLogDB
 
 @param java.util.List<com.github.khakers.modmailviewer.data.ModMailLogEntry> logEntries
 
 @param int page
 @param int pageCount
 @param SiteUser user
+@param ModMailLogDB modMailLogDB
+@param TicketStatus ticketStatusFilter
+@param boolean showNSFW
 
 <!doctype html>
 <html lang="en" xmlns="http://www.w3.org/1999/html">
@@ -35,49 +40,84 @@
                 <p class="text-center">Looks like you don't have any modmail threads</p>
                 <p class="text-center text-muted">¯\_(ツ)_/¯</p>
             @endif
+            <div class="border rounded-top">
+<%--                <div class="btn-group" role="group" aria-label="Basic outlined example">--%>
+<%--                    <button type="button" class="btn btn-outline-primary">All</button>--%>
+<%--                    <button type="button" class="btn btn-outline-primary">Open</button>--%>
+<%--                    <button type="button" class="btn btn-outline-primary">Closed</button>--%>
+<%--                </div>--%>
+                <ul class="nav nav-pills p-2 ">
+                    <li class="nav-item">
+                        <a class="nav-link @if(ticketStatusFilter == TicketStatus.ALL)active@endif" href="#" onclick="update('status', 'all')">${modMailLogDB.getTotalTickets(TicketStatus.ALL)} All</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @if(ticketStatusFilter == TicketStatus.OPEN)active@endif"
+                           href="#" onclick="update('status', 'open')"><i class="bi bi-record-circle"></i> ${modMailLogDB.getTotalTickets(TicketStatus.OPEN)} Open</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @if(ticketStatusFilter == TicketStatus.CLOSED)active@endif"
+                           href="#" onclick="update('status', 'closed')"><i class="bi bi-check-lg"></i> ${modMailLogDB.getTotalTickets(TicketStatus.CLOSED)} Closed</a>
+                    </li>
+<%--                    <li class="nav-item border-danger btn-outline-danger ps-2">--%>
+<%--                        <a class="nav-link border-danger @if(showNSFW)active@endif" href="#"--%>
+<%--                           onclick="update('nsfw', '${!showNSFW}')">Show NSFW</a>--%>
+<%--                    </li>--%>
+<%--                    <li class="nav-item ps-5 ms-auto">--%>
+<%--                        <button type="button" class="btn btn-outline-danger" onclick="update('nsfw', '${!showNSFW}')">Show NSFW</button>--%>
+<%--                        --%><%-- THis painful if is only required because of 'checked'. JTE does not allow expressions for attribute names --%>
+<%--                        @if(showNSFW)--%>
+<%--                            <input type="checkbox" class="btn-check" id="btncheck1" autocomplete="off" onclick="update('nsfw', '${!showNSFW}')" checked>--%>
+<%--                        @else--%>
+<%--                            <input type="checkbox" class="btn-check" id="btncheck1" autocomplete="off" onclick="update('nsfw', '${!showNSFW}')">--%>
+<%--                        @endif--%>
+<%--                        <label class="btn btn-outline-danger" for="btncheck1">Show NSFW</label>--%>
+<%--                    </li>--%>
+                </ul>
+            </div>
+
             <ol class="list-group">
-                @for(ModMailLogEntry entry : logEntries)
-                    <li class="list-group-item">
-                        <h2><a href="/logs/${entry.getKey()}">${entry.getKey()}</a></h2>
-                        @if(entry.isOpen())
+                @for(var entry : gg.jte.support.ForSupport.of(logEntries))
+                    <li class="list-group-item @if(entry.isFirst())border-top-0 rounded-0@endif">
+                        <h2><a href="/logs/${entry.get().getKey()}">${entry.get().getKey()}</a></h2>
+                        @if(entry.get().isOpen())
                             <span class="badge rounded-pill text-bg-success fs-6"><i
                                         class="bi bi-record-circle"></i> Open</span>
                         @else
                             <span class="badge rounded-pill text-bg-danger fs-6"><i
                                         class="bi bi-check-circle"></i> Closed</span>
                         @endif
-                        @if(entry.isNsfw())
+                        @if(entry.get().isNsfw())
                             <span class="badge rounded-pill text-bg-warning fs-6"><i
                                         class="bi bi-exclamation-triangle"></i> NSFW</span>
                         @endif
-                        @if(entry.isOpen())
+                        @if(entry.get().isOpen())
                             <span>Created by</span>
-                            <span class="fw-semibold">${entry.getCreator().name()}</span><span
-                                class="text-secondary">#${entry.getCreator().discriminator()}</span>
-                            <span><span class="text-muted" timestamp="${entry.getCreationTime().toString()}"
+                            <span class="fw-semibold">${entry.get().getCreator().name()}</span><span
+                                class="text-secondary">#${entry.get().getCreator().discriminator()}</span>
+                            <span><span class="text-muted" timestamp="${entry.get().getCreationTime().toString()}"
                                         timestamp-type="relative" data-bs-toggle="tooltip"
                                         timestamp-title-type="detailed"></span></span>
                         @else
                             <span>Created by</span>
-                            <span class="fw-semibold">${entry.getCreator().name()}</span><span
-                                class="text-secondary">#${entry.getCreator().discriminator()}</span>
+                            <span class="fw-semibold">${entry.get().getCreator().name()}</span><span
+                                class="text-secondary">#${entry.get().getCreator().discriminator()}</span>
                             <span>was closed <span class="text-muted"
-                                                   timestamp="${entry.getClosedTime().get().toString()}"
+                                                   timestamp="${entry.get().getClosedTime().get().toString()}"
                                                    timestamp-type="relative" data-bs-toggle="tooltip"
                                                    timestamp-title-type="detailed"></span></span>
 
                         @endif
                         ·
-                        <span>${entry.getMessages().size()} messages</span>
+                        <span>${entry.get().getMessages().size()} messages</span>
                         ·
                         <span>Last message sent <span class="text-muted"
-                                                      timestamp="${entry.getMessages().get(entry.getMessages().size()-1).getCreationTime().toString()}"
+                                                      timestamp="${entry.get().getMessages().get(entry.get().getMessages().size()-1).getCreationTime().toString()}"
                                                       timestamp-type="relative" data-bs-toggle="tooltip"
                                                       timestamp-title-type="detailed"></span> by
                             <span class="user-select-all" data-bs-toggle="tooltip"
-                                  data-bs-title="${entry.getMessages().get(entry.getMessages().size()-1).getAuthor().id()}"><span
-                                        class="fw-semibold">${entry.getMessages().get(entry.getMessages().size()-1).getAuthor().name()}</span><span
-                                        class="text-secondary">#${entry.getMessages().get(entry.getMessages().size()-1).getAuthor().discriminator()}</span>
+                                  data-bs-title="${entry.get().getMessages().get(entry.get().getMessages().size()-1).getAuthor().id()}"><span
+                                        class="fw-semibold">${entry.get().getMessages().get(entry.get().getMessages().size()-1).getAuthor().name()}</span><span
+                                        class="text-secondary">#${entry.get().getMessages().get(entry.get().getMessages().size()-1).getAuthor().discriminator()}</span>
                             </span>
                         </span>
                     </li>
@@ -134,6 +174,7 @@
 </div>
 
 <script src="timeformat.js"></script>
+<script src="util.js"></script>
 <script src="/webjars/bootstrap/5.2.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
