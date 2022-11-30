@@ -8,6 +8,7 @@ import com.github.khakers.modmailviewer.auth.Role;
 import com.github.khakers.modmailviewer.auth.SiteUser;
 import com.github.khakers.modmailviewer.data.ModMailLogEntry;
 import com.github.khakers.modmailviewer.data.ModmailConfig;
+import com.github.khakers.modmailviewer.data.internal.TicketStatus;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
@@ -129,7 +130,17 @@ public class ModMailLogDB {
      * @return
      */
     public List<ModMailLogEntry> getPaginatedMostRecentEntriesByMessageActivity(int page) {
-        return getPaginatedMostRecentEntriesByMessageActivity(page, DEFAULT_ITEMS_PER_PAGE);
+        return getPaginatedMostRecentEntriesByMessageActivity(page, TicketStatus.ALL);
+    }
+
+    /**
+     * Returns a list of log entries based on their most recent activity
+     *
+     * @param page
+     * @return
+     */
+    public List<ModMailLogEntry> getPaginatedMostRecentEntriesByMessageActivity(int page, TicketStatus ticketStatus) {
+        return getPaginatedMostRecentEntriesByMessageActivity(page, DEFAULT_ITEMS_PER_PAGE, ticketStatus);
     }
 
     /**
@@ -139,12 +150,19 @@ public class ModMailLogDB {
      * @param itemsPerPage
      * @return
      */
-    public List<ModMailLogEntry> getPaginatedMostRecentEntriesByMessageActivity(int page, int itemsPerPage) {
+    public List<ModMailLogEntry> getPaginatedMostRecentEntriesByMessageActivity(int page, int itemsPerPage, TicketStatus ticketStatus) {
         ArrayList<ModMailLogEntry> entries = new ArrayList<>();
+        var ticketFilter = switch (ticketStatus) {
+            case ALL -> Filters.empty();
+            case CLOSED -> Filters.eq("open", false);
+            case OPEN -> Filters.eq("open", true);
+        };
+        logger.debug("filtering by {} with {}", ticketStatus, ticketFilter);
         var foundLogs = logCollection
                 .find()
                 .filter(Filters.not(Filters.size("messages",0)))
                 .sort(Sorts.descending("messages.timestamp"))
+                .filter(ticketFilter)
                 .skip((page - 1) * itemsPerPage)
                 .limit(itemsPerPage);
         foundLogs.forEach(document -> {
@@ -154,7 +172,7 @@ public class ModMailLogDB {
                 logger.error(e);
             }
         });
-        logger.debug("Entries: {}",entries);
+        logger.trace("Entries: {}",entries);
         return entries;
     }
 
@@ -187,7 +205,7 @@ public class ModMailLogDB {
         var conf = configCollection.find().first();
         if (conf != null) {
             try {
-                logger.debug(conf.toJson());
+                logger.trace(conf.toJson());
                 var config = objectMapper.readValue(conf.toJson(), ModmailConfig.class);
                 // set cache
                 cachedConfig = config;

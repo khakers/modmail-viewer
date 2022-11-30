@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.khakers.modmailviewer.auth.AuthHandler;
 import com.github.khakers.modmailviewer.auth.Role;
 import com.github.khakers.modmailviewer.auth.SiteUser;
+import com.github.khakers.modmailviewer.data.internal.TicketStatus;
 import com.github.khakers.modmailviewer.markdown.channelmention.ChannelMentionExtension;
 import com.github.khakers.modmailviewer.markdown.customemoji.CustomEmojiExtension;
 import com.github.khakers.modmailviewer.markdown.spoiler.SpoilerExtension;
@@ -111,7 +112,7 @@ public class Main {
                             if (Config.isHttpsOnly) {
                                 logger.warn("SSL is ENABLED but HTTPS only is DISABLED");
                             }
-                         });
+                        });
                         javalinConfig.plugins.register(sslPlugin);
                         if (Config.isHttpsOnly) {
                             logger.info("HTTPS only is ENABLED");
@@ -130,8 +131,14 @@ public class Main {
                     Integer page = ctx.queryParamAsClass("page", Integer.class)
                             .check(integer -> integer >= 1, "page must be at least 1")
                             .getOrDefault(1);
+                    String filter = ctx.queryParamAsClass("filter", String.class)
+                            .check(s -> s.equalsIgnoreCase(String.valueOf(TicketStatus.OPEN))
+                                    || s.equalsIgnoreCase(String.valueOf(TicketStatus.CLOSED))
+                                    || s.equalsIgnoreCase(String.valueOf(TicketStatus.ALL)), "")
+                            .getOrDefault("ALL");
+                    var ticketFilter =  TicketStatus.valueOf(filter.toUpperCase());
                     ctx.render("pages/homepage.jte",
-                            model("logEntries", db.getPaginatedMostRecentEntriesByMessageActivity(page),
+                            model("logEntries", db.getPaginatedMostRecentEntriesByMessageActivity(page, ticketFilter),
                                     "page", page,
                                     "pageCount", db.getPaginationCount(),
                                     "user", authHandler != null ? AuthHandler.getUser(ctx) : new SiteUser()));
