@@ -5,6 +5,8 @@ to [logviewer](https://github.com/kyb3r/logviewer).
 
 Built using Javalin, JTE, and Bootstrap 5.
 ![modmail-logviewer-log](https://user-images.githubusercontent.com/22665282/202370624-09cfa0d6-f8eb-492b-9b82-05f43df672f0.png)
+![logview](https://user-images.githubusercontent.com/22665282/204731537-4f95bb11-0176-45b3-988b-40eac95b3862.png)
+
 
 _Modmail-Viewer_ is currently in beta. There may be breaking or otherwise significant changes between versions and the
 application may be unstable in some circumstances.
