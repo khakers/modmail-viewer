@@ -3,7 +3,7 @@
         <div class="row align-items-center me-0 justify-content-xl-between">
             <div class="col-sm-12 col-xl-5 align-items-center text-center text-xl-start navbar-text pb-0 pt-0 text-sm-nowrap">
                 Powered by Modmail-Viewer
-                Version: ${com.github.khakers.modmailviewer.ModmailViewer.PRECISE_GIT_VERSION_ID}
+                Version: ${com.github.khakers.modmailviewer.ModmailViewer.VERSION}
             </div>
             <div class="col-sm-12 col-xl-5 d-inline-block justify-content-center justify-content-xl-end gap-3 text-center text-xl-end text-xl-start">
                 <div class="row justify-content-center justify-content-xl-end gx-2">

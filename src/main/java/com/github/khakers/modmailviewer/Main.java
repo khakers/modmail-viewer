@@ -187,5 +187,7 @@ public class Main {
             app.get("/callback", authHandler::handleCallback, Role.ANYONE);
         }
 
+        logger.info("You are running Modmail-Viewer {} built on {}", ModmailViewer.VERSION, ModmailViewer.BUILD_TIMESTAMP);
+
     }
 }
