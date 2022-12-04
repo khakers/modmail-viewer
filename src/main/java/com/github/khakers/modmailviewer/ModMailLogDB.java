@@ -196,20 +196,23 @@ public class ModMailLogDB {
     /**
      * Determines the number of pages required to display every modmail entry at 8 per page
      *
+     * @param ticketStatus ticket status to filter for
+     *
      * @return numbers of pages required to paginate all modmail logs
      */
-    public int getPaginationCount() {
-        return getPaginationCount(DEFAULT_ITEMS_PER_PAGE);
+    public int getPaginationCount(TicketStatus ticketStatus) {
+        return getPaginationCount(DEFAULT_ITEMS_PER_PAGE, ticketStatus);
     }
 
     /**
      * Determines the number of pages required to display every modmail entry at the given items per page
      *
      * @param itemsPerPage max entries per page
+     * @param ticketStatus ticket status to filter for
      * @return numbers of pages required to paginate all modmail logs
      */
-    public int getPaginationCount(int itemsPerPage) {
-        return (int) (Math.ceil(logCollection.estimatedDocumentCount() / (double) (itemsPerPage)));
+    public int getPaginationCount(int itemsPerPage, TicketStatus ticketStatus) {
+        return (int) (Math.ceil(getTotalTickets(ticketStatus) / (double) (itemsPerPage)));
     }
 
     public ModmailConfig getConfig() throws Exception {

@@ -142,7 +142,7 @@ public class Main {
                     ctx.render("pages/homepage.jte",
                             model("logEntries", db.getPaginatedMostRecentEntriesByMessageActivity(page, ticketFilter),
                                     "page", page,
-                                    "pageCount", db.getPaginationCount(),
+                                    "pageCount", db.getPaginationCount(ticketFilter),
                                     "user", authHandler != null ? AuthHandler.getUser(ctx) : new SiteUser(),
                                     "modMailLogDB", db,
                                     "ticketStatusFilter", ticketFilter,

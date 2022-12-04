@@ -1,9 +1,6 @@
 @import com.github.khakers.modmailviewer.auth.SiteUser
 @import com.github.khakers.modmailviewer.data.internal.TicketStatus
 @import com.github.khakers.modmailviewer.util.Pagination
-@import com.github.khakers.modmailviewer.data.ModMailLogEntry
-@import java.time.Instant
-@import java.time.temporal.ChronoUnit
 @import com.github.khakers.modmailviewer.ModMailLogDB
 
 @param java.util.List<com.github.khakers.modmailviewer.data.ModMailLogEntry> logEntries
@@ -36,45 +33,52 @@
     @template.macros.navbar(user = user)
     <div class="content">
         <div class="container pt-5">
-            @if(logEntries.isEmpty())
-                <p class="text-center">Looks like you don't have any modmail threads</p>
-                <p class="text-center text-muted">¯\_(ツ)_/¯</p>
-            @endif
+
             <div class="border rounded-top">
-<%--                <div class="btn-group" role="group" aria-label="Basic outlined example">--%>
-<%--                    <button type="button" class="btn btn-outline-primary">All</button>--%>
-<%--                    <button type="button" class="btn btn-outline-primary">Open</button>--%>
-<%--                    <button type="button" class="btn btn-outline-primary">Closed</button>--%>
-<%--                </div>--%>
+                <%--                <div class="btn-group" role="group" aria-label="Basic outlined example">--%>
+                <%--                    <button type="button" class="btn btn-outline-primary">All</button>--%>
+                <%--                    <button type="button" class="btn btn-outline-primary">Open</button>--%>
+                <%--                    <button type="button" class="btn btn-outline-primary">Closed</button>--%>
+                <%--                </div>--%>
                 <ul class="nav nav-pills p-2 ">
                     <li class="nav-item">
-                        <a class="nav-link @if(ticketStatusFilter == TicketStatus.ALL)active@endif" href="#" onclick="update('status', 'all')">${modMailLogDB.getTotalTickets(TicketStatus.ALL)} All</a>
+                        <a class="nav-link @if(ticketStatusFilter == TicketStatus.ALL)active@endif" href="#"
+                           onclick="update('status', 'all')">${modMailLogDB.getTotalTickets(TicketStatus.ALL)} All</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link @if(ticketStatusFilter == TicketStatus.OPEN)active@endif"
-                           href="#" onclick="update('status', 'open')"><i class="bi bi-record-circle"></i> ${modMailLogDB.getTotalTickets(TicketStatus.OPEN)} Open</a>
+                           href="#" onclick="update('status', 'open')"><i
+                                    class="bi bi-record-circle"></i> ${modMailLogDB.getTotalTickets(TicketStatus.OPEN)}
+                            Open</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link @if(ticketStatusFilter == TicketStatus.CLOSED)active@endif"
-                           href="#" onclick="update('status', 'closed')"><i class="bi bi-check-lg"></i> ${modMailLogDB.getTotalTickets(TicketStatus.CLOSED)} Closed</a>
+                           href="#" onclick="update('status', 'closed')"><i
+                                    class="bi bi-check-lg"></i> ${modMailLogDB.getTotalTickets(TicketStatus.CLOSED)}
+                            Closed</a>
                     </li>
-<%--                    <li class="nav-item border-danger btn-outline-danger ps-2">--%>
-<%--                        <a class="nav-link border-danger @if(showNSFW)active@endif" href="#"--%>
-<%--                           onclick="update('nsfw', '${!showNSFW}')">Show NSFW</a>--%>
-<%--                    </li>--%>
-<%--                    <li class="nav-item ps-5 ms-auto">--%>
-<%--                        <button type="button" class="btn btn-outline-danger" onclick="update('nsfw', '${!showNSFW}')">Show NSFW</button>--%>
-<%--                        --%><%-- THis painful if is only required because of 'checked'. JTE does not allow expressions for attribute names --%>
-<%--                        @if(showNSFW)--%>
-<%--                            <input type="checkbox" class="btn-check" id="btncheck1" autocomplete="off" onclick="update('nsfw', '${!showNSFW}')" checked>--%>
-<%--                        @else--%>
-<%--                            <input type="checkbox" class="btn-check" id="btncheck1" autocomplete="off" onclick="update('nsfw', '${!showNSFW}')">--%>
-<%--                        @endif--%>
-<%--                        <label class="btn btn-outline-danger" for="btncheck1">Show NSFW</label>--%>
-<%--                    </li>--%>
+                    <%--                    <li class="nav-item border-danger btn-outline-danger ps-2">--%>
+                    <%--                        <a class="nav-link border-danger @if(showNSFW)active@endif" href="#"--%>
+                    <%--                           onclick="update('nsfw', '${!showNSFW}')">Show NSFW</a>--%>
+                    <%--                    </li>--%>
+                    <%--                    <li class="nav-item ps-5 ms-auto">--%>
+                    <%--                        <button type="button" class="btn btn-outline-danger" onclick="update('nsfw', '${!showNSFW}')">Show NSFW</button>--%>
+                    <%--                        --%><%-- THis painful if is only required because of 'checked'. JTE does not allow expressions for attribute names --%>
+                    <%--                        @if(showNSFW)--%>
+                    <%--                            <input type="checkbox" class="btn-check" id="btncheck1" autocomplete="off" onclick="update('nsfw', '${!showNSFW}')" checked>--%>
+                    <%--                        @else--%>
+                    <%--                            <input type="checkbox" class="btn-check" id="btncheck1" autocomplete="off" onclick="update('nsfw', '${!showNSFW}')">--%>
+                    <%--                        @endif--%>
+                    <%--                        <label class="btn btn-outline-danger" for="btncheck1">Show NSFW</label>--%>
+                    <%--                    </li>--%>
                 </ul>
             </div>
-
+            @if(logEntries.isEmpty())
+                <div class="pt-5">
+                    <p class="text-center">Looks like you don't have any modmail@if(ticketStatusFilter != TicketStatus.ALL) threads matching this filter@endif</p>
+                    <p class="text-center text-muted">¯\_(ツ)_/¯</p>
+                </div>
+            @endif
             <ol class="list-group">
                 @for(var entry : gg.jte.support.ForSupport.of(logEntries))
                     <li class="list-group-item @if(entry.isFirst())border-top-0 rounded-0@endif">
@@ -139,10 +143,10 @@
                 <nav aria-label="Page navigation example">
                     <ul class="pagination">
                         <li class="page-item"><a class="page-link ${previousClass}"
-                                                 href="?page=${Math.max(page-1, 1)}">Previous</a>
+                                                 href="#" onclick="update('page', '${Math.max(page-1, 1)}')">Previous</a>
                         </li>
                         @if(Pagination.needsPaginationCulling(pageCount) && page > 4)
-                            <a class="page-link" href="?page=1">1</a>
+                            <a class="page-link" href="#" >1</a>
                             <li class="page-item"><a class="page-link disabled">...</a></li>
                         @endif
                         @for(int i = 1; i < pageCount+1; ++i)
@@ -155,16 +159,17 @@
                                     @if(i == page)
                                         <span class="page-link ${isActive}">${i}</span>
                                     @else
-                                        <a class="page-link" href="?page=${i}">${i}</a>
+                                        <a class="page-link" href="#" onclick="update('page', '${i}')">${i}</a>
                                     @endif
                                 </li>
                             @endif
                         @endfor
                         @if(Pagination.needsPaginationCulling(pageCount) && page < pageCount-3)
                             <li class="page-item"><a class="page-link disabled">...</a></li>
-                            <a class="page-link sm-visually-hidden" href="?page=${pageCount}">${pageCount}</a>
+                            <a class="page-link sm-visually-hidden" href="#">${pageCount}</a>
                         @endif
-                        <li class="page-item"><a class="page-link ${nextClass}" href="?page=${page+1}">Next</a></li>
+                        <li class="page-item"><a class="page-link ${nextClass}" href="#"
+                                                 onclick="update('page', '${page+1}')">Next</a></li>
                     </ul>
                 </nav>
             </div>
