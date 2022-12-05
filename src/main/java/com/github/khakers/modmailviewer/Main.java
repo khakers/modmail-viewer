@@ -131,18 +131,20 @@ public class Main {
                     Integer page = ctx.queryParamAsClass("page", Integer.class)
                             .check(integer -> integer >= 1, "page must be at least 1")
                             .getOrDefault(1);
-                    String filter = ctx.queryParamAsClass("status", String.class)
+                    String statusFilter = ctx.queryParamAsClass("status", String.class)
                             .check(s -> s.equalsIgnoreCase(String.valueOf(TicketStatus.OPEN))
                                     || s.equalsIgnoreCase(String.valueOf(TicketStatus.CLOSED))
                                     || s.equalsIgnoreCase(String.valueOf(TicketStatus.ALL)), "")
                             .getOrDefault("ALL");
                     Boolean showNSFW = ctx.queryParamAsClass("nsfw", Boolean.class)
                             .getOrDefault(Boolean.TRUE);
-                    var ticketFilter = TicketStatus.valueOf(filter.toUpperCase());
+                    var ticketFilter = TicketStatus.valueOf(statusFilter.toUpperCase());
+                    var pageCount = db.getPaginationCount(ticketFilter);
+                    page = Math.min(pageCount, page);
                     ctx.render("pages/homepage.jte",
                             model("logEntries", db.getPaginatedMostRecentEntriesByMessageActivity(page, ticketFilter),
                                     "page", page,
-                                    "pageCount", db.getPaginationCount(ticketFilter),
+                                    "pageCount", pageCount,
                                     "user", authHandler != null ? AuthHandler.getUser(ctx) : new SiteUser(),
                                     "modMailLogDB", db,
                                     "ticketStatusFilter", ticketFilter,
