@@ -14,7 +14,7 @@ application may be unstable in some circumstances.
 ## Features
 
 * Discord OAuth2 authentication based on your modmail roles
-* Browsable paginated logs
+* Browsable paginated logs sorted by most recent message and filtered
 * (mostly) Mobile friendly design
 * Full message Discord Markdown formatting (Including spoilers, custom emojis, and timestamps)
 
@@ -22,12 +22,11 @@ application may be unstable in some circumstances.
 ## Roadmap
 
 * Stats dashboard
-* Filtering logs
 * Basic API
 * Dark theme (waiting on bootstrap 5.3)
 * Search
 * Snippet editor (requires a bot plugin)
-* Better log sorting
+* Configurable log sorting
 
 ## Self-hosting
 
