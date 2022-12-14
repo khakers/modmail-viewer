@@ -13,26 +13,25 @@ application may be unstable in some circumstances.
 
 ## Features
 
-* Discord OAuth2 authentication based on your modmail roles
-* Browsable paginated logs
-* (mostly) Mobile friendly design
-* Full message Discord Markdown formatting (Including spoilers, custom emojis, and timestamps)
+* Discord OAuth2 authentication based on your modmail roles.
+* Browsable paginated logs sorted by most recent message and filtered by status.
+* Mobile friendly design.
+* Full message Discord Markdown formatting (Including spoilers, custom emojis, and timestamps).
 
 
 ## Roadmap
 
 * Stats dashboard
-* Filtering logs
 * Basic API
 * Dark theme (waiting on bootstrap 5.3)
 * Search
 * Snippet editor (requires a bot plugin)
-* Better log sorting
+* Configurable log sorting
 
 ## Self-hosting
 
 You should place your _modmail-viewer_ instance behind Cloudflare or some other reverse proxy (such as Caddy) to provide
-automatic https OR provide the required keys to the application yourself if you plan on using authentication.
+automatic https OR provide the required keys/certs to the application yourself if you plan on using authentication.
 
 ### Docker
 
@@ -82,7 +81,7 @@ services:
 Should be located next to your docker-compose.yml, contains secrets.
 
 > **Note**
-> You'll need to create a Discord application retrieve your OAuth2 client ID and Client secret from the OAuth2 section of the [developer dashboard](https://discord.com/developers/applications)
+> You'll need to create a Discord application (or use the one you created for modmail) and retrieve your OAuth2 client ID and Client secret from the OAuth2 section of the [developer dashboard](https://discord.com/developers/applications)
 
 ```properties
 MODMAIL_VIEWER_DISCORD_OAUTH_CLIENT_ID=123456789

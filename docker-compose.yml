@@ -1,7 +1,8 @@
 version: "3.7"
 services:
   bot:
-    image: kyb3rr/modmail
+    build:
+      context: https://github.com/kyb3r/modmail.git
     restart: always
     env_file:
       - .env
@@ -16,10 +17,13 @@ services:
     env_file:
       - .env
     ports:
-      - "80:7070"
+      - "80:80"
     environment:
+      # Replace with mongodb URI
       - "MODMAIL_VIEWER_MONGODB_URI=mongodb://mongo:27017"
-      - "MODMAIL_VIEWER_URL=http://127.0.0.1:80"
+      # The URL you use to reach modmail-viewer
+      - "MODMAIL_VIEWER_URL=http://127.0.0.1"
+  # Comment out if not using
   mongo:
     image: mongo:latest
     restart: always
