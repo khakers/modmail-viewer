@@ -42,9 +42,11 @@ dependencies {
     implementation libs.flexmark.ext.gfm.strikethrough
     implementation libs.flexmark.ext.autolink
 
-    implementation 'org.webjars.npm:bootstrap:5.2.2'
-    implementation 'org.webjars.npm:bootstrap-icons:1.10.2'
-    implementation 'org.webjars.npm:highlightjs__cdn-assets:11.6.0'
+    implementation libs.bootstrap
+    implementation libs.bootstrap.icons
+    implementation libs.highlightjs
+    implementation libs.chartsjs
+    implementation libs.chartsjs.autocolor
 
     implementation libs.mongodb.driver
 

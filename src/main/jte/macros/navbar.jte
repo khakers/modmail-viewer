@@ -14,6 +14,9 @@
                 <li class="nav-item">
                     <a class="nav-link" aria-current="page" href="/">Home</a>
                 </li>
+                <li>
+                    <a class="nav-link" aria-current="page" href="/dashboard">Dashboard</a>
+                </li>
 
             </ul>
             <%--            <form class="d-flex" role="search">--%>

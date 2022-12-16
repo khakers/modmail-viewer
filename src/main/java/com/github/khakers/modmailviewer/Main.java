@@ -150,6 +150,14 @@ public class Main {
                                     "ticketStatusFilter", ticketFilter,
                                     "showNSFW", showNSFW));
                 }, RoleUtils.atLeastModerator())
+                .get("/dashboard", ctx -> ctx.render("pages/dashboard.jte",
+                        model("user", AuthHandler.getUser(ctx),
+                                "totalTickets", db.getTotalTickets(TicketStatus.ALL),
+                                "openTickets", db.getTotalTickets(TicketStatus.OPEN),
+                                "closedTickets", db.getTotalTickets(TicketStatus.CLOSED),
+                                "moderatorCloses", db.getTicketsClosedByUser(),
+                                "recentEntries", db.getLogsWithRecentActivity(5))
+                ), RoleUtils.atLeastModerator())
                 .get("/logs/{id}", ctx -> {
                     var entry = db.getModMailLogEntry(ctx.pathParam("id"));
                     entry.ifPresentOrElse(
@@ -170,6 +178,16 @@ public class Main {
                             });
 
                 }, RoleUtils.atLeastModerator())
+                .get("/api/permissions", ctx -> ctx.json(db.getConfig().getFlatUserPerms()), RoleUtils.atLeastAdministrator())
+                .get("/api/ticketclosers", ctx -> ctx.json(db.getTicketsClosedByUserOrdered()), RoleUtils.atLeastAdministrator())
+                .get("/api/stats/dailytickets", ctx -> {
+                    var period = ctx.queryParamAsClass("period", Integer.class)
+                            .check(integer -> {
+                                return integer >= 1 && integer <= 90;
+                            }, "invalid period value. Must be between 1 and 90")
+                            .getOrDefault(30);
+                    ctx.json(db.getTicketsPerDay(period));
+                }, RoleUtils.atLeastSupporter())
                 .start(Config.httpPort);
 
         if (Config.isAuthEnabled) {

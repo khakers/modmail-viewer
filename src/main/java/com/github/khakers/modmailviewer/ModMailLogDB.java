@@ -8,16 +8,16 @@ import com.github.khakers.modmailviewer.auth.Role;
 import com.github.khakers.modmailviewer.auth.SiteUser;
 import com.github.khakers.modmailviewer.data.ModMailLogEntry;
 import com.github.khakers.modmailviewer.data.ModmailConfig;
+import com.github.khakers.modmailviewer.data.internal.ChartData;
 import com.github.khakers.modmailviewer.data.internal.TicketStatus;
+import com.github.khakers.modmailviewer.util.DateFormatters;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.Indexes;
-import com.mongodb.client.model.Sorts;
+import com.mongodb.client.model.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
@@ -26,11 +26,10 @@ import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ModMailLogDB {
 
@@ -119,6 +118,57 @@ public class ModMailLogDB {
         return entries;
     }
 
+    /**
+     * Calculate the amount of tickets each moderator has closed
+     * Due to limitations introduced by modmailbot quirks, We determine if a user is a mod based on if their discord id is listed in the config as at least a mod
+     *
+     * @return An unmodifiable map with key value pairs of the Users name and the amount of tickets they have closed
+     */
+    public Map<String, Integer> getTicketsClosedByUser() throws Exception {
+        var map = new HashMap<String, Integer>();
+        var perms = getConfig().getFlatUserPerms();
+        logCollection.find(Filters.eq("open", false)).forEach(document -> {
+            // It appears that the user closing the ticket is *always* a mod
+            // This sucks but
+            var closer = document.get("closer", Document.class);
+//            var mod = closer.getBoolean("mod");
+            var mod = perms.containsKey(Long.parseLong(closer.getString("id")));
+            String key = mod ? closer.getString("name") + "#" + closer.getString("discriminator") : "user";
+
+            map.merge(key, 1, Integer::sum);
+        });
+        return Collections.unmodifiableMap(map);
+    }
+
+    public Map<String, Integer> getTicketsClosedByUserOrdered() throws Exception {
+        var map = getTicketsClosedByUser();
+
+        return map.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue())
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+
+    }
+
+    public List<ModMailLogEntry> getLogsWithRecentActivity(int limit) {
+        ArrayList<ModMailLogEntry> entries = new ArrayList<>(limit);
+        logCollection
+                .find()
+                .filter(Filters.not(Filters.size("messages", 0)))
+                .sort(Sorts.descending("messages.timestamp"))
+                .limit(limit)
+                .forEach(document -> {
+                    try {
+                        logger.debug(document);
+                        entries.add(objectMapper.readValue(document.toJson(), ModMailLogEntry.class));
+                    } catch (JsonProcessingException e) {
+                        logger.error(e);
+                        throw new RuntimeException(e);
+                    }
+                });
+        return entries;
+    }
+
     public List<ModMailLogEntry> getPaginatedMostRecentEntries(int page) {
         return getPaginatedMostRecentEntries(page, DEFAULT_ITEMS_PER_PAGE);
     }
@@ -177,7 +227,7 @@ public class ModMailLogDB {
         logger.debug("filtering by {} with {}", ticketStatus, ticketFilter);
         var foundLogs = logCollection
                 .find()
-                .filter(Filters.not(Filters.size("messages",0)))
+                .filter(Filters.not(Filters.size("messages", 0)))
                 .sort(Sorts.descending("messages.timestamp"))
                 .filter(ticketFilter)
                 .skip((page - 1) * itemsPerPage)
@@ -189,15 +239,85 @@ public class ModMailLogDB {
                 logger.error(e);
             }
         });
-        logger.trace("Entries: {}",entries);
+        logger.trace("Entries: {}", entries);
         return entries;
+    }
+
+    public ChartData getTicketsPerDay(int period) {
+        var date = LocalDate.now();
+        var days = new LocalDate[period];
+        var daysString = new String[period];
+        for (int i = 0; i < period; i++) {
+            days[i] = date.minusDays(period - i);
+            daysString[i] = DateFormatters.DATABASE_TIMESTAMP_FORMAT.format(days[i].atStartOfDay());
+        }
+        System.out.println(Arrays.toString(days));
+        System.out.println(Arrays.stream(daysString).toList());
+
+        logger.debug("looking for days between {} and {}", daysString[0], DateFormatters.DATABASE_TIMESTAMP_FORMAT.format(days[period - 1].plusDays(1).atStartOfDay()));
+        var results = logCollection.aggregate(Arrays.asList(
+                        Aggregates.match(Filters.eq("open", false)),
+                        Aggregates.match(
+                                Filters.and(
+                                        Filters.gte("closed_at", daysString[0]),
+                                        Filters.lt("closed_at", DateFormatters.DATABASE_TIMESTAMP_FORMAT.format(days[period - 1].plusDays(1).atStartOfDay())))),
+                        Aggregates.bucket(
+                                "$closed_at",
+                                Arrays.stream(daysString).toList(),
+                                new BucketOptions()
+                                        .defaultBucket("unknown")
+                                        .output(
+                                                Accumulators.sum("count", 1),
+                                                Accumulators.push("closed_at", "$closed_at"))
+                        )
+                )
+        );
+        var countList = new Integer[period];
+        java.util.Arrays.fill(countList, 0);
+
+        results.forEach(document -> {
+            var time = document.getString("_id");
+            var index = 0;
+            for (int i = 0; i < daysString.length; i++) {
+                if (daysString[i].equals(time)) {
+                    index = i;
+                }
+            }
+            countList[index] = document.getInteger("count");
+        });
+//        System.out.println(documents);
+//        var countList = new Integer[period];
+//        java.util.Arrays.fill(countList, 0);
+//        System.out.println(Arrays.toString(countList));
+//        documents.forEach(document -> {
+//            var time = document.getString("_id");
+//            var index = 0;
+//            for (int i = 0; i < daysString.length; i++) {
+//                if (daysString[i].equals(time)) {
+//                    index = i;
+//                }
+//            }
+//            countList[index] = document.getInteger("count");
+//        });
+        System.out.println(Arrays.toString(daysString));
+        System.out.println(Arrays.toString(countList));
+
+        return new ChartData<>(countList, Arrays.stream(days)
+        .map(DateFormatters.MINI_DATE_FORMAT::format)
+        .toArray(String[]::new));
+
+//        return new ChartData<>(countList, Arrays.stream(days)
+//                .map(localDate -> localDate.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli())
+////                .map(localDate -> LocalDateTime.from(localDate).toInstant(ZoneOffset.UTC).toEpochMilli())
+//                .toArray(Long[]::new));
+////                .map(localDate -> localDate.toEpochSecond(LocalTime.MIDNIGHT, ZoneOffset.UTC))
+
     }
 
     /**
      * Determines the number of pages required to display every modmail entry at 8 per page
      *
      * @param ticketStatus ticket status to filter for
-     *
      * @return numbers of pages required to paginate all modmail logs
      */
     public int getPaginationCount(TicketStatus ticketStatus) {

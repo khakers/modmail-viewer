@@ -20,7 +20,7 @@
     <%--          href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.6.0/build/styles/default.min.css"--%>
     <%--          integrity="sha256-+94KwJIdhsNWxBUy5zGciHojvRuP8ABgyrRHJJ8Dx88=" crossorigin="anonymous">--%>
 
-    <link href="/webjars/bootstrap/5.2.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/webjars/bootstrap/5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/webjars/bootstrap-icons/1.10.2/font/bootstrap-icons.css">
     <link rel="stylesheet" href="/webjars/highlightjs__cdn-assets/11.6.0/styles/default.min.css">
     <link rel="stylesheet" href="/styles.css">
@@ -233,7 +233,7 @@
 <%--        crossorigin="anonymous"></script>--%>
 <%--<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.6.0/build/highlight.min.js"--%>
 <%--        integrity="sha256-4v2jQZxK6PbZEeZ2xl2ziov6NHMksBFgBlxtMZVYbQk=" crossorigin="anonymous"></script>--%>
-<script src="/webjars/bootstrap/5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/webjars/bootstrap/5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/webjars/highlightjs__cdn-assets/11.6.0/highlight.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/twemoji@14.0.2/dist/twemoji.min.js"
         integrity="sha256-cGIk2NxUQEYPjtkcGmqtJdcyr24O5vsxFRsVerSFurs=" crossorigin="anonymous"></script>

@@ -19,4 +19,9 @@ public class DateFormatters {
             .appendPattern("HH:mm a")
             .toFormatter()
             .withZone(ZoneId.of("UTC"));
+
+    public static final DateTimeFormatter MINI_DATE_FORMAT = new DateTimeFormatterBuilder()
+            .appendPattern("MM-dd")
+            .toFormatter()
+            .withZone(ZoneId.of("UTC"));
 }

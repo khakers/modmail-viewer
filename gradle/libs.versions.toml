@@ -18,6 +18,12 @@ jwt = "4.2.1"
 scribe = "8.3.2"
 mongodriver = "4.7.2"
 
+bootstrap = "5.2.3"
+bootstrap-icons = "1.10.2"
+highlightjs = "11.6.0"
+chartsjs = "3.9.1"
+chartsjs-autocolor = "0.1.0"
+
 [libraries]
 javalin = { module = "io.javalin:javalin", version.ref = "javalin" }
 javalin-rendering = { module = "io.javalin:javalin-rendering", version.ref = "javalin" }
@@ -45,6 +51,12 @@ mongodb-driver = { module = "org.mongodb:mongodb-driver-sync", version.ref = "mo
 
 auth0-jwt = { module = "com.auth0:java-jwt", version.ref =  "jwt"}
 scribe-api = { module = "com.github.scribejava:scribejava-apis", version.ref = "scribe"}
+
+bootstrap = { module = "org.webjars.npm:bootstrap", version.ref = "bootstrap" }
+bootstrap-icons = { module = "org.webjars.npm:bootstrap-icons", version.ref = "bootstrap-icons" }
+highlightjs = { module = "org.webjars.npm:highlightjs__cdn-assets", version.ref = "highlightjs"}
+chartsjs = { module = "org.webjars.npm:chart.js", version.ref = "chartsjs" }
+chartsjs-autocolor = { module = "org.webjars.npm:chartjs-plugin-autocolors", version.ref = "chartsjs-autocolor"}
 
 [plugins]
 jte-gradle = { id = "gg.jte.gradle", version.ref = "jte" }
