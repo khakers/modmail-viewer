@@ -20,7 +20,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="/webjars/bootstrap/5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/webjars/bootstrap-icons/1.10.2/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/styles.css">
     <%--    <script src="/webjars/chartjs-plugin-autocolors/0.0.3/dist/chartjs-plugin-autocolors.min.js"></script>--%>
 </head>
 <body>
@@ -67,20 +67,27 @@
                             <h5 class="card-title">Ticket Closers</h5>
 <%--                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to--%>
 <%--                                additional content. This content is a little longer.</p>--%>
-                            <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+<%--                            <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>--%>
                         </div>
-                        <canvas id="ticketClosers" width="400" height="400"></canvas>
-                        <code class="card-footer">${moderatorCloses.toString()}</code>
+                        <canvas id="ticketClosersChart" width="400" height="400"></canvas>
+<%--                        <code class="card-footer">${moderatorCloses.toString()}</code>--%>
                     </div>
                 </div>
                 <div class="col">
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Tickets closed per day</h5>
+                            <form id="dailyTicketsForm">
+                            <select class="form-select" name="dailyTicketsPeriodSelect" id="dailyTicketsPeriodSelect" aria-label="Default select example">
+                                <option selected value="30">30 days</option>
+                                <option value="60">60 days</option>
+                                <option value="90">90 days</option>
+                            </select>
+                            </form>
                             <%--                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to--%>
                             <%--                                additional content. This content is a little longer.</p>--%>
                         </div>
-                        <canvas id="dailyTickets" width="400" height="400" style="max-height: 480px;"></canvas>
+                        <canvas id="ticketActionsPerDayChart" width="400" height="400" style="max-height: 480px;"></canvas>
 <%--                        <code class="card-footer"></code>--%>
                     </div>
 <%--                    <div class="card">--%>
@@ -119,10 +126,10 @@
 </div>
 
 
-<script src="timeformat.js"></script>
+<script src="/timeformat.js"></script>
 <script src="/webjars/chart.js/3.9.1/dist/chart.js"></script>
 <script src="/webjars/chartjs-plugin-autocolors/0.1.0/dist/chartjs-plugin-autocolors.min.js"></script>
-<script src="rendercharts.js"></script>
+<script src="/rendercharts.js"></script>
 <script src="/webjars/bootstrap/5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <%--<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js" integrity="sha256-+8RZJua0aEWg+QVVKg4LEzEEm/8RFez5Tb4JBNiV5xA=" crossorigin="anonymous"></script>--%>

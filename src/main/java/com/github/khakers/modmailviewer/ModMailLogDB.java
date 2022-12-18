@@ -144,7 +144,7 @@ public class ModMailLogDB {
         var map = getTicketsClosedByUser();
 
         return map.entrySet().stream()
-                .sorted(Map.Entry.comparingByValue())
+                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
                 .collect(Collectors.toMap(
                         Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 
@@ -243,7 +243,7 @@ public class ModMailLogDB {
         return entries;
     }
 
-    public ChartData getTicketsPerDay(int period) {
+    public ChartData getTicketsPerDay(int period, TicketStatus ticketStatus) {
         var date = LocalDate.now();
         var days = new LocalDate[period];
         var daysString = new String[period];
@@ -254,9 +254,15 @@ public class ModMailLogDB {
         System.out.println(Arrays.toString(days));
         System.out.println(Arrays.stream(daysString).toList());
 
+        var statusFilter = switch (ticketStatus) {
+            case ALL -> Filters.empty();
+            case OPEN -> Filters.eq("open", true);
+            case CLOSED -> Filters.eq("open", false);
+        };
+
         logger.debug("looking for days between {} and {}", daysString[0], DateFormatters.DATABASE_TIMESTAMP_FORMAT.format(days[period - 1].plusDays(1).atStartOfDay()));
         var results = logCollection.aggregate(Arrays.asList(
-                        Aggregates.match(Filters.eq("open", false)),
+                        Aggregates.match(statusFilter),
                         Aggregates.match(
                                 Filters.and(
                                         Filters.gte("closed_at", daysString[0]),

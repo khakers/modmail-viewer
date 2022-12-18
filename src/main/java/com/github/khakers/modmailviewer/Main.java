@@ -181,12 +181,15 @@ public class Main {
                 .get("/api/permissions", ctx -> ctx.json(db.getConfig().getFlatUserPerms()), RoleUtils.atLeastAdministrator())
                 .get("/api/ticketclosers", ctx -> ctx.json(db.getTicketsClosedByUserOrdered()), RoleUtils.atLeastAdministrator())
                 .get("/api/stats/dailytickets", ctx -> {
+                    String statusFilter = ctx.queryParamAsClass("status", String.class)
+                            .check(s -> s.equalsIgnoreCase(String.valueOf(TicketStatus.OPEN))
+                                    || s.equalsIgnoreCase(String.valueOf(TicketStatus.CLOSED))
+                                    || s.equalsIgnoreCase(String.valueOf(TicketStatus.ALL)), "")
+                            .getOrDefault("ALL");
                     var period = ctx.queryParamAsClass("period", Integer.class)
-                            .check(integer -> {
-                                return integer >= 1 && integer <= 90;
-                            }, "invalid period value. Must be between 1 and 90")
+                            .check(integer -> integer >= 1 && integer <= 90, "invalid period value. Must be between 1 and 90")
                             .getOrDefault(30);
-                    ctx.json(db.getTicketsPerDay(period));
+                    ctx.json(db.getTicketsPerDay(period, TicketStatus.CLOSED));
                 }, RoleUtils.atLeastSupporter())
                 .start(Config.httpPort);
 
