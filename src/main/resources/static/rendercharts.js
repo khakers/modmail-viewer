@@ -10,12 +10,15 @@ const ticketClosersChart = new Chart(ticketClosersCanvas, {
     data: {
         //https://github.com/kurkle/chartjs-plugin-autocolors/issues/20
         // The autocolor plugin is dumb and if the data doesn't exist it won't ever get a color when it updates
-        labels: ["tmp","tmp2","tmp3","tmp4","tmp5","tmp6","tmp7","tmp8","tmp9","tmp10","tmp11","tmp12"],
+        labels: ["tmp", "tmp2", "tmp3", "tmp4", "tmp5", "tmp6", "tmp7", "tmp8", "tmp9", "tmp10", "tmp11", "tmp12"],
         datasets: [{
             label: 'Tickets closed',
-            data: [0,1,2,3,4,5,6,7,8,9,10,11],
+            data: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
             hoverOffset: 8,
-            borderWidth: 1
+            offset: 4,
+            borderWidth: 0,
+            borderJoinStyle: 'bevel'
+            // borderColor: 'rgba(0,0,0,0)'
         }]
     },
 
@@ -60,12 +63,26 @@ const ticketActionsPerDayChart = new Chart(ticketActionsPerDayCanvas, {
     response: true,
     data: {
         // labels: data.labels,
-        datasets: [{
-            label: 'Tickets Closed',
-            // data: data.data,
-            hoverOffset: 8,
-            borderWidth: 1
-        }]
+        datasets: [
+            {
+                label: 'Tickets Closed',
+                // data: data.data,
+                // hoverOffset: 8,
+                // borderWidth: 1
+                backgroundColor: 'rgb(210,41,41)',
+                borderColor: 'rgb(210,41,41)',
+                tension: 0.3,
+                borderWidth: 4,
+                borderJoinStyle: 'round'
+            },
+            {
+                label: 'New Tickets',
+                backgroundColor: 'rgb(16,129,29)',
+                borderColor: 'rgb(16,129,29)',
+                tension: 0.3,
+                borderWidth: 4,
+            }
+        ]
     },
     scales: {
         y: {
@@ -81,6 +98,11 @@ const ticketActionsPerDayChart = new Chart(ticketActionsPerDayCanvas, {
     },
 
     options: {
+        plugins: {
+            autocolors: {
+                enabled: false
+            }
+        },
         normalized: true,
         layout: {
             padding: 15
