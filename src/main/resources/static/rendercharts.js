@@ -143,14 +143,23 @@ function refreshTicketActionsPerDayChart() {
     const selector = document.getElementById("dailyTicketsPeriodSelect");
     // selector.value
 
-    fetch('/api/stats/dailytickets?' + new URLSearchParams({
-        period: selector.value
+    fetch('/api/stats/ticketactivity?' + new URLSearchParams({
+        period: selector.value, status: 'CLOSED'
     }))
         .then((response) => response.json())
         .then((data) => {
             console.log(data);
             ticketActionsPerDayChart.data.labels = data.labels;
             ticketActionsPerDayChart.data.datasets[0].data = data.data;
+            ticketActionsPerDayChart.update();
+        })
+    fetch('/api/stats/ticketactivity?' + new URLSearchParams({
+        period: selector.value, status: 'OPEN'
+    }))
+        .then((response) => response.json())
+        .then((data) => {
+            console.log(data);
+            ticketActionsPerDayChart.data.datasets[1].data = data.data;
             ticketActionsPerDayChart.update();
         })
 }

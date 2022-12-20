@@ -253,71 +253,114 @@ public class ModMailLogDB {
         }
         System.out.println(Arrays.toString(days));
         System.out.println(Arrays.stream(daysString).toList());
+        logger.debug("looking for days between {} and {}", daysString[0], DateFormatters.DATABASE_TIMESTAMP_FORMAT.format(days[period - 1].plusDays(1).atStartOfDay()));
 
-        var statusFilter = switch (ticketStatus) {
-            case ALL -> Filters.empty();
-            case OPEN -> Filters.eq("open", true);
-            case CLOSED -> Filters.eq("open", false);
+        var results = switch (ticketStatus) {
+            //todo Support or remove ALL
+            case ALL -> logCollection.aggregate(List.of(
+                            Aggregates.facet(
+                                    new Facet("OPEN",
+                                            Aggregates.match(
+                                                    Filters.and(
+                                                            Filters.gte("created_at", daysString[0]),
+                                                            Filters.lt("created_at", DateFormatters.DATABASE_TIMESTAMP_FORMAT.format(days[period - 1].plusDays(1).atStartOfDay())))),
+                                            Aggregates.bucket(
+                                                    "$created_at",
+                                                    Arrays.stream(daysString).toList(),
+                                                    new BucketOptions()
+                                                            .defaultBucket("unknown")
+                                                            .output(
+                                                                    Accumulators.sum("count", 1),
+                                                                    Accumulators.push("created_at", "$created_at"))
+                                            )),
+                                    new Facet("CLOSE",
+                                            Aggregates.match(Filters.eq("open", false)),
+                                            Aggregates.match(
+                                                    Filters.and(
+                                                            Filters.gte("closed_at", daysString[0]),
+                                                            Filters.lt("closed_at", DateFormatters.DATABASE_TIMESTAMP_FORMAT.format(days[period - 1].plusDays(1).atStartOfDay())))),
+                                            Aggregates.bucket(
+                                                    "$closed_at",
+                                                    Arrays.stream(daysString).toList(),
+                                                    new BucketOptions()
+                                                            .defaultBucket("unknown")
+                                                            .output(
+                                                                    Accumulators.sum("count", 1),
+                                                                    Accumulators.push("closed_at", "$closed_at"))
+                                            )
+                                    ))
+//                            Aggregates.match(Filters.eq("open", false)),
+
+                    )
+            );
+            case OPEN -> logCollection.aggregate(Arrays.asList(
+//                            Aggregates.match(Filters.eq("open", false)),
+                            Aggregates.match(
+                                    Filters.and(
+                                            Filters.gte("created_at", daysString[0]),
+                                            Filters.lt("created_at", DateFormatters.DATABASE_TIMESTAMP_FORMAT.format(days[period - 1].plusDays(1).atStartOfDay())))),
+                            Aggregates.bucket(
+                                    "$created_at",
+                                    Arrays.stream(daysString).toList(),
+                                    new BucketOptions()
+                                            .defaultBucket("unknown")
+                                            .output(
+                                                    Accumulators.sum("count", 1),
+                                                    Accumulators.push("created_at", "$created_at"))
+                            )
+                    )
+            );
+            case CLOSED -> logCollection.aggregate(Arrays.asList(
+                            Aggregates.match(Filters.eq("open", false)),
+                            Aggregates.match(
+                                    Filters.and(
+                                            Filters.gte("closed_at", daysString[0]),
+                                            Filters.lt("closed_at", DateFormatters.DATABASE_TIMESTAMP_FORMAT.format(days[period - 1].plusDays(1).atStartOfDay())))),
+                            Aggregates.bucket(
+                                    "$closed_at",
+                                    Arrays.stream(daysString).toList(),
+                                    new BucketOptions()
+                                            .defaultBucket("unknown")
+                                            .output(
+                                                    Accumulators.sum("count", 1),
+                                                    Accumulators.push("closed_at", "$closed_at"))
+                            )
+                    )
+            );
         };
 
-        logger.debug("looking for days between {} and {}", daysString[0], DateFormatters.DATABASE_TIMESTAMP_FORMAT.format(days[period - 1].plusDays(1).atStartOfDay()));
-        var results = logCollection.aggregate(Arrays.asList(
-                        Aggregates.match(statusFilter),
-                        Aggregates.match(
-                                Filters.and(
-                                        Filters.gte("closed_at", daysString[0]),
-                                        Filters.lt("closed_at", DateFormatters.DATABASE_TIMESTAMP_FORMAT.format(days[period - 1].plusDays(1).atStartOfDay())))),
-                        Aggregates.bucket(
-                                "$closed_at",
-                                Arrays.stream(daysString).toList(),
-                                new BucketOptions()
-                                        .defaultBucket("unknown")
-                                        .output(
-                                                Accumulators.sum("count", 1),
-                                                Accumulators.push("closed_at", "$closed_at"))
-                        )
-                )
-        );
-        var countList = new Integer[period];
-        java.util.Arrays.fill(countList, 0);
+//        System.out.println("results = " + results.into());
 
-        results.forEach(document -> {
-            var time = document.getString("_id");
-            var index = 0;
-            for (int i = 0; i < daysString.length; i++) {
-                if (daysString[i].equals(time)) {
-                    index = i;
+        if (ticketStatus==TicketStatus.ALL) {
+            results.forEach(document -> System.out.println(document.toString()));
+
+            var l = new Integer[period];
+            java.util.Arrays.fill(l, 0);
+            return new ChartData<>(l, Arrays.stream(days)
+                    .map(DateFormatters.MINI_DATE_FORMAT::format)
+                    .toArray(String[]::new));
+        } else {
+            var countList = new Integer[period];
+            java.util.Arrays.fill(countList, 0);
+
+            results.forEach(document -> {
+                var time = document.getString("_id");
+                var index = 0;
+                for (int i = 0; i < daysString.length; i++) {
+                    if (daysString[i].equals(time)) {
+                        index = i;
+                    }
                 }
-            }
-            countList[index] = document.getInteger("count");
-        });
-//        System.out.println(documents);
-//        var countList = new Integer[period];
-//        java.util.Arrays.fill(countList, 0);
-//        System.out.println(Arrays.toString(countList));
-//        documents.forEach(document -> {
-//            var time = document.getString("_id");
-//            var index = 0;
-//            for (int i = 0; i < daysString.length; i++) {
-//                if (daysString[i].equals(time)) {
-//                    index = i;
-//                }
-//            }
-//            countList[index] = document.getInteger("count");
-//        });
-        System.out.println(Arrays.toString(daysString));
-        System.out.println(Arrays.toString(countList));
+                countList[index] = document.getInteger("count");
+            });
 
-        return new ChartData<>(countList, Arrays.stream(days)
-        .map(DateFormatters.MINI_DATE_FORMAT::format)
-        .toArray(String[]::new));
+            logger.trace(Arrays.toString(daysString));
+            logger.trace(Arrays.toString(countList));
 
-//        return new ChartData<>(countList, Arrays.stream(days)
-//                .map(localDate -> localDate.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli())
-////                .map(localDate -> LocalDateTime.from(localDate).toInstant(ZoneOffset.UTC).toEpochMilli())
-//                .toArray(Long[]::new));
-////                .map(localDate -> localDate.toEpochSecond(LocalTime.MIDNIGHT, ZoneOffset.UTC))
-
+            return new ChartData<>(countList, Arrays.stream(days)
+                    .map(DateFormatters.MINI_DATE_FORMAT::format)
+                    .toArray(String[]::new));
+        }
     }
 
     /**
