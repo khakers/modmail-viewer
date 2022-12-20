@@ -79,6 +79,7 @@
                             <h5 class="card-title">Tickets closed per day</h5>
                             <form id="dailyTicketsForm">
                             <select class="form-select" name="dailyTicketsPeriodSelect" id="dailyTicketsPeriodSelect" aria-label="Default select example">
+                                <option selected value="15">15 days</option>
                                 <option selected value="30">30 days</option>
                                 <option value="60">60 days</option>
                                 <option value="90">90 days</option>
