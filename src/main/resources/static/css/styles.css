@@ -12,8 +12,16 @@ blockquote p {
     display: inline;
 }
 
+.bi {
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.125em;
+    fill: currentcolor;
+}
 code {
-    background-color: #f3f3f3;
+    /*background-color: #f3f3f3;*/
+    background-color: var(--bs-secondary-bg);
+    color: var(--bs-emphasis-color);
     border-radius: 3px;
     padding: 0.2em;
     white-space: pre-wrap;

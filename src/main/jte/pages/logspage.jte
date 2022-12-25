@@ -12,9 +12,9 @@
 @param com.vladsch.flexmark.html.HtmlRenderer renderer
 
 <!doctype html>
-<html lang="en" xmlns="http://www.w3.org/1999/html">
+<html lang="en" xmlns="http://www.w3.org/1999/html" >
 <head>
-    <title>Modmail Logs</title>
+    <title>Modmail Log ${modmailLog.getTitle().orElse(modmailLog.getKey())}</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <%--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"--%>
@@ -27,8 +27,9 @@
 
     <link href="/webjars/bootstrap/5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/webjars/bootstrap-icons/1.10.2/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="/webjars/highlightjs__cdn-assets/11.6.0/styles/default.min.css">
-    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/webjars/highlightjs__cdn-assets/11.6.0/styles/a11y-dark.min.css">
+<%--    <link rel="stylesheet" href="/webjars/highlightjs__cdn-assets/11.6.0/styles/default.min.css">--%>
+    <link rel="stylesheet" href="/css/styles.css">
 
 </head>
 <body>
@@ -294,5 +295,6 @@
         })
     })
 </script>
+<script src="/js/ThemeSelector.js"></script>
 </body>
 </html>
