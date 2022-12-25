@@ -33,7 +33,7 @@
     <%--          crossorigin="anonymous">--%>
     <link href="/webjars/bootstrap/5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/webjars/bootstrap-icons/1.10.2/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
 
@@ -202,6 +202,7 @@
 <script src="util.js"></script>
 <script src="/js/TicketFilterHandler.js"></script>
 <script src="/webjars/bootstrap/5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/ThemeSelector.js"></script>
 <script>
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
