@@ -98,26 +98,26 @@
                             <span>Created by</span>
                             <span class="fw-semibold">${entry.get().getCreator().name()}</span><span
                                 class="text-secondary">#${entry.get().getCreator().discriminator()}</span>
-                            <span><span class="text-muted" timestamp="${entry.get().getCreationTime().toString()}"
-                                        timestamp-type="relative" data-bs-toggle="tooltip"
-                                        timestamp-title-type="detailed"></span></span>
+                            <span><span class="text-muted" data-timestamp="${entry.get().getCreationTime().toString()}"
+                                        data-timestamp-type="relative" data-bs-toggle="tooltip"
+                                        data-timestamp-title-type="detailed"></span></span>
                         @else
                             <span>Created by</span>
                             <span class="fw-semibold">${entry.get().getCreator().name()}</span><span
                                 class="text-secondary">#${entry.get().getCreator().discriminator()}</span>
                             <span>was closed <span class="text-muted"
-                                                   timestamp="${entry.get().getClosedTime().get().toString()}"
-                                                   timestamp-type="relative" data-bs-toggle="tooltip"
-                                                   timestamp-title-type="detailed"></span></span>
+                                                   data-timestamp="${entry.get().getClosedTime().get().toString()}"
+                                                   data-timestamp-type="relative" data-bs-toggle="tooltip"
+                                                   data-timestamp-title-type="detailed"></span></span>
 
                         @endif
                         ·
                         <span>${entry.get().getMessages().size()} messages</span>
                         ·
                         <span>Last message sent <span class="text-muted"
-                                                      timestamp="${entry.get().getMessages().get(entry.get().getMessages().size()-1).getCreationTime().toString()}"
-                                                      timestamp-type="relative" data-bs-toggle="tooltip"
-                                                      timestamp-title-type="detailed"></span> by
+                                                      data-timestamp="${entry.get().getMessages().get(entry.get().getMessages().size()-1).getCreationTime().toString()}"
+                                                      data-timestamp-type="relative" data-bs-toggle="tooltip"
+                                                      data-timestamp-title-type="detailed"></span> by
                             <span class="user-select-all" data-bs-toggle="tooltip"
                                   data-bs-title="${entry.get().getMessages().get(entry.get().getMessages().size()-1).getAuthor().id()}"><span
                                         class="fw-semibold">${entry.get().getMessages().get(entry.get().getMessages().size()-1).getAuthor().name()}</span><span
