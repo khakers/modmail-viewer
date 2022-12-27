@@ -120,7 +120,7 @@
                         @else
                             <span>Created by</span>
                             <span class="fw-semibold">${entry.get().getCreator().name()}</span><span
-                                class="text-secondary">#${entry.get().getCreator().discriminator()}</span>
+                                class="text-muted">#${entry.get().getCreator().discriminator()}</span>
                             <span>was closed <span class="text-muted"
                                                    data-timestamp="${entry.get().getClosedTime().get().toString()}"
                                                    data-timestamp-type="relative" data-bs-toggle="tooltip"
@@ -137,7 +137,7 @@
                             <span class="user-select-all" data-bs-toggle="tooltip"
                                   data-bs-title="${entry.get().getMessages().get(entry.get().getMessages().size()-1).getAuthor().id()}"><span
                                         class="fw-semibold">${entry.get().getMessages().get(entry.get().getMessages().size()-1).getAuthor().name()}</span><span
-                                        class="text-secondary">#${entry.get().getMessages().get(entry.get().getMessages().size()-1).getAuthor().discriminator()}</span>
+                                        class="text-muted">#${entry.get().getMessages().get(entry.get().getMessages().size()-1).getAuthor().discriminator()}</span>
                             </span>
                         </span>
                     </li>
