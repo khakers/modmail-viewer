@@ -127,7 +127,8 @@ div.spoilerImage input:checked, div.spoilerImage input:checked ~ label {
 
 .timestamp {
     /*background-color: #858585;*/
-    background-color: #B5B5B5;
+    /*background-color: #B5B5B5;*/
+    background-color: var(--bs-secondary-bg);
     border-radius: 3px;
     padding: 0 2px;
 }
