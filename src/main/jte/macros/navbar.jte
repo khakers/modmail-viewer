@@ -19,9 +19,9 @@
         <path d="M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"></path>
     </symbol>
 </svg>
-<nav class="navbar navbar-expand-lg fixed-top bg-primary navbar-dark">
+<nav class="navbar navbar-expand-lg fixed-top bg-body-tertiary border-bottom border-tertiary">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">${Config.BRANDING}</a>
+        <span class="navbar-brand h1" href="#">${Config.BRANDING}</span>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -94,9 +94,9 @@
                     @endif
                 </div>
 
-                <%--            <div>--%>
-                <%--                <img src="${user.getAvatarUrl()}" class="navbar-brand rounded-circle img-fluid pl-2" width="40" style="size: inherit;">--%>
-                <%--            </div>--%>
-            </div>
+            <%--            <div>--%>
+            <%--                <img src="${user.getAvatarUrl()}" class="navbar-brand rounded-circle img-fluid pl-2" width="40" style="size: inherit;">--%>
+            <%--            </div>--%>
         </div>
+    </div>
 </nav>
