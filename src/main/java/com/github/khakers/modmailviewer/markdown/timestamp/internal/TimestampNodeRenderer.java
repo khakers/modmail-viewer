@@ -41,9 +41,9 @@ public class TimestampNodeRenderer implements NodeRenderer {
         logger.trace(node.toString());
         html
                 .attr("class", "timestamp")
-                .attr("timestamp-type", node.getType().toString())
-                .attr("timestamp", node.getInstant().toString())
-                .attr("timestamp-title-type", "detailed")
+                .attr("data-timestamp-type", node.getType().toString())
+                .attr("data-timestamp", node.getInstant().toString())
+                .attr("data-timestamp-title-type", "detailed")
                 .attr("data-bs-toggle", "tooltip")
                 .attr(extraAttributes)
                 .withAttr()
