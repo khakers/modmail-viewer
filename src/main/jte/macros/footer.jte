@@ -1,5 +1,5 @@
 <footer>
-    <div class="navbar-dark nav-footer bg-dark text-bg-dark ps-3 py-3 border-top ">
+    <div class="navbar-dark nav-footer text-dark bg-dark border-dark-subtle ps-3 py-3 border-top ">
         <div class="row align-items-center me-0 justify-content-xl-between">
             <div class="col-sm-12 col-xl-5 align-items-center text-center text-xl-start navbar-text pb-0 pt-0 text-sm-nowrap">
                 Powered by Modmail-Viewer
