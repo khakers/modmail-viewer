@@ -58,8 +58,7 @@
                                     class="bi bi-exclamation-triangle"></i> NFSW</span>
                     @endif
                     <span>Created by:</span>
-                    <span class="fw-semibold">${modmailLog.getCreator().name()}</span><span
-                            class="text-secondary">#${modmailLog.getCreator().discriminator()}</span>
+                    @template.macros.username(user = modmailLog.getCreator())
                     <span>on <span class="text-muted text-nowrap"
                                    data-timestamp="${modmailLog.getCreationTime().toString()}"
                                    data-timestamp-type="detailed"></span></span>
