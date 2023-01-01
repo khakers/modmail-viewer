@@ -142,7 +142,9 @@ public class Main {
                     var pageCount = db.getPaginationCount(ticketFilter);
                     page = Math.min(pageCount, page);
                     ctx.render("pages/homepage.jte",
-                            model("logEntries", db.getPaginatedMostRecentEntriesByMessageActivity(page, ticketFilter),
+                            model(
+                                    "ctx", ctx,
+                                    "logEntries", db.getPaginatedMostRecentEntriesByMessageActivity(page, ticketFilter),
                                     "page", page,
                                     "pageCount", pageCount,
                                     "user", authHandler != null ? AuthHandler.getUser(ctx) : new SiteUser(),
@@ -155,11 +157,13 @@ public class Main {
                     entry.ifPresentOrElse(
                             modMailLogEntry -> {
                                 try {
-                                    ctx.render("pages/logspage.jte", model(
-                                            "modmailLog", modMailLogEntry,
-                                            "user", authHandler != null ? AuthHandler.getUser(ctx) : new SiteUser(),
-                                            "parser", PARSER,
-                                            "renderer", RENDERER));
+                                    ctx.render("pages/logspage.jte",
+                                            model(
+                                                    "ctx", ctx,
+                                                    "modmailLog", modMailLogEntry,
+                                                    "user", authHandler != null ? AuthHandler.getUser(ctx) : new SiteUser(),
+                                                    "parser", PARSER,
+                                                    "renderer", RENDERER));
                                 } catch (JsonProcessingException e) {
                                     throw new RuntimeException(e);
                                 }

@@ -17,6 +17,7 @@ junit = "5.9.0"
 jwt = "4.2.1"
 scribe = "8.3.2"
 mongodriver = "4.7.2"
+owasp-encoder = "1.2.^"
 
 [libraries]
 javalin = { module = "io.javalin:javalin", version.ref = "javalin" }
@@ -45,6 +46,8 @@ mongodb-driver = { module = "org.mongodb:mongodb-driver-sync", version.ref = "mo
 
 auth0-jwt = { module = "com.auth0:java-jwt", version.ref =  "jwt"}
 scribe-api = { module = "com.github.scribejava:scribejava-apis", version.ref = "scribe"}
+
+owasp-encoder = { module = "org.owasp.encoder:encoder", version.ref = "owasp-encoder"}
 
 [plugins]
 jte-gradle = { id = "gg.jte.gradle", version.ref = "jte" }

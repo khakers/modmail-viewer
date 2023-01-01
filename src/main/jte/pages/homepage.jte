@@ -2,6 +2,14 @@
 @import com.github.khakers.modmailviewer.data.internal.TicketStatus
 @import com.github.khakers.modmailviewer.util.Pagination
 @import com.github.khakers.modmailviewer.ModMailLogDB
+@import com.github.khakers.modmailviewer.util.QueryParamUtil
+@import io.javalin.http.Context
+@import java.net.URI
+@import java.util.List
+@import java.util.Map
+
+@param Context ctx
+
 
 @param java.util.List<com.github.khakers.modmailviewer.data.ModMailLogEntry> logEntries
 
@@ -42,18 +50,19 @@
                 <%--                </div>--%>
                 <ul class="nav nav-pills p-2 ">
                     <li class="nav-item">
-                        <a class="nav-link @if(ticketStatusFilter == TicketStatus.ALL)active@endif" href="#"
-                           onclick="update('status', 'all')">${modMailLogDB.getTotalTickets(TicketStatus.ALL)} All</a>
+                        <a class="nav-link @if(ticketStatusFilter == TicketStatus.ALL)active@endif"
+                           href="${QueryParamUtil.updateQueryParams(ctx, "status", "all")}"
+                        >${modMailLogDB.getTotalTickets(TicketStatus.ALL)} All</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link @if(ticketStatusFilter == TicketStatus.OPEN)active@endif"
-                           href="#" onclick="update('status', 'open')"><i
+                           href="${QueryParamUtil.updateQueryParams(ctx, "status", "open")}"><i
                                     class="bi bi-record-circle"></i> ${modMailLogDB.getTotalTickets(TicketStatus.OPEN)}
                             Open</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link @if(ticketStatusFilter == TicketStatus.CLOSED)active@endif"
-                           href="#" onclick="update('status', 'closed')"><i
+                           href="${QueryParamUtil.updateQueryParams(ctx, "status", "closed")}"><i
                                     class="bi bi-check-lg"></i> ${modMailLogDB.getTotalTickets(TicketStatus.CLOSED)}
                             Closed</a>
                     </li>
@@ -75,7 +84,8 @@
             </div>
             @if(logEntries.isEmpty())
                 <div class="pt-5">
-                    <p class="text-center">Looks like you don't have any modmail@if(ticketStatusFilter != TicketStatus.ALL) threads matching this filter@endif</p>
+                    <p class="text-center">Looks like you don't have any
+                        modmail@if(ticketStatusFilter != TicketStatus.ALL) threads matching this filter@endif</p>
                     <p class="text-center text-muted">¯\_(ツ)_/¯</p>
                 </div>
             @endif
@@ -142,11 +152,13 @@
             <div class="container col d-flex justify-content-center p-4">
                 <nav aria-label="Page navigation example">
                     <ul class="pagination">
+
+                        <%--                        onclick="update('page', '${Math.max(page-1, 1)}')"--%>
                         <li class="page-item"><a class="page-link ${previousClass}"
-                                                 href="#" onclick="update('page', '${Math.max(page-1, 1)}')">Previous</a>
+                                                 href="${QueryParamUtil.updateQueryParams(ctx, "page", String.valueOf(Math.max(page-1, 1)))}">Previous</a>
                         </li>
                         @if(Pagination.needsPaginationCulling(pageCount) && page > 4)
-                            <a class="page-link" href="#" >1</a>
+                            <a class="page-link" href="#">1</a>
                             <li class="page-item"><a class="page-link disabled">...</a></li>
                         @endif
                         @for(int i = 1; i < pageCount+1; ++i)
@@ -159,7 +171,8 @@
                                     @if(i == page)
                                         <span class="page-link ${isActive}">${i}</span>
                                     @else
-                                        <a class="page-link" href="#" onclick="update('page', '${i}')">${i}</a>
+                                        <a class="page-link"
+                                           href="${QueryParamUtil.updateQueryParams(ctx, "page", String.valueOf(i))}">${i}</a>
                                     @endif
                                 </li>
                             @endif
@@ -168,8 +181,9 @@
                             <li class="page-item"><a class="page-link disabled">...</a></li>
                             <a class="page-link sm-visually-hidden" href="#">${pageCount}</a>
                         @endif
-                        <li class="page-item"><a class="page-link ${nextClass}" href="#"
-                                                 onclick="update('page', '${page+1}')">Next</a></li>
+                        <li class="page-item"><a class="page-link ${nextClass}"
+                                                 href="${QueryParamUtil.updateQueryParams(ctx, "page", String.valueOf(page+1))}"
+                            >Next</a></li>
                     </ul>
                 </nav>
             </div>
@@ -179,7 +193,6 @@
 </div>
 
 <script src="timeformat.js"></script>
-<script src="util.js"></script>
 <script src="/webjars/bootstrap/5.2.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')

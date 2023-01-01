@@ -1,5 +1,10 @@
 @import com.github.khakers.modmailviewer.auth.SiteUser
 @import com.github.khakers.modmailviewer.data.MessageType
+@import io.javalin.http.Context
+
+
+@param Context ctx
+
 
 @param com.github.khakers.modmailviewer.data.ModMailLogEntry modmailLog
 @param SiteUser user
