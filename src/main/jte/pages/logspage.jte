@@ -34,7 +34,7 @@
 <body>
 
 <div class="page-container">
-    @template.macros.navbar(user = user)
+    @template.macros.navbar(ctx = ctx, user = user)
     @if(modmailLog.isNsfw())
         <div id="nsfw-backdrop" style=" background-color: rgba(255,255,255,0)"></div>
     @endif

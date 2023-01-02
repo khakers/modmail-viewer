@@ -38,7 +38,7 @@
 <body>
 
 <div class="page-container">
-    @template.macros.navbar(user = user)
+    @template.macros.navbar(ctx = ctx, user = user)
     <div class="content">
         <div class="container pt-5">
 
