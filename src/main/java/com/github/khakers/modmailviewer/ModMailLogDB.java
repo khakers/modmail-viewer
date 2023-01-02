@@ -71,15 +71,35 @@ public class ModMailLogDB {
     }
 
     public int getTotalTickets(TicketStatus ticketStatus) {
+        return getTotalTickets(ticketStatus, "");
+    }
+
+    public int getTotalTickets(TicketStatus ticketStatus, String text) {
+        if (text == null || text.isBlank()) {
+            switch (ticketStatus) {
+                case OPEN -> {
+                    return Math.toIntExact(logCollection.countDocuments(Filters.eq("open", true)));
+                }
+                case CLOSED -> {
+                    return Math.toIntExact(logCollection.countDocuments(Filters.eq("open", false)));
+                }
+                case ALL -> {
+                    return (int) logCollection.estimatedDocumentCount();
+                }
+                default -> {
+                    return 0;
+                }
+            }
+        }
         switch (ticketStatus) {
             case OPEN -> {
-                return Math.toIntExact(logCollection.countDocuments(Filters.eq("open", true)));
+                return Math.toIntExact(logCollection.countDocuments(Filters.and(Filters.eq("open", true), Filters.text(text))));
             }
             case CLOSED -> {
-                return Math.toIntExact(logCollection.countDocuments(Filters.eq("open", false)));
+                return Math.toIntExact(logCollection.countDocuments(Filters.and(Filters.eq("open", false), Filters.text(text))));
             }
             case ALL -> {
-                return (int) logCollection.estimatedDocumentCount();
+                return Math.toIntExact(logCollection.countDocuments(Filters.text(text)));
             }
             default -> {
                 return 0;
@@ -177,7 +197,7 @@ public class ModMailLogDB {
         logger.debug("filtering by {} with {}", ticketStatus, ticketFilter);
         var foundLogs = logCollection
                 .find()
-                .filter(Filters.not(Filters.size("messages",0)))
+                .filter(Filters.not(Filters.size("messages", 0)))
                 .sort(Sorts.descending("messages.timestamp"))
                 .filter(ticketFilter)
                 .skip((page - 1) * itemsPerPage)
@@ -189,7 +209,7 @@ public class ModMailLogDB {
                 logger.error(e);
             }
         });
-        logger.trace("Entries: {}",entries);
+        logger.trace("Entries: {}", entries);
         return entries;
     }
 
@@ -227,7 +247,6 @@ public class ModMailLogDB {
      * Determines the number of pages required to display every modmail entry at 8 per page
      *
      * @param ticketStatus ticket status to filter for
-     *
      * @return numbers of pages required to paginate all modmail logs
      */
     public int getPaginationCount(TicketStatus ticketStatus) {

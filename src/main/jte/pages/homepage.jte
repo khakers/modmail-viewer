@@ -53,18 +53,18 @@
                             <li class="nav-item">
                                 <a class="nav-link @if(ticketStatusFilter == TicketStatus.ALL)active@endif"
                                    href="${QueryParamUtil.updateQueryParams(ctx, "status", "all")}"
-                                >${modMailLogDB.getTotalTickets(TicketStatus.ALL)} All</a>
+                                >${modMailLogDB.getTotalTickets(TicketStatus.ALL, search)} All</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link @if(ticketStatusFilter == TicketStatus.OPEN)active@endif"
                                    href="${QueryParamUtil.updateQueryParams(ctx, "status", "open")}"><i
-                                            class="bi bi-record-circle"></i> ${modMailLogDB.getTotalTickets(TicketStatus.OPEN)}
+                                            class="bi bi-record-circle"></i> ${modMailLogDB.getTotalTickets(TicketStatus.OPEN, search)}
                                     Open</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link @if(ticketStatusFilter == TicketStatus.CLOSED)active@endif"
                                    href="${QueryParamUtil.updateQueryParams(ctx, "status", "closed")}"><i
-                                            class="bi bi-check-lg"></i> ${modMailLogDB.getTotalTickets(TicketStatus.CLOSED)}
+                                            class="bi bi-check-lg"></i> ${modMailLogDB.getTotalTickets(TicketStatus.CLOSED, search)}
                                     Closed</a>
                             </li>
                             <%--                    <li class="nav-item border-danger btn-outline-danger ps-2">--%>
