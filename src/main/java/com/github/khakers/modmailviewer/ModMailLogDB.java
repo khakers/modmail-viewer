@@ -196,6 +196,7 @@ public class ModMailLogDB {
     public List<ModMailLogEntry> searchPaginatedMostRecentEntriesByMessageActivity(int page, TicketStatus ticketStatus, String searchkey) {
         return searchPaginatedMostRecentEntriesByMessageActivity(page, DEFAULT_ITEMS_PER_PAGE, ticketStatus, searchkey);
     }
+
     public List<ModMailLogEntry> searchPaginatedMostRecentEntriesByMessageActivity(int page, int itemsPerPage, TicketStatus ticketStatus, String searchkey) {
         ArrayList<ModMailLogEntry> entries = new ArrayList<>(itemsPerPage);
         var ticketFilter = switch (ticketStatus) {
@@ -203,13 +204,12 @@ public class ModMailLogDB {
             case CLOSED -> Filters.eq("open", false);
             case OPEN -> Filters.eq("open", true);
         };
-        logger.debug("filtering by {} with {}", ticketStatus, ticketFilter);
+        logger.debug("filtering by {} with {} and search text '{}'", ticketStatus, ticketFilter, searchkey);
         var foundLogs = logCollection
                 .find()
-                .filter(Filters.not(Filters.size("messages",0)))
+                .filter(Filters.not(Filters.size("messages", 0)))
                 .sort(Sorts.descending("messages.timestamp"))
-                .filter(ticketFilter)
-                .filter(Objects.nonNull(searchkey)&&!searchkey.isEmpty() ? Filters.text(searchkey) : Filters.empty())
+                .filter(Objects.nonNull(searchkey) && !searchkey.isBlank() ? Filters.and(ticketFilter, Filters.text(searchkey)) : ticketFilter)
                 .skip((page - 1) * itemsPerPage)
                 .limit(itemsPerPage);
         foundLogs.forEach(document -> {
@@ -219,7 +219,7 @@ public class ModMailLogDB {
                 logger.error(e);
             }
         });
-        logger.trace("Entries: {}",entries);
+        logger.trace("Entries: {}", entries);
         return entries;
     }
 
