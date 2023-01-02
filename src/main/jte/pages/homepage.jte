@@ -83,7 +83,7 @@
                             <%--                    </li>--%>
                         </ul>
                     </div>
-                    <div class="col-xl-9 col-sm-12 py-sm-2 py-xl-0">
+                    <div class="col-xl-9 col-sm-12 pt-2 py-xl-0">
                         <div id="SearchBox" class="input-group px-xl-0 px-sm-2">
                             <button class="btn btn-outline-danger" type="button" id="ClearSearchButton"><i class="bi bi-x-lg"></i> Clear</button>
                             <input id="SearchBoxInput" type="text" class="form-control" placeholder="Search"
