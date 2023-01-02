@@ -24,6 +24,7 @@ import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -74,7 +75,7 @@ public class ModMailLogDB {
         return getTotalTickets(ticketStatus, "");
     }
 
-    public int getTotalTickets(TicketStatus ticketStatus, String text) {
+    public int getTotalTickets(TicketStatus ticketStatus,@Nullable String text) {
         if (text == null || text.isBlank()) {
             switch (ticketStatus) {
                 case OPEN -> {
@@ -249,8 +250,8 @@ public class ModMailLogDB {
      * @param ticketStatus ticket status to filter for
      * @return numbers of pages required to paginate all modmail logs
      */
-    public int getPaginationCount(TicketStatus ticketStatus) {
-        return getPaginationCount(DEFAULT_ITEMS_PER_PAGE, ticketStatus);
+    public int getPaginationCount(TicketStatus ticketStatus, String search) {
+        return getPaginationCount(DEFAULT_ITEMS_PER_PAGE, ticketStatus, search);
     }
 
     /**
@@ -260,8 +261,8 @@ public class ModMailLogDB {
      * @param ticketStatus ticket status to filter for
      * @return numbers of pages required to paginate all modmail logs
      */
-    public int getPaginationCount(int itemsPerPage, TicketStatus ticketStatus) {
-        return (int) (Math.ceil(getTotalTickets(ticketStatus) / (double) (itemsPerPage)));
+    public int getPaginationCount(int itemsPerPage, TicketStatus ticketStatus, String search) {
+        return (int) (Math.ceil(getTotalTickets(ticketStatus, search) / (double) (itemsPerPage)));
     }
 
     public ModmailConfig getConfig() throws Exception {

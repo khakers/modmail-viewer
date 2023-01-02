@@ -143,7 +143,7 @@ public class Main {
                             , "search text cannot be greater than 50 characters")
                             .getOrDefault("");
                     var ticketFilter = TicketStatus.valueOf(statusFilter.toUpperCase());
-                    var pageCount = db.getPaginationCount(ticketFilter);
+                    var pageCount = db.getPaginationCount(ticketFilter, search);
                     page = Math.min(pageCount, page);
                     ctx.render("pages/homepage.jte",
                             model(
