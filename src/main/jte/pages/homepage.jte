@@ -103,7 +103,7 @@
             <ol class="list-group">
                 @for(var entry : gg.jte.support.ForSupport.of(logEntries))
                     <li class="list-group-item @if(entry.isFirst())border-top-0 rounded-0@endif">
-                        <h2><a href="/logs/${entry.get().getKey()}${Objects.nonNull(search) && !search.isEmpty() ? "#:~:text=" + Encode.forUriComponent(search) : ""}">${entry.get().getKey()}</a></h2>
+                        <h2><a href="/logs/${entry.get().getKey()}${TextFragmentUtils.getTextFragmentAsSnippet(search)}">${entry.get().getKey()}</a></h2>
                         @if(entry.get().isOpen())
                             <span class="badge rounded-pill text-bg-success fs-6"><i
                                         class="bi bi-record-circle"></i> Open</span>
