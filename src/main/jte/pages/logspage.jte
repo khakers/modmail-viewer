@@ -59,7 +59,8 @@
                     <span>Created by:</span>
                     <span class="fw-semibold">${modmailLog.getCreator().name()}</span><span
                             class="text-secondary">#${modmailLog.getCreator().discriminator()}</span>
-                    <span>on <span class="text-muted text-nowrap" data-timestamp="${modmailLog.getCreationTime().toString()}"
+                    <span>on <span class="text-muted text-nowrap"
+                                   data-timestamp="${modmailLog.getCreationTime().toString()}"
                                    data-timestamp-type="detailed"></span></span>
                     ·
                     <span>${modmailLog.getMessages().size()} messages</span>
@@ -148,7 +149,8 @@
                                                 @endif
                                                 <span class="fs-6 text-muted" data-bs-toggle="tooltip"
                                                       data-timestamp="${message.get().getCreationTime().toString()}"
-                                                      data-timestamp-type="relative" data-timestamp-title-type="detailed"
+                                                      data-timestamp-type="relative"
+                                                      data-timestamp-title-type="detailed"
                                                 ></span>
                                             </h3>
                                         </div>
@@ -243,18 +245,20 @@
 <script src="https://cdn.jsdelivr.net/npm/twemoji@14.0.2/dist/twemoji.min.js"
         integrity="sha256-cGIk2NxUQEYPjtkcGmqtJdcyr24O5vsxFRsVerSFurs=" crossorigin="anonymous"></script>
 @if(modmailLog.isNsfw())
-    <div class="modal" id="nsfwModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal" id="nsfwModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel"><i class="bi bi-exclamation-triangle-fill text-warning fs-3"></i> NSFW Thread</h1>
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel"><i
+                                class="bi bi-exclamation-triangle-fill text-warning fs-3"></i> NSFW Thread</h1>
                 </div>
                 <div class="modal-body">
                     <p>This Thread has been marked as containing Not Safe For Work content.</p>
                     <p>Do you wish to continue?</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="location.href='/'">Go Back</button>
+                    <button type="button" class="btn btn-secondary" onclick="history.back()">Go Back</button>
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Continue</button>
                 </div>
             </div>
