@@ -113,7 +113,7 @@
                         @if(entry.get().isOpen())
                             <span>Created by</span>
                             <span class="fw-semibold">${entry.get().getCreator().name()}</span><span
-                                class="text-secondary">#${entry.get().getCreator().discriminator()}</span>
+                                class="text-muted">#${entry.get().getCreator().discriminator()}</span>
                             <span><span class="text-muted" data-timestamp="${entry.get().getCreationTime().toString()}"
                                         data-timestamp-type="relative" data-bs-toggle="tooltip"
                                         data-timestamp-title-type="detailed"></span></span>
@@ -156,7 +156,7 @@
         @endif
         @if(pageCount > 1)
             <div class="container col d-flex justify-content-center p-4">
-                <nav aria-label="Page navigation example">
+                <nav aria-label="Page navigation">
                     <ul class="pagination">
 
                         <%--                        onclick="update('page', '${Math.max(page-1, 1)}')"--%>
