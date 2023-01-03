@@ -11,7 +11,7 @@ public class TextFragmentUtils {
 //    }
 
     public static String getTextFragmentAsSnippet(String text) {
-        if (text == null || text.isEmpty() || text.isBlank()) {
+        if (text == null || text.isBlank()) {
             return "";
         }
         return "#:~:text=" + Encode.forUriComponent(text);
