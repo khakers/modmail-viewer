@@ -17,15 +17,16 @@ application may be unstable in some circumstances.
 * Browsable paginated logs sorted by most recent message and filtered by status.
 * Mobile friendly design.
 * Full message Discord Markdown formatting (Including spoilers, custom emojis, and timestamps).
-
+* Customizable Branding
+* SSL cert support 
 
 ## Roadmap
 
 * Stats dashboard
 * Basic API
 * Dark theme (waiting on bootstrap 5.3)
-* Search
-* Snippet editor (requires a bot plugin)
+* Log text search
+* Snippet editor (will likely require a bot plugin)
 * Configurable log sorting
 
 ## Self-hosting
