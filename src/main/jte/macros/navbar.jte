@@ -87,13 +87,13 @@
                 </ul>
                 <div class="d-flex me-2 color text-primary-emphasis">
                     @if(user.isRealUser())
-                    <span class="navbar-text me-3 text-black-50">
+                    <span class="navbar-text me-3 text-emphasis">
                     Signed in as <span>${user.getUsername()}</span><span>#${user.getDiscriminator()}</span>
                 </span>
                     <a class="btn btn-danger" href="/logout">signout</a>
                     @endif
                 </div>
-
+            </div>
             <%--            <div>--%>
             <%--                <img src="${user.getAvatarUrl()}" class="navbar-brand rounded-circle img-fluid pl-2" width="40" style="size: inherit;">--%>
             <%--            </div>--%>
