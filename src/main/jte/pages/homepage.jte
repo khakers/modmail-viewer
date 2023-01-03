@@ -3,10 +3,9 @@
 @import com.github.khakers.modmailviewer.util.Pagination
 @import com.github.khakers.modmailviewer.ModMailLogDB
 @import com.github.khakers.modmailviewer.util.QueryParamUtil
+@import com.github.khakers.modmailviewer.util.TextFragmentUtils
 @import io.javalin.http.Context
-@import java.net.URI
-@import java.util.List
-@import java.util.Map
+
 
 @param Context ctx
 
@@ -19,6 +18,7 @@
 @param ModMailLogDB modMailLogDB
 @param TicketStatus ticketStatusFilter
 @param boolean showNSFW
+@param String search
 
 <!doctype html>
 <html lang="en" xmlns="http://www.w3.org/1999/html">
@@ -41,58 +41,64 @@
     @template.macros.navbar(ctx = ctx, user = user)
     <div class="content">
         <div class="container pt-5">
-
-            <div class="border rounded-top">
-                <%--                <div class="btn-group" role="group" aria-label="Basic outlined example">--%>
-                <%--                    <button type="button" class="btn btn-outline-primary">All</button>--%>
-                <%--                    <button type="button" class="btn btn-outline-primary">Open</button>--%>
-                <%--                    <button type="button" class="btn btn-outline-primary">Closed</button>--%>
-                <%--                </div>--%>
-                <ul class="nav nav-pills p-2 ">
-                    <li class="nav-item">
-                        <a class="nav-link @if(ticketStatusFilter == TicketStatus.ALL)active@endif"
-                           href="${QueryParamUtil.updateQueryParams(ctx, "status", "all")}"
-                        >${modMailLogDB.getTotalTickets(TicketStatus.ALL)} All</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link @if(ticketStatusFilter == TicketStatus.OPEN)active@endif"
-                           href="${QueryParamUtil.updateQueryParams(ctx, "status", "open")}"><i
-                                    class="bi bi-record-circle"></i> ${modMailLogDB.getTotalTickets(TicketStatus.OPEN)}
-                            Open</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link @if(ticketStatusFilter == TicketStatus.CLOSED)active@endif"
-                           href="${QueryParamUtil.updateQueryParams(ctx, "status", "closed")}"><i
-                                    class="bi bi-check-lg"></i> ${modMailLogDB.getTotalTickets(TicketStatus.CLOSED)}
-                            Closed</a>
-                    </li>
-                    <%--                    <li class="nav-item border-danger btn-outline-danger ps-2">--%>
-                    <%--                        <a class="nav-link border-danger @if(showNSFW)active@endif" href="#"--%>
-                    <%--                           onclick="update('nsfw', '${!showNSFW}')">Show NSFW</a>--%>
-                    <%--                    </li>--%>
-                    <%--                    <li class="nav-item ps-5 ms-auto">--%>
-                    <%--                        <button type="button" class="btn btn-outline-danger" onclick="update('nsfw', '${!showNSFW}')">Show NSFW</button>--%>
-                    <%--                        --%><%-- THis painful if is only required because of 'checked'. JTE does not allow expressions for attribute names --%>
-                    <%--                        @if(showNSFW)--%>
-                    <%--                            <input type="checkbox" class="btn-check" id="btncheck1" autocomplete="off" onclick="update('nsfw', '${!showNSFW}')" checked>--%>
-                    <%--                        @else--%>
-                    <%--                            <input type="checkbox" class="btn-check" id="btncheck1" autocomplete="off" onclick="update('nsfw', '${!showNSFW}')">--%>
-                    <%--                        @endif--%>
-                    <%--                        <label class="btn btn-outline-danger" for="btncheck1">Show NSFW</label>--%>
-                    <%--                    </li>--%>
-                </ul>
+            <div class="border rounded-top p-2">
+                <div class="row justify-content-center justify-content-lg-end">
+                    <div class="col-xl-3 col-sm-12">
+                        <ul class="nav nav-pills ">
+                            <li class="nav-item">
+                                <a class="nav-link @if(ticketStatusFilter == TicketStatus.ALL)active@endif"
+                                   href="${QueryParamUtil.updateQueryParams(ctx, "status", "all")}"
+                                >${modMailLogDB.getTotalTickets(TicketStatus.ALL, search)} All</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @if(ticketStatusFilter == TicketStatus.OPEN)active@endif"
+                                   href="${QueryParamUtil.updateQueryParams(ctx, "status", "open")}"><i
+                                            class="bi bi-record-circle"></i> ${modMailLogDB.getTotalTickets(TicketStatus.OPEN, search)}
+                                    Open</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @if(ticketStatusFilter == TicketStatus.CLOSED)active@endif"
+                                   href="${QueryParamUtil.updateQueryParams(ctx, "status", "closed")}"><i
+                                            class="bi bi-check-lg"></i> ${modMailLogDB.getTotalTickets(TicketStatus.CLOSED, search)}
+                                    Closed</a>
+                            </li>
+                            <%--                    <li class="nav-item border-danger btn-outline-danger ps-2">--%>
+                            <%--                        <a class="nav-link border-danger @if(showNSFW)active@endif" href="#"--%>
+                            <%--                           onclick="update('nsfw', '${!showNSFW}')">Show NSFW</a>--%>
+                            <%--                    </li>--%>
+                            <%--                    <li class="nav-item ps-5 ms-auto">--%>
+                            <%--                        <button type="button" class="btn btn-outline-danger" onclick="update('nsfw', '${!showNSFW}')">Show NSFW</button>--%>
+                            <%--                        --%><%-- THis painful if is only required because of 'checked'. JTE does not allow expressions for attribute names --%>
+                            <%--                        @if(showNSFW)--%>
+                            <%--                            <input type="checkbox" class="btn-check" id="btncheck1" autocomplete="off" onclick="update('nsfw', '${!showNSFW}')" checked>--%>
+                            <%--                        @else--%>
+                            <%--                            <input type="checkbox" class="btn-check" id="btncheck1" autocomplete="off" onclick="update('nsfw', '${!showNSFW}')">--%>
+                            <%--                        @endif--%>
+                            <%--                        <label class="btn btn-outline-danger" for="btncheck1">Show NSFW</label>--%>
+                            <%--                    </li>--%>
+                        </ul>
+                    </div>
+                    <div class="col-xl-9 col-sm-12 pt-2 py-xl-0">
+                        <div id="SearchBox" class="input-group px-xl-0 px-sm-2">
+                            <button class="btn btn-outline-danger" type="button" id="ClearSearchButton"><i class="bi bi-x-lg"></i> Clear</button>
+                            <input id="SearchBoxInput" type="text" class="form-control" placeholder="Search"
+                                   aria-label="Search Text" aria-describedby="SearchButton">
+                            <button class="btn btn-outline-primary" type="button" id="SearchButton"> <i class="bi bi-search"></i> Search</button>
+                        </div>
+                    </div>
+                </div>
             </div>
             @if(logEntries.isEmpty())
                 <div class="pt-5">
                     <p class="text-center">Looks like you don't have any
-                        modmail@if(ticketStatusFilter != TicketStatus.ALL) threads matching this filter@endif</p>
+                        modmail threads matching these filters</p>
                     <p class="text-center text-muted">¯\_(ツ)_/¯</p>
                 </div>
             @endif
             <ol class="list-group">
                 @for(var entry : gg.jte.support.ForSupport.of(logEntries))
                     <li class="list-group-item @if(entry.isFirst())border-top-0 rounded-0@endif">
-                        <h2><a href="/logs/${entry.get().getKey()}">${entry.get().getKey()}</a></h2>
+                        <h2><a href="/logs/${entry.get().getKey()}${TextFragmentUtils.getTextFragmentAsSnippet(search)}">${entry.get().getKey()}</a></h2>
                         @if(entry.get().isOpen())
                             <span class="badge rounded-pill text-bg-success fs-6"><i
                                         class="bi bi-record-circle"></i> Open</span>
@@ -193,6 +199,8 @@
 </div>
 
 <script src="timeformat.js"></script>
+<script src="util.js"></script>
+<script src="/js/TicketFilterHandler.js"></script>
 <script src="/webjars/bootstrap/5.2.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
