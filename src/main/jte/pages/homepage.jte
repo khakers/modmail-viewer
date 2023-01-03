@@ -41,7 +41,7 @@
     @template.macros.navbar(ctx = ctx, user = user)
     <div class="content">
         <div class="container pt-5">
-            <div class="border rounded-top p-2">
+            <div class="border ${logEntries.isEmpty() ? "rounded" : "rounded-top"} p-2">
                 <div class="row justify-content-center justify-content-lg-end">
                     <div class="col-xl-3 col-sm-12">
                         <ul class="nav nav-pills ">
