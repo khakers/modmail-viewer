@@ -28,6 +28,7 @@ application may be unstable in some circumstances.
 * Log text search
 * Snippet editor (will likely require a bot plugin)
 * Configurable log sorting
+* Internationalization can be implemented if there is interest (contact me or make an issue).
 
 ## Self-hosting
 
