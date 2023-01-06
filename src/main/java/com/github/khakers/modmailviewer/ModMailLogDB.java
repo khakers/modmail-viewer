@@ -75,7 +75,7 @@ public class ModMailLogDB {
         return getTotalTickets(ticketStatus, "");
     }
 
-    public int getTotalTickets(TicketStatus ticketStatus,@Nullable String text) {
+    public int getTotalTickets(TicketStatus ticketStatus, @Nullable String text) {
         if (text == null || text.isBlank()) {
             switch (ticketStatus) {
                 case OPEN -> {
@@ -177,7 +177,7 @@ public class ModMailLogDB {
      * @return
      */
     public List<ModMailLogEntry> getPaginatedMostRecentEntriesByMessageActivity(int page, TicketStatus ticketStatus) {
-        return getPaginatedMostRecentEntriesByMessageActivity(page, DEFAULT_ITEMS_PER_PAGE, ticketStatus);
+        return getPaginatedMostRecentEntriesByMessageActivity(page, DEFAULT_ITEMS_PER_PAGE, ticketStatus, null);
     }
 
     /**
@@ -185,33 +185,34 @@ public class ModMailLogDB {
      *
      * @param page
      * @param itemsPerPage
+     * @param searchText
      * @return
      */
-    public List<ModMailLogEntry> getPaginatedMostRecentEntriesByMessageActivity(int page, int itemsPerPage, TicketStatus ticketStatus) {
-//        return searchPaginatedMostRecentEntriesByMessageActivity(page, itemsPerPage, ticketStatus, null);
-        ArrayList<ModMailLogEntry> entries = new ArrayList<>(itemsPerPage);
-        var ticketFilter = switch (ticketStatus) {
-            case ALL -> Filters.empty();
-            case CLOSED -> Filters.eq("open", false);
-            case OPEN -> Filters.eq("open", true);
-        };
-        logger.debug("filtering by {} with {}", ticketStatus, ticketFilter);
-        var foundLogs = logCollection
-                .find()
-                .filter(Filters.not(Filters.size("messages", 0)))
-                .sort(Sorts.descending("messages.timestamp"))
-                .filter(ticketFilter)
-                .skip((page - 1) * itemsPerPage)
-                .limit(itemsPerPage);
-        foundLogs.forEach(document -> {
-            try {
-                entries.add(objectMapper.readValue(document.toJson(), ModMailLogEntry.class));
-            } catch (JsonProcessingException e) {
-                logger.error(e);
-            }
-        });
-        logger.trace("Entries: {}", entries);
-        return entries;
+    public List<ModMailLogEntry> getPaginatedMostRecentEntriesByMessageActivity(int page, int itemsPerPage, TicketStatus ticketStatus, String searchText) {
+        return searchPaginatedMostRecentEntriesByMessageActivity(page, itemsPerPage, ticketStatus, searchText);
+//        ArrayList<ModMailLogEntry> entries = new ArrayList<>(itemsPerPage);
+//        var ticketFilter = switch (ticketStatus) {
+//            case ALL -> Filters.empty();
+//            case CLOSED -> Filters.eq("open", false);
+//            case OPEN -> Filters.eq("open", true);
+//        };
+//        logger.debug("filtering by {} with {}", ticketStatus, ticketFilter);
+//        var foundLogs = logCollection
+//                .find()
+//                .filter(Filters.not(Filters.size("messages", 0)))
+//                .sort(Sorts.descending("messages.timestamp"))
+//                .filter(ticketFilter)
+//                .skip((page - 1) * itemsPerPage)
+//                .limit(itemsPerPage);
+//        foundLogs.forEach(document -> {
+//            try {
+//                entries.add(objectMapper.readValue(document.toJson(), ModMailLogEntry.class));
+//            } catch (JsonProcessingException e) {
+//                logger.error(e);
+//            }
+//        });
+//        logger.trace("Entries: {}", entries);
+//        return entries;
     }
 
     public List<ModMailLogEntry> searchPaginatedMostRecentEntriesByMessageActivity(int page, TicketStatus ticketStatus, String searchkey) {
