@@ -3,8 +3,8 @@
 A drop in alternative frontend for your [Modmail bot](https://github.com/kyb3r/modmail) instance with built-in Discord authentication, advanced features and better mobile support.
 
 Built from scratch using Javalin, JTE, and Bootstrap 5.
-![modmail-logviewer-log](https://user-images.githubusercontent.com/22665282/202370624-09cfa0d6-f8eb-492b-9b82-05f43df672f0.png)
-![logview](https://user-images.githubusercontent.com/22665282/204731537-4f95bb11-0176-45b3-988b-40eac95b3862.png)
+![modmail-logviewer-log](https://user-images.githubusercontent.com/22665282/211416462-676f67a2-b818-4b8a-9eb6-f855f3bf64b9.png)
+![log browsing](https://user-images.githubusercontent.com/22665282/211415993-c1f572f1-f36e-4579-aa84-64a2622ef8ab.png)
 
 
 _Modmail-Viewer_ is currently in beta. There may be breaking or otherwise significant changes between major versions and the
@@ -134,3 +134,5 @@ To run the webserver in the background, it's recommended you use a service manag
 | MODMAIL_VIEWER_BRANDING                    | Text to display in the navbar title. Will display "Modmail-Viewer" by default                                                                                                                                                                                |
 
 
+## Attribution 
+This project uses graphics from [Twemoji](https://twemoji.twitter.com/) licensed under CC-BY 4.0: https://creativecommons.org/licenses/by/4.0/
