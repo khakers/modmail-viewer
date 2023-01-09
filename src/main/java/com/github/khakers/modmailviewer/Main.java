@@ -131,33 +131,44 @@ public class Main {
                     Integer page = ctx.queryParamAsClass("page", Integer.class)
                             .check(integer -> integer >= 1, "page must be at least 1")
                             .getOrDefault(1);
-                    String filter = ctx.queryParamAsClass("status", String.class)
+                    String statusFilter = ctx.queryParamAsClass("status", String.class)
                             .check(s -> s.equalsIgnoreCase(String.valueOf(TicketStatus.OPEN))
                                     || s.equalsIgnoreCase(String.valueOf(TicketStatus.CLOSED))
                                     || s.equalsIgnoreCase(String.valueOf(TicketStatus.ALL)), "")
                             .getOrDefault("ALL");
                     Boolean showNSFW = ctx.queryParamAsClass("nsfw", Boolean.class)
                             .getOrDefault(Boolean.TRUE);
-                    var ticketFilter = TicketStatus.valueOf(filter.toUpperCase());
+                    String search = ctx.queryParamAsClass("search", String.class)
+                            .check(s -> s.length() > 0 && s.length() < 120
+                            , "search text cannot be greater than 50 characters")
+                            .getOrDefault("");
+                    var ticketFilter = TicketStatus.valueOf(statusFilter.toUpperCase());
+                    var pageCount = db.getPaginationCount(ticketFilter, search);
+                    page = Math.min(pageCount, page);
                     ctx.render("pages/homepage.jte",
-                            model("logEntries", db.getPaginatedMostRecentEntriesByMessageActivity(page, ticketFilter),
+                            model(
+                                    "ctx", ctx,
+                                    "logEntries", db.searchPaginatedMostRecentEntriesByMessageActivity(page, ticketFilter, search),
                                     "page", page,
-                                    "pageCount", db.getPaginationCount(),
+                                    "pageCount", pageCount,
                                     "user", authHandler != null ? AuthHandler.getUser(ctx) : new SiteUser(),
                                     "modMailLogDB", db,
                                     "ticketStatusFilter", ticketFilter,
-                                    "showNSFW", showNSFW));
+                                    "showNSFW", showNSFW,
+                                    "search", search));
                 }, RoleUtils.atLeastModerator())
                 .get("/logs/{id}", ctx -> {
                     var entry = db.getModMailLogEntry(ctx.pathParam("id"));
                     entry.ifPresentOrElse(
                             modMailLogEntry -> {
                                 try {
-                                    ctx.render("pages/logspage.jte", model(
-                                            "modmailLog", modMailLogEntry,
-                                            "user", authHandler != null ? AuthHandler.getUser(ctx) : new SiteUser(),
-                                            "parser", PARSER,
-                                            "renderer", RENDERER));
+                                    ctx.render("pages/logspage.jte",
+                                            model(
+                                                    "ctx", ctx,
+                                                    "modmailLog", modMailLogEntry,
+                                                    "user", authHandler != null ? AuthHandler.getUser(ctx) : new SiteUser(),
+                                                    "parser", PARSER,
+                                                    "renderer", RENDERER));
                                 } catch (JsonProcessingException e) {
                                     throw new RuntimeException(e);
                                 }

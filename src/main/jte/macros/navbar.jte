@@ -1,5 +1,8 @@
 @import com.github.khakers.modmailviewer.Config
 @import com.github.khakers.modmailviewer.auth.SiteUser
+@import io.javalin.http.Context
+
+@param Context ctx
 @param SiteUser user
 
 <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
@@ -12,20 +15,15 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="/">Home</a>
+                    <a class="nav-link ${ctx.path().equals("/") ? "active" : ""}" aria-current="page" href="/">Home</a>
                 </li>
-
             </ul>
-            <%--            <form class="d-flex" role="search">--%>
-            <%--                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">--%>
-            <%--                <button class="btn btn-outline-success" type="submit">Search</button>--%>
-            <%--            </form>--%>
             <div class="d-flex me-2">
                 @if(user.isRealUser())
-                <span class="navbar-text me-3">
+                    <span class="navbar-text me-3">
                     Signed in as <span>${user.getUsername()}</span><span>#${user.getDiscriminator()}</span>
                 </span>
-                <a class="btn btn-outline-danger" href="/logout">signout</a>
+                    <a class="btn btn-outline-danger" href="/logout">signout</a>
                 @endif
             </div>
 

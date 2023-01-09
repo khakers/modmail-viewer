@@ -74,14 +74,14 @@ function formatType(type, date) {
     }
 }
 
-const matches = document.querySelectorAll("[timestamp]")
+const matches = document.querySelectorAll("[data-timestamp]")
 matches.forEach((element) => {
     // console.log(element.getAttribute("timestamp"))
-    let time = Date.parse(element.getAttribute("timestamp"))
-    let type = element.getAttribute("timestamp-type")
+    let time = Date.parse(element.getAttribute("data-timestamp"))
+    let type = element.getAttribute("data-timestamp-type")
     // console.log(type)
     element.textContent = formatType(type, time)
-    let titleType = element.getAttribute("timestamp-title-type")
+    let titleType = element.getAttribute("data-timestamp-title-type")
     if (titleType != null) {
         element.setAttribute("title", formatType(titleType, time))
     }

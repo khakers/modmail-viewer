@@ -1,15 +1,15 @@
 # Modmail Viewer
 
-A Java based frontend for your [Modmail bot](https://github.com/kyb3r/modmail) instance. Serves as an alternative
-to [logviewer](https://github.com/kyb3r/logviewer).
+A drop in alternative frontend for your [Modmail bot](https://github.com/kyb3r/modmail) instance with built-in Discord authentication, advanced features and better mobile support.
 
-Built using Javalin, JTE, and Bootstrap 5.
+Built from scratch using Javalin, JTE, and Bootstrap 5.
 ![modmail-logviewer-log](https://user-images.githubusercontent.com/22665282/202370624-09cfa0d6-f8eb-492b-9b82-05f43df672f0.png)
 ![logview](https://user-images.githubusercontent.com/22665282/204731537-4f95bb11-0176-45b3-988b-40eac95b3862.png)
 
 
-_Modmail-Viewer_ is currently in beta. There may be breaking or otherwise significant changes between versions and the
-application may be unstable in some circumstances.
+_Modmail-Viewer_ is currently in beta. There may be breaking or otherwise significant changes between major versions and the
+application may be unstable in some circumstances. Report any bugs you encounter via github issues at this repository (not modmail or logviewer).  
+Use GitHub discussions for feature requests or to ask questions.
 
 ## Features
 
@@ -18,17 +18,22 @@ application may be unstable in some circumstances.
 * Mobile friendly design.
 * Full message Discord Markdown formatting (Including spoilers, custom emojis, and timestamps).
 * Customizable Branding
+* Log text search
 * SSL cert support 
+* NSFW warnings
+* Image spoiler support
 
-## Roadmap
+
+## Future Ideas
 
 * Stats dashboard
+* Internationalization
+  * If you want internationalization and are interested in providing translations, please contact me and/or open an issue/discussion on GitHub.
 * Basic API
 * Dark theme (waiting on bootstrap 5.3)
 * Log text search
 * Snippet editor (will likely require a bot plugin)
 * Configurable log sorting
-* Internationalization can be implemented if there is interest (contact me or make an issue).
 
 ## Self-hosting
 
@@ -84,6 +89,7 @@ Should be located next to your docker-compose.yml, contains secrets.
 
 > **Note**
 > You'll need to create a Discord application (or use the one you created for modmail) and retrieve your OAuth2 client ID and Client secret from the OAuth2 section of the [developer dashboard](https://discord.com/developers/applications)
+> Additionally, you must add a redirect URI to your Discord applications OAuth2 Redirects. This depends on how you access your site but will look something like "https://"modmail.example.com/callback" 
 
 ```properties
 MODMAIL_VIEWER_DISCORD_OAUTH_CLIENT_ID=123456789

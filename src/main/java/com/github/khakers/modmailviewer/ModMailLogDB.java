@@ -24,13 +24,11 @@ import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class ModMailLogDB {
 
@@ -66,21 +64,43 @@ public class ModMailLogDB {
         database.listCollectionNames().forEach(logger::debug);
         this.logCollection = database.getCollection("logs");
         this.configCollection = database.getCollection("config");
+
         var result = logCollection.createIndex(Indexes.descending("messages.timestamp"));
+//        var textIndex = logCollection.createIndex(Indexes.text("messages.content"));
         logger.debug(result);
 
     }
 
     public int getTotalTickets(TicketStatus ticketStatus) {
+        return getTotalTickets(ticketStatus, "");
+    }
+
+    public int getTotalTickets(TicketStatus ticketStatus, @Nullable String text) {
+        if (text == null || text.isBlank()) {
+            switch (ticketStatus) {
+                case OPEN -> {
+                    return Math.toIntExact(logCollection.countDocuments(Filters.eq("open", true)));
+                }
+                case CLOSED -> {
+                    return Math.toIntExact(logCollection.countDocuments(Filters.eq("open", false)));
+                }
+                case ALL -> {
+                    return (int) logCollection.estimatedDocumentCount();
+                }
+                default -> {
+                    return 0;
+                }
+            }
+        }
         switch (ticketStatus) {
             case OPEN -> {
-                return Math.toIntExact(logCollection.countDocuments(Filters.eq("open", true)));
+                return Math.toIntExact(logCollection.countDocuments(Filters.and(Filters.eq("open", true), Filters.text(text))));
             }
             case CLOSED -> {
-                return Math.toIntExact(logCollection.countDocuments(Filters.eq("open", false)));
+                return Math.toIntExact(logCollection.countDocuments(Filters.and(Filters.eq("open", false), Filters.text(text))));
             }
             case ALL -> {
-                return (int) logCollection.estimatedDocumentCount();
+                return Math.toIntExact(logCollection.countDocuments(Filters.text(text)));
             }
             default -> {
                 return 0;
@@ -157,7 +177,7 @@ public class ModMailLogDB {
      * @return
      */
     public List<ModMailLogEntry> getPaginatedMostRecentEntriesByMessageActivity(int page, TicketStatus ticketStatus) {
-        return getPaginatedMostRecentEntriesByMessageActivity(page, DEFAULT_ITEMS_PER_PAGE, ticketStatus);
+        return getPaginatedMostRecentEntriesByMessageActivity(page, DEFAULT_ITEMS_PER_PAGE, ticketStatus, null);
     }
 
     /**
@@ -165,21 +185,53 @@ public class ModMailLogDB {
      *
      * @param page
      * @param itemsPerPage
+     * @param searchText
      * @return
      */
-    public List<ModMailLogEntry> getPaginatedMostRecentEntriesByMessageActivity(int page, int itemsPerPage, TicketStatus ticketStatus) {
-        ArrayList<ModMailLogEntry> entries = new ArrayList<>();
+    public List<ModMailLogEntry> getPaginatedMostRecentEntriesByMessageActivity(int page, int itemsPerPage, TicketStatus ticketStatus, String searchText) {
+        return searchPaginatedMostRecentEntriesByMessageActivity(page, itemsPerPage, ticketStatus, searchText);
+//        ArrayList<ModMailLogEntry> entries = new ArrayList<>(itemsPerPage);
+//        var ticketFilter = switch (ticketStatus) {
+//            case ALL -> Filters.empty();
+//            case CLOSED -> Filters.eq("open", false);
+//            case OPEN -> Filters.eq("open", true);
+//        };
+//        logger.debug("filtering by {} with {}", ticketStatus, ticketFilter);
+//        var foundLogs = logCollection
+//                .find()
+//                .filter(Filters.not(Filters.size("messages", 0)))
+//                .sort(Sorts.descending("messages.timestamp"))
+//                .filter(ticketFilter)
+//                .skip((page - 1) * itemsPerPage)
+//                .limit(itemsPerPage);
+//        foundLogs.forEach(document -> {
+//            try {
+//                entries.add(objectMapper.readValue(document.toJson(), ModMailLogEntry.class));
+//            } catch (JsonProcessingException e) {
+//                logger.error(e);
+//            }
+//        });
+//        logger.trace("Entries: {}", entries);
+//        return entries;
+    }
+
+    public List<ModMailLogEntry> searchPaginatedMostRecentEntriesByMessageActivity(int page, TicketStatus ticketStatus, String searchkey) {
+        return searchPaginatedMostRecentEntriesByMessageActivity(page, DEFAULT_ITEMS_PER_PAGE, ticketStatus, searchkey);
+    }
+
+    public List<ModMailLogEntry> searchPaginatedMostRecentEntriesByMessageActivity(int page, int itemsPerPage, TicketStatus ticketStatus, String searchkey) {
+        ArrayList<ModMailLogEntry> entries = new ArrayList<>(itemsPerPage);
         var ticketFilter = switch (ticketStatus) {
             case ALL -> Filters.empty();
             case CLOSED -> Filters.eq("open", false);
             case OPEN -> Filters.eq("open", true);
         };
-        logger.debug("filtering by {} with {}", ticketStatus, ticketFilter);
+        logger.debug("filtering by {} with {} and search text '{}'", ticketStatus, ticketFilter, searchkey);
         var foundLogs = logCollection
                 .find()
-                .filter(Filters.not(Filters.size("messages",0)))
+                .filter(Filters.not(Filters.size("messages", 0)))
                 .sort(Sorts.descending("messages.timestamp"))
-                .filter(ticketFilter)
+                .filter(Objects.nonNull(searchkey) && !searchkey.isBlank() ? Filters.and(ticketFilter, Filters.text(searchkey)) : ticketFilter)
                 .skip((page - 1) * itemsPerPage)
                 .limit(itemsPerPage);
         foundLogs.forEach(document -> {
@@ -189,27 +241,29 @@ public class ModMailLogDB {
                 logger.error(e);
             }
         });
-        logger.trace("Entries: {}",entries);
+        logger.trace("Entries: {}", entries);
         return entries;
     }
 
     /**
      * Determines the number of pages required to display every modmail entry at 8 per page
      *
+     * @param ticketStatus ticket status to filter for
      * @return numbers of pages required to paginate all modmail logs
      */
-    public int getPaginationCount() {
-        return getPaginationCount(DEFAULT_ITEMS_PER_PAGE);
+    public int getPaginationCount(TicketStatus ticketStatus, String search) {
+        return getPaginationCount(DEFAULT_ITEMS_PER_PAGE, ticketStatus, search);
     }
 
     /**
      * Determines the number of pages required to display every modmail entry at the given items per page
      *
      * @param itemsPerPage max entries per page
+     * @param ticketStatus ticket status to filter for
      * @return numbers of pages required to paginate all modmail logs
      */
-    public int getPaginationCount(int itemsPerPage) {
-        return (int) (Math.ceil(logCollection.estimatedDocumentCount() / (double) (itemsPerPage)));
+    public int getPaginationCount(int itemsPerPage, TicketStatus ticketStatus, String search) {
+        return (int) (Math.ceil(getTotalTickets(ticketStatus, search) / (double) (itemsPerPage)));
     }
 
     public ModmailConfig getConfig() throws Exception {

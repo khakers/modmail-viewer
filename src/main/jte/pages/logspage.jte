@@ -1,5 +1,10 @@
 @import com.github.khakers.modmailviewer.auth.SiteUser
 @import com.github.khakers.modmailviewer.data.MessageType
+@import io.javalin.http.Context
+
+
+@param Context ctx
+
 
 @param com.github.khakers.modmailviewer.data.ModMailLogEntry modmailLog
 @param SiteUser user
@@ -29,7 +34,7 @@
 <body>
 
 <div class="page-container">
-    @template.macros.navbar(user = user)
+    @template.macros.navbar(ctx = ctx, user = user)
     @if(modmailLog.isNsfw())
         <div id="nsfw-backdrop" style=" background-color: rgba(255,255,255,0)"></div>
     @endif
@@ -54,8 +59,9 @@
                     <span>Created by:</span>
                     <span class="fw-semibold">${modmailLog.getCreator().name()}</span><span
                             class="text-secondary">#${modmailLog.getCreator().discriminator()}</span>
-                    <span>on <span class="text-muted text-nowrap" timestamp="${modmailLog.getCreationTime().toString()}"
-                                   timestamp-type="detailed"></span></span>
+                    <span>on <span class="text-muted text-nowrap"
+                                   data-timestamp="${modmailLog.getCreationTime().toString()}"
+                                   data-timestamp-type="detailed"></span></span>
                     ·
                     <span>${modmailLog.getMessages().size()} messages</span>
 
@@ -76,8 +82,8 @@
                             <div class="row">
                                 <div class="col-2 col-md-1 text-center">
                             <span class="d-none d-xl-inline fs-6 fs-light text-muted user-select-none"
-                                  timestamp="${message.get().getCreationTime().toString()}"
-                                  timestamp-type="basic" timestamp-title-type="detailed"
+                                  data-timestamp="${message.get().getCreationTime().toString()}"
+                                  data-timestamp-type="basic" data-timestamp-title-type="detailed"
                                   data-bs-toggle="tooltip"></span>
                                 </div>
                                 <div class="col">
@@ -142,8 +148,9 @@
                                         </span>
                                                 @endif
                                                 <span class="fs-6 text-muted" data-bs-toggle="tooltip"
-                                                      timestamp="${message.get().getCreationTime().toString()}"
-                                                      timestamp-type="relative" timestamp-title-type="detailed"
+                                                      data-timestamp="${message.get().getCreationTime().toString()}"
+                                                      data-timestamp-type="relative"
+                                                      data-timestamp-title-type="detailed"
                                                 ></span>
                                             </h3>
                                         </div>
@@ -203,9 +210,9 @@
                                     </span>
 
                                             <span class="fs-6 text-muted" data-bs-toggle="tooltip"
-                                                  timestamp="${modmailLog.getClosedTime().get().toString()}"
-                                                  timestamp-type="relative"
-                                                  timestamp-title-type="detailed"
+                                                  data-timestamp="${modmailLog.getClosedTime().get().toString()}"
+                                                  data-timestamp-type="relative"
+                                                  data-timestamp-title-type="detailed"
                                             >${modmailLog.getClosedTime().get().toString()}</span>
                                         </h3>
                                     </div>
@@ -238,18 +245,20 @@
 <script src="https://cdn.jsdelivr.net/npm/twemoji@14.0.2/dist/twemoji.min.js"
         integrity="sha256-cGIk2NxUQEYPjtkcGmqtJdcyr24O5vsxFRsVerSFurs=" crossorigin="anonymous"></script>
 @if(modmailLog.isNsfw())
-    <div class="modal" id="nsfwModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal" id="nsfwModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel"><i class="bi bi-exclamation-triangle-fill text-warning fs-3"></i> NSFW Thread</h1>
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel"><i
+                                class="bi bi-exclamation-triangle-fill text-warning fs-3"></i> NSFW Thread</h1>
                 </div>
                 <div class="modal-body">
                     <p>This Thread has been marked as containing Not Safe For Work content.</p>
                     <p>Do you wish to continue?</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="location.href='/'">Go Back</button>
+                    <button type="button" class="btn btn-secondary" onclick="history.back()">Go Back</button>
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Continue</button>
                 </div>
             </div>
