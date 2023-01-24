@@ -19,9 +19,9 @@ scribe = "8.3.2"
 mongodriver = "4.7.2"
 owasp-encoder = "1.2.^"
 
-bootstrap = "5.2.2"
+bootstrap = "5.2.3"
 bootstrap-icons = "1.10.3"
-highlightjs = "11.6.0"
+highlightjs = "11.7.0"
 twemoji = "14.1.0"
 
 [libraries]
