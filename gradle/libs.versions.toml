@@ -19,6 +19,11 @@ scribe = "8.3.2"
 mongodriver = "4.7.2"
 owasp-encoder = "1.2.^"
 
+bootstrap = "5.2.2"
+bootstrap-icons = "1.10.3"
+highlightjs = "11.6.0"
+twemoji = "14.1.0"
+
 [libraries]
 javalin = { module = "io.javalin:javalin", version.ref = "javalin" }
 javalin-rendering = { module = "io.javalin:javalin-rendering", version.ref = "javalin" }
@@ -44,15 +49,20 @@ junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", vers
 
 mongodb-driver = { module = "org.mongodb:mongodb-driver-sync", version.ref = "mongodriver" }
 
-auth0-jwt = { module = "com.auth0:java-jwt", version.ref =  "jwt"}
-scribe-api = { module = "com.github.scribejava:scribejava-apis", version.ref = "scribe"}
+auth0-jwt = { module = "com.auth0:java-jwt", version.ref = "jwt" }
+scribe-api = { module = "com.github.scribejava:scribejava-apis", version.ref = "scribe" }
 
-owasp-encoder = { module = "org.owasp.encoder:encoder", version.ref = "owasp-encoder"}
+owasp-encoder = { module = "org.owasp.encoder:encoder", version.ref = "owasp-encoder" }
+
+webjar-bootstrap = { module = "org.webjars.npm:bootstrap", version.ref = "bootstrap" }
+webjar-bootstrap-icons = { module = "org.webjars.npm:bootstrap-icons", version.ref = "bootstrap-icons" }
+webjar-highlightjs = { module = "org.webjars.npm:highlightjs__cdn-assets", version.ref = "highlightjs" }
+webjar-twemoji = { module = "org.webjars.bowergithub.jdecked:twemoji", version.ref = "twemoji" }
 
 [plugins]
 jte-gradle = { id = "gg.jte.gradle", version.ref = "jte" }
 gradle-release = { id = "net.researchgate.release", version.ref = "gradle-release" }
 docker-java = { id = "com.bmuschko.docker-java-application", version.ref = "docker-java-application" }
-license = { id = "com.jaredsburrows.license", version.ref = "gradle-license"}
-gradle-git-properties = { id = "com.gorylenko.gradle-git-properties", version.ref = "gradle-git-properties"}
+license = { id = "com.jaredsburrows.license", version.ref = "gradle-license" }
+gradle-git-properties = { id = "com.gorylenko.gradle-git-properties", version.ref = "gradle-git-properties" }
 
