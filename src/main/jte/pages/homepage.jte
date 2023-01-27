@@ -31,8 +31,8 @@
     <%--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css"--%>
     <%--          integrity="sha384-xeJqLiuOvjUBq3iGOjvSQSIlwrpqjSHXpduPd6rQpuiM3f5/ijby8pCsnbu5S81n"--%>
     <%--          crossorigin="anonymous">--%>
-    <link href="/webjars/bootstrap/5.2.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/webjars/bootstrap-icons/1.10.2/font/bootstrap-icons.css">
+    <link href="/webjars/bootstrap/5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/webjars/bootstrap-icons/1.10.3/font/bootstrap-icons.css">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
