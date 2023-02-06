@@ -201,7 +201,7 @@
 <script src="timeformat.js"></script>
 <script src="util.js"></script>
 <script src="/js/TicketFilterHandler.js"></script>
-<script src="/webjars/bootstrap/5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/webjars/bootstrap/5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
