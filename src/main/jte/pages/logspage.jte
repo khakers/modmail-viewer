@@ -242,8 +242,8 @@
 <%--        integrity="sha256-4v2jQZxK6PbZEeZ2xl2ziov6NHMksBFgBlxtMZVYbQk=" crossorigin="anonymous"></script>--%>
 <script src="/webjars/bootstrap/5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/webjars/highlightjs__cdn-assets/11.7.0/highlight.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/twemoji@14.0.2/dist/twemoji.min.js"
-        integrity="sha256-cGIk2NxUQEYPjtkcGmqtJdcyr24O5vsxFRsVerSFurs=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@twemoji/api@14.1.0/dist/twemoji.min.js"
+        integrity="sha256-XYd0657/E6vXWd2/YltfmmLHI1HFxm5P9qC5eg/e19Q=" crossorigin="anonymous"></script>
 @if(modmailLog.isNsfw())
     <div class="modal" id="nsfwModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
          aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -281,7 +281,7 @@
 <script>
     twemoji.parse(document.body, {
         // The default Twemoji CDN will die at the end of the year. This tells it to use jsdelivr for emoji images instead
-        base: "https://cdn.jsdelivr.net/gh/twitter/twemoji@v14.0.2/assets/"
+        base: "https://cdn.jsdelivr.net/gh/jdecked/twemoji@v14.0.2/assets/"
     });
 </script>
 <script>
