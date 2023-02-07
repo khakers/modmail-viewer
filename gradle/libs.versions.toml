@@ -23,6 +23,7 @@ bootstrap = "5.3.0-alpha1"
 bootstrap-icons = "1.10.3"
 highlightjs = "11.7.0"
 twemoji = "14.1.0"
+unpoly = "2.7.1"
 
 [libraries]
 javalin = { module = "io.javalin:javalin", version.ref = "javalin" }
@@ -58,6 +59,7 @@ webjar-bootstrap = { module = "org.webjars.npm:bootstrap", version.ref = "bootst
 webjar-bootstrap-icons = { module = "org.webjars.npm:bootstrap-icons", version.ref = "bootstrap-icons" }
 webjar-highlightjs = { module = "org.webjars.npm:highlightjs__cdn-assets", version.ref = "highlightjs" }
 webjar-twemoji = { module = "org.webjars.bowergithub.jdecked:twemoji", version.ref = "twemoji" }
+webjar-unpoly = { module="org.webjars.npm:unpoly", version.ref = "unpoly"}
 
 [plugins]
 jte-gradle = { id = "gg.jte.gradle", version.ref = "jte" }
