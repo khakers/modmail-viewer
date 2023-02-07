@@ -162,7 +162,7 @@ public class Main {
                     entry.ifPresentOrElse(
                             modMailLogEntry -> {
                                 try {
-                                    ctx.render("pages/logspage.jte",
+                                    ctx.render("pages/LogEntryView.jte",
                                             model(
                                                     "ctx", ctx,
                                                     "modmailLog", modMailLogEntry,
