@@ -30,9 +30,9 @@ Use GitHub discussions for feature requests or to ask questions.
 * Internationalization
   * If you want internationalization and are interested in providing translations, please contact me and/or open an issue/discussion on GitHub.
 * Basic API
-* Dark theme (waiting on bootstrap 5.3)
-* Log text search
+* Dark theme (WIP)
 * Snippet editor (will likely require a bot plugin)
+* Persistent Notes editor 
 * Configurable log sorting
 
 ## Self-hosting
