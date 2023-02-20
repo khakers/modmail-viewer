@@ -4,6 +4,20 @@
  * Licensed under the Creative Commons Attribution 3.0 Unported License.
  */
 
+// up.compiler('#themeSelector', function (element) {
+//     showActiveTheme(getPreferredTheme())
+//
+//     document.querySelectorAll('[data-bs-theme-value]')
+//         .forEach(toggle => {
+//             toggle.addEventListener('click', () => {
+//                 const theme = toggle.getAttribute('data-bs-theme-value')
+//                 localStorage.setItem('theme', theme)
+//                 setTheme(theme)
+//                 showActiveTheme(theme)
+//             })
+//         })
+// })
+
 (() => {
     'use strict'
 

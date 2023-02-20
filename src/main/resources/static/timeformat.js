@@ -74,8 +74,9 @@ function formatType(type, date) {
     }
 }
 
-const matches = document.querySelectorAll("[data-timestamp]")
-matches.forEach((element) => {
+up.compiler('[data-timestamp]', formatTime)
+
+function formatTime(element) {
     // console.log(element.getAttribute("timestamp"))
     let time = Date.parse(element.getAttribute("data-timestamp"))
     let type = element.getAttribute("data-timestamp-type")
@@ -85,4 +86,4 @@ matches.forEach((element) => {
     if (titleType != null) {
         element.setAttribute("title", formatType(titleType, time))
     }
-})
+}

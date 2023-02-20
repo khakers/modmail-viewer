@@ -221,17 +221,6 @@
     @template.macros.footer()
 </div>
 
-<script src="/timeformat.js"></script>
-
-<%--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"--%>
-<%--        integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"--%>
-<%--        crossorigin="anonymous"></script>--%>
-<%--<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.6.0/build/highlight.min.js"--%>
-<%--        integrity="sha256-4v2jQZxK6PbZEeZ2xl2ziov6NHMksBFgBlxtMZVYbQk=" crossorigin="anonymous"></script>--%>
-<script src="/webjars/bootstrap/5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<script src="/webjars/highlightjs__cdn-assets/11.7.0/highlight.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@twemoji/api@14.1.0/dist/twemoji.min.js"
-        integrity="sha256-XYd0657/E6vXWd2/YltfmmLHI1HFxm5P9qC5eg/e19Q=" crossorigin="anonymous"></script>
 @if(modmailLog.isNsfw())
     <div class="modal" id="nsfwModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
          aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -253,12 +242,7 @@
         </div>
     </div>
     <script>
-        const modalElement = document.getElementById('nsfwModal');
-        const bsModal = new bootstrap.Modal(modalElement)
-        modalElement.addEventListener('hide.bs.modal', event => {
-            document.getElementById("nsfw-backdrop").hidden = true;
-        })
-        bsModal.show()
+
     </script>
 @endif
 
@@ -270,16 +254,5 @@
         base: "https://cdn.jsdelivr.net/gh/jdecked/twemoji@v14.0.2/assets/"
     });
 </script>
-<script>
-    let spoilerTags = document.querySelectorAll('.spoilerText');
-    spoilerTags.forEach((item) => {
-        item.addEventListener("click", (event) => {
-            let target = event.target;
-            target.classList.remove("hidden");
-            target.setAttribute("role", "presentation")
-        })
-    })
-</script>
-<script src="/js/ThemeSelector.js"></script>
 </body>
 </html>

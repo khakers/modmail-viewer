@@ -33,25 +33,31 @@
 
 <div class="page-container">
     @template.macros.navbar(ctx = ctx, user = user)
-    <div class="content">
+    <div class="content" up-main>
         <div class="container pt-5">
             <div class="border ${logEntries.isEmpty() ? "rounded" : "rounded-top"} p-2">
                 <div class="row justify-content-center justify-content-lg-end">
                     <div class="col-xl-3 col-sm-12">
                         <ul class="nav nav-pills ">
                             <li class="nav-item">
-                                <a class="nav-link @if(ticketStatusFilter == TicketStatus.ALL)active@endif"
+                                <a class="nav-link @if(ticketStatusFilter == TicketStatus.ALL || ticketStatusFilter == null)active@endif"
+                                   up-follow up-target=".content"
+                                   up-transition="cross-fade"
                                    href="${QueryParamUtil.updateQueryParams(ctx, "status", "all")}"
                                 >${modMailLogDB.getTotalTickets(TicketStatus.ALL, search)} All</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link @if(ticketStatusFilter == TicketStatus.OPEN)active@endif"
+                                   up-follow up-target=".content"
+                                   up-transition="cross-fade"
                                    href="${QueryParamUtil.updateQueryParams(ctx, "status", "open")}"><i
                                             class="bi bi-record-circle"></i> ${modMailLogDB.getTotalTickets(TicketStatus.OPEN, search)}
                                     Open</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link @if(ticketStatusFilter == TicketStatus.CLOSED)active@endif"
+                                   up-target=".content" up-follow
+                                   up-transition="cross-fade"
                                    href="${QueryParamUtil.updateQueryParams(ctx, "status", "closed")}"><i
                                             class="bi bi-check-lg"></i> ${modMailLogDB.getTotalTickets(TicketStatus.CLOSED, search)}
                                     Closed</a>
@@ -74,10 +80,14 @@
                     </div>
                     <div class="col-xl-9 col-sm-12 pt-2 py-xl-0">
                         <div id="SearchBox" class="input-group px-xl-0 px-sm-2">
-                            <button class="btn btn-outline-danger" type="button" id="ClearSearchButton"><i class="bi bi-x-lg"></i> Clear</button>
-                            <input id="SearchBoxInput" type="text" class="form-control" placeholder="Search"
-                                   aria-label="Search Text" aria-describedby="SearchButton">
-                            <button class="btn btn-outline-primary" type="button" id="SearchButton"> <i class="bi bi-search"></i> Search</button>
+                            <button class="btn btn-outline-danger" type="button" id="ClearSearchButton"><i
+                                        class="bi bi-x-lg"></i> Reset
+                            </button>
+                            <input id="SearchBoxInput" type="search" class="form-control" placeholder="Search Modmail logs..."
+                                   aria-label="Search Text" aria-describedby="SearchButton" value="${search}">
+                            <button class="btn btn-outline-primary" type="button" id="SearchButton"><i
+                                        class="bi bi-search"></i> Search
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -89,10 +99,12 @@
                     <p class="text-center text-muted">¯\_(ツ)_/¯</p>
                 </div>
             @endif
-            <ol class="list-group">
+            <ol id="logEntryList" class="list-group">
                 @for(var entry : gg.jte.support.ForSupport.of(logEntries))
                     <li class="list-group-item @if(entry.isFirst())border-top-0 rounded-0@endif">
-                        <h2><a href="/logs/${entry.get().getKey()}${TextFragmentUtils.getTextFragmentAsSnippet(search)}">${entry.get().getKey()}</a></h2>
+                        <h2>
+                            <a href="/logs/${entry.get().getKey()}${TextFragmentUtils.getTextFragmentAsSnippet(search)}" up-follow up-target=".content" up-transition="move-right">${entry.get().getKey()}</a>
+                        </h2>
                         @if(entry.get().isOpen())
                             <span class="badge rounded-pill text-bg-success fs-6"><i
                                         class="bi bi-record-circle"></i> Open</span>
@@ -154,8 +166,9 @@
                     <ul class="pagination">
 
                         <%--                        onclick="update('page', '${Math.max(page-1, 1)}')"--%>
-                        <li class="page-item"><a class="page-link ${previousClass}"
-                                                 href="${QueryParamUtil.updateQueryParams(ctx, "page", String.valueOf(Math.max(page-1, 1)))}">Previous</a>
+                        <li class="page-item">
+                            <a class="page-link ${previousClass}" up-follow="#logEntryList"
+                               href="${QueryParamUtil.updateQueryParams(ctx, "page", String.valueOf(Math.max(page-1, 1)))}">Previous</a>
                         </li>
                         @if(Pagination.needsPaginationCulling(pageCount) && page > 4)
                             <a class="page-link" href="#">1</a>
@@ -172,6 +185,7 @@
                                         <span class="page-link ${isActive}">${i}</span>
                                     @else
                                         <a class="page-link"
+                                           up-follow="#logEntryList"
                                            href="${QueryParamUtil.updateQueryParams(ctx, "page", String.valueOf(i))}">${i}</a>
                                     @endif
                                 </li>
@@ -181,7 +195,7 @@
                             <li class="page-item"><a class="page-link disabled">...</a></li>
                             <a class="page-link sm-visually-hidden" href="#">${pageCount}</a>
                         @endif
-                        <li class="page-item"><a class="page-link ${nextClass}"
+                        <li class="page-item"><a class="page-link ${nextClass}" up-follow="#logEntryList"
                                                  href="${QueryParamUtil.updateQueryParams(ctx, "page", String.valueOf(page+1))}"
                             >Next</a></li>
                     </ul>

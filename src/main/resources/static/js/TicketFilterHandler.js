@@ -1,25 +1,38 @@
-const searchbox = document.getElementById("SearchBox");
 
+up.compiler('#SearchBoxInput', function (element) {
+    element.addEventListener('keydown', event => {
+        if (event.key === "Enter") {
+            search();
+        }
+    })
+})
 
-const input = document.getElementById("SearchBoxInput");
-const searchButton = document.getElementById("SearchButton");
-const searchClearButton = document.getElementById("ClearSearchButton");
+up.compiler("#ClearSearchButton", function (element) {
+    element.addEventListener('click', () => {
+        const url = window.location.href;
+        console.log(url);
+        const params = up.Params.fromURL(url);
+        params.delete('search');
 
-searchButton.addEventListener("click", search);
-input.addEventListener('keydown', event => {
-    if (event.key === "Enter") {
+        up.navigate({params: params, url: window.location.pathname});
+    })
+})
+
+up.compiler('#SearchButton', function (element) {
+    element.addEventListener("click", (event) => {
         search();
-    }
-})
-searchClearButton.addEventListener("click", (event) => {
-    update('search', '');
-    input.value = '';
+    })
 })
 
-const searchParams = new URLSearchParams(window.location.search);
-input.value = searchParams.get('search');
 
 function search() {
-    update('search', input.value);
+    const search = document.getElementById("SearchBoxInput").value;
+
+    const url = window.location.href;
+    console.log(url);
+    const params = up.Params.fromURL(url);
+    params.set('search', search);
+
+    up.navigate({params: params, url: window.location.pathname});
 }
 
