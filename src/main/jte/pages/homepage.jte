@@ -26,14 +26,8 @@
     <title>Modmail Logs</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <%--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"--%>
-    <%--          integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">--%>
-    <%--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css"--%>
-    <%--          integrity="sha384-xeJqLiuOvjUBq3iGOjvSQSIlwrpqjSHXpduPd6rQpuiM3f5/ijby8pCsnbu5S81n"--%>
-    <%--          crossorigin="anonymous">--%>
-    <link href="/webjars/bootstrap/5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/webjars/bootstrap-icons/1.10.3/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="/css/styles.css">
+
+    @template.macros.HeaderImports()
 </head>
 <body>
 
@@ -198,14 +192,7 @@
     @template.macros.footer()
 </div>
 
-<script src="timeformat.js"></script>
-<script src="util.js"></script>
-<script src="/js/TicketFilterHandler.js"></script>
-<script src="/webjars/bootstrap/5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<script src="/js/ThemeSelector.js"></script>
-<script>
-    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
-</script>
+@template.macros.JSImports()
+
 </body>
 </html>
