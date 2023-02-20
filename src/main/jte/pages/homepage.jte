@@ -135,7 +135,8 @@
                         @endif
                         ·
                         <span>${entry.get().getMessages().size()} messages</span>
-                        ·
+                        @if(!entry.get().getMessages().isEmpty())
+                            ·
                         <span>Last message sent <span class="text-muted"
                                                       data-timestamp="${entry.get().getMessages().get(entry.get().getMessages().size()-1).getCreationTime().toString()}"
                                                       data-timestamp-type="relative" data-bs-toggle="tooltip"
@@ -146,6 +147,8 @@
                                         class="text-muted">#${entry.get().getMessages().get(entry.get().getMessages().size()-1).getAuthor().discriminator()}</span>
                             </span>
                         </span>
+                        @endif
+
                     </li>
                 @endfor
 
