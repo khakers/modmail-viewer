@@ -24,7 +24,7 @@ public class Config {
 
     public static final String MONGODB_URI = Assert.requireNonEmpty(System.getenv(ENV_PREPEND + "_MONGODB_URI"), "No mongodb URI provided. provide one with the option \""+ENV_PREPEND+"_MONGODB_URI\"");
 
-    public static final String WEB_URL = Assert.requireNonEmpty(System.getenv(ENV_PREPEND + "_URL"), "No URL provided. provide one with the option \""+ENV_PREPEND+"_URL\"");
+    public static final String WEB_URL; 
 
     public static final boolean isSecure = isSetToTrue(System.getenv(ENV_PREPEND + "_SSL"));
     @Nullable
@@ -54,6 +54,15 @@ public class Config {
 
     public static final String BRANDING = notEmptyOrElse(System.getenv(ENV_PREPEND + "_BRANDING"), "Modmail-Viewer");
 
+    static {
+        var webUrl = Assert.requireNonEmpty(System.getenv(ENV_PREPEND + "_URL"), "No URL provided. provide one with the option \""+ENV_PREPEND+"_URL\"");
+        if (WEB_URL.endsWith("/")) {
+            logger.warn(ENV_PREPEND + "_WEB_URL has a trailing slash. Removed it due to conflict with the callback.");
+            WEB_URL = webUrl.deleteCharAt(str.length() - 1);
+        } else {
+            WEB_URL = webUrl;
+        }
+    }
 
     static {
         var jwtSecretKey = System.getenv("MODMAIL_VIEWER_SECRETKEY");
