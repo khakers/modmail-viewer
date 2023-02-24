@@ -58,7 +58,7 @@ public class Config {
         var webUrl = Assert.requireNonEmpty(System.getenv(ENV_PREPEND + "_URL"), "No URL provided. provide one with the option \""+ENV_PREPEND+"_URL\"");
         if (webUrl.endsWith("/")) {
             logger.warn(ENV_PREPEND + "_WEB_URL has a trailing slash. Removed it due to conflict with the callback.");
-            WEB_URL = webUrl.deleteCharAt(str.length() - 1);
+            WEB_URL = webUrl.deleteCharAt(webUrl.length() - 1);
         } else {
             WEB_URL = webUrl;
         }
