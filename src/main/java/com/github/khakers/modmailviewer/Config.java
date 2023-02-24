@@ -55,16 +55,6 @@ public class Config {
     public static final String BRANDING = notEmptyOrElse(System.getenv(ENV_PREPEND + "_BRANDING"), "Modmail-Viewer");
 
     static {
-        var webUrl = Assert.requireNonEmpty(System.getenv(ENV_PREPEND + "_URL"), "No URL provided. provide one with the option \""+ENV_PREPEND+"_URL\"");
-        if (webUrl.endsWith("/")) {
-            logger.warn(ENV_PREPEND + "_WEB_URL has a trailing slash. Removed it due to conflict with the callback.");
-            WEB_URL = webUrl.deleteCharAt(webUrl.length() - 1);
-        } else {
-            WEB_URL = webUrl;
-        }
-    }
-
-    static {
         var jwtSecretKey = System.getenv("MODMAIL_VIEWER_SECRETKEY");
         if (jwtSecretKey == null || jwtSecretKey.isEmpty()) {
             logger.warn("Generated a random key for signing tokens. Sessions will not persist between restarts");
@@ -75,6 +65,13 @@ public class Config {
         } else {
             JWT_SECRET_KEY = jwtSecretKey;
         }
+
+        var webUrl = Assert.requireNonEmpty(System.getenv(ENV_PREPEND + "_URL"), "No URL provided. provide one with the option \"" + ENV_PREPEND + "_URL\"");
+        if (webUrl.endsWith("/")) {
+            logger.warn(ENV_PREPEND + "_WEB_URL has a trailing slash. Removed it due to conflict with the callback.");
+            webUrl = webUrl.substring(0, webUrl.length() - 1);
+        }
+        WEB_URL = webUrl;
     }
 
     private static <T> T notNullObjOrElse(T obj, T defaultObj) {
