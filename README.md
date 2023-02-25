@@ -1,6 +1,6 @@
 # Modmail Viewer
 
-A drop in alternative frontend for your [Modmail bot](https://github.com/kyb3r/modmail) instance with built-in Discord authentication, advanced features and better mobile support.
+A drop in alternative frontend for your [Modmail bot](https://github.com/kyb3rr/modmail) instance with built-in Discord authentication, advanced features and better mobile support.
 
 Built from scratch using Javalin, JTE, and Bootstrap 5.
 ![modmail-logviewer-log](https://user-images.githubusercontent.com/22665282/211416462-676f67a2-b818-4b8a-9eb6-f855f3bf64b9.png)
