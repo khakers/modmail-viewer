@@ -23,7 +23,7 @@ bootstrap = "5.3.0-alpha1"
 bootstrap-icons = "1.10.3"
 highlightjs = "11.7.0"
 twemoji = "14.1.0"
-unpoly = "2.7.1"
+unpoly = "3.0.0-rc1"
 
 [libraries]
 javalin = { module = "io.javalin:javalin", version.ref = "javalin" }
