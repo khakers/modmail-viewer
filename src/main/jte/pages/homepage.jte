@@ -43,6 +43,7 @@
                                 <a class="nav-link @if(ticketStatusFilter == TicketStatus.ALL || ticketStatusFilter == null)active@endif"
                                    up-follow up-target=".content"
                                    up-transition="cross-fade"
+                                   up-alias="/"
                                    href="${QueryParamUtil.updateQueryParams(ctx, "status", "all")}"
                                 >${modMailLogDB.getTotalTickets(TicketStatus.ALL, search)} All</a>
                             </li>
