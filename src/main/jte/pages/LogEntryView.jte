@@ -246,8 +246,6 @@
     </script>
 @endif
 
-@template.macros.JSImports()
-
 <script>
     twemoji.parse(document.body, {
         // The default Twemoji CDN will die at the end of the year. This tells it to use jsdelivr for emoji images instead

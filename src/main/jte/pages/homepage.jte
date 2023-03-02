@@ -209,8 +209,5 @@
     </div>
     @template.macros.footer()
 </div>
-
-@template.macros.JSImports()
-
 </body>
 </html>

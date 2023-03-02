@@ -1,9 +1,0 @@
-<script src="/timeformat.js"></script>
-<script src="/util.js"></script>
-<script src="/js/TicketFilterHandler.js"></script>
-<script src="/webjars/bootstrap/5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<script src="/webjars/highlightjs__cdn-assets/11.7.0/highlight.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@twemoji/api@14.1.0/dist/twemoji.min.js"
-        integrity="sha256-XYd0657/E6vXWd2/YltfmmLHI1HFxm5P9qC5eg/e19Q=" crossorigin="anonymous"></script>
-<script src="/js/ThemeSelector.js"></script>
-<script src="/js/base.js"></script>
