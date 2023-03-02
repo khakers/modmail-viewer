@@ -241,16 +241,6 @@
             </div>
         </div>
     </div>
-    <script>
-
-    </script>
 @endif
-
-<script>
-    twemoji.parse(document.body, {
-        // The default Twemoji CDN will die at the end of the year. This tells it to use jsdelivr for emoji images instead
-        base: "https://cdn.jsdelivr.net/gh/jdecked/twemoji@v14.0.2/assets/"
-    });
-</script>
 </body>
 </html>
