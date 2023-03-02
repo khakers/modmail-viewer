@@ -8,8 +8,8 @@
 
 <link rel="stylesheet" href="/css/styles.css">
 
-<script src="/webjars/unpoly/3.0.0-rc2/unpoly.min.js"></script>
-<script src="/webjars/unpoly/3.0.0-rc2/unpoly-bootstrap5.min.js"></script>
+<script src="/webjars/unpoly/3.0.0-rc2/unpoly.min.js" defer></script>
+<script src="/webjars/unpoly/3.0.0-rc2/unpoly-bootstrap5.min.js" defer></script>
 
 <script src="/timeformat.js" defer></script>
 <script src="/util.js" defer></script>
