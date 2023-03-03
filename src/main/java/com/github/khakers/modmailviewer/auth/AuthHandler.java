@@ -91,15 +91,16 @@ public class AuthHandler {
             return;
         }
         Role userRole = AuthHandler.getUserRole(ctx);
-        logger.debug("User {} had role {}", ctx.ip(), userRole);
+        SiteUser user = AuthHandler.getUser(ctx);
+        logger.debug("User id{} @ {} had role {}", user.getId(), ctx.ip(), userRole);
         if (routeRoles.contains(userRole)) {
             handler.handle(ctx);
-            logger.debug("User {} was authorized and had request handled", ctx.ip());
+            logger.debug("User id{} @ {} was authorized and had request handled", user.getId(), ctx.ip());
         } else if (userRole != Role.ANYONE) {
-            logger.debug("User {} was not authorized was given a 403", ctx.ip());
+            logger.debug("User id{} @ {} was not authorized was given a 403", user.getId(), ctx.ip());
             ctx.status(403).result();
         } else {
-            logger.debug("Redirected {} to auth URL from {}",ctx.ip(), ctx.url());
+            logger.debug("Redirected {} to auth URL from {}", ctx.ip(), ctx.url());
             ctx.redirect(service.getAuthorizationUrl(generateOuathState(ctx)));
         }
     }
