@@ -2,14 +2,15 @@
 
 A drop in alternative frontend for your [Modmail bot](https://github.com/kyb3rr/modmail) instance with built-in Discord authentication, advanced features and better mobile support.
 
-Built from scratch using Javalin, JTE, and Bootstrap 5.
+Built from scratch in Java using Javalin, JTE, and Bootstrap 5.
 ![modmail-logviewer-log](https://user-images.githubusercontent.com/22665282/211416462-676f67a2-b818-4b8a-9eb6-f855f3bf64b9.png)
 ![log browsing](https://user-images.githubusercontent.com/22665282/211415993-c1f572f1-f36e-4579-aa84-64a2622ef8ab.png)
 
 
-_Modmail-Viewer_ is currently in beta. There may be breaking or otherwise significant changes between major versions and the
-application may be unstable in some circumstances. Report any bugs you encounter via github issues at this repository (not modmail or logviewer).  
-Use GitHub discussions for feature requests or to ask questions.
+_Modmail-Viewer_ is currently a beta. You should always read update notes before applying updates as there may be breaking changes between major versions, and make sure you run an up to date version to have the latest fixes and support.
+
+Report any bugs you encounter via github issues at this repository (not modmail or logviewer).  
+Use GitHub discussions for feature requests or to ask questions. You *can* send me messages on Discord but there's a very good chance I won't notice your message requests because they have very poor discoverability.
 
 ## Features
 
@@ -43,8 +44,7 @@ automatic https OR provide the required keys/certs to the application yourself i
 ### Docker
 
 Running the application with Docker is the fastest and best supported way to run _modmail-viewer_. Additionally, you
-easily can
-run it using any 3rd party service that supports running docker containers.
+can easily run it using any 3rd party service that supports running docker containers.
 
 #### Docker Run
 
