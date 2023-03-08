@@ -132,6 +132,7 @@ To run the webserver in the background, it's recommended you use a service manag
 | MODMAIL_VIEWER_HTTPS_PORT                  | Port HTTPS traffic will be served at. Defaults to 443                                                                                                                                                                                                        |
 | MODMAIL_VIEWER_SNI                         | Set SNI to be enabled/disabled. Requires SSL to be enabled                                                                                                                                                                                                   |
 | MODMAIL_VIEWER_BRANDING                    | Text to display in the navbar title. Will display "Modmail-Viewer" by default                                                                                                                                                                                |
+| MODMAIL_VIEWER_LOG_LEVEL                   | Set the application log level (INFO, DEBUG, ERROR, TRACE)                  |
 
 
 ## Attribution 
