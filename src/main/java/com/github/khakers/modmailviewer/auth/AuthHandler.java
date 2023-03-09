@@ -99,8 +99,16 @@ public class AuthHandler {
             logger.debug("User {} was not authorized was given a 403", ctx.ip());
             ctx.status(403).result();
         } else {
-            logger.debug("Redirected {} to auth URL from {}",ctx.ip(), ctx.url());
-            ctx.redirect(service.getAuthorizationUrl(generateOuathState(ctx)));
+            logger.debug("Redirected {} to auth URL from {}", ctx.ip(), ctx.url());
+            ctx.header("X-Auth-Redirect", "1");
+            // Handling for Unpoly, if we detect a request coming from it, we send a 403 instead of redirecting, which would get hit by CORS
+            // our frontend code can handle a 403 and specifically fully load the page to get a redirect to where we wanted to go.
+
+            if (ctx.header("x-up-version") != null) {
+                ctx.status(HttpStatus.FORBIDDEN);
+                return;
+            }
+            ctx.redirect(service.getAuthorizationUrl(generateOAuthState(ctx)), HttpStatus.TEMPORARY_REDIRECT);
         }
     }
 

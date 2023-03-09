@@ -1,5 +1,3 @@
-
-
 // Fill out bootstrap tooltips
 up.compiler('[data-bs-toggle="tooltip"]', function (element) {
     new bootstrap.Tooltip(element);
@@ -25,10 +23,28 @@ up.compiler("#nsfwModal", function (element) {
     bsModal.show();
 });
 
-up.on('up:fragment:inserted', (evemt) => {
+up.on('up:fragment:inserted', (event) => {
     twemoji.parse(document.body, {
-        // The default Twemoji CDN will die at the end of the year. This tells it to use jsdelivr for emoji images instead
+        // The default Twemoji CDN ~will~ died at the end of the year. This tells it to use jsdelivr for emoji images instead
         base: "https://cdn.jsdelivr.net/gh/jdecked/twemoji@v14.0.2/assets/"
     });
 });
 
+up.on('up:request:loaded', (event) => {
+    if (!event.response.ok) {
+        if (event.response.status === 403) {
+            event.preventDefault();
+            // This looks very odd but it seems to work perfectly
+            up.network.loadPage({ url: "" });
+        }
+    }
+});
+
+up.on('up:request:offline', (event) => {
+    //handle telling the user we're offline
+});
+
+
+function isDiscordPage(url) {
+    return !!url.match(/^https:\/\/discord\.com\/oauth2\/authorize\S*/gm);
+}
