@@ -1,4 +1,7 @@
 # Modmail Viewer
+[![Discord](https://img.shields.io/discord/1040471918639337577?label=Discord&logo=Discord)](https://discord.gg/V5HA9N5Dn8)
+[![GitHub latest release (latest SemVer)](https://img.shields.io/github/v/release/khakers/modmail-viewer?logo=Git&logoColor=f5f5f5)](https://github.com/khakers/modmail-viewer/releases/latest)
+[![GitHub Help Wanted issues](https://img.shields.io/github/issues/khakers/modmail-viewer/help%20wanted?color=blue)](https://github.com/khakers/modmail-viewer/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22)
 
 A drop in alternative frontend for your [Modmail bot](https://github.com/kyb3rr/modmail) instance with built-in Discord authentication, advanced features and better mobile support.
 
