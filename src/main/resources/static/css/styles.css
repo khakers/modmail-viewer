@@ -18,6 +18,7 @@ blockquote p {
     vertical-align: -0.125em;
     fill: currentcolor;
 }
+
 code {
     /*background-color: #f3f3f3;*/
     background-color: var(--bs-secondary-bg);
@@ -29,17 +30,25 @@ code {
 
 .spoilerText {
     border-radius: 3px;
-    background-color: rgb(220, 221, 222);
+    background-color: var(--bs-secondary-bg);
     transition: all .1s ease;
     padding: 0 2px;
 }
 
-.spoilerText.hidden:hover {
+[data-bs-theme=light] .spoilerText.hidden:hover {
     background-color: rgb(74, 75, 80);
 }
 
-.spoilerText.hidden {
+[data-bs-theme=light] .spoilerText.hidden {
     background-color: rgb(32, 34, 37);
+}
+
+[data-bs-theme=dark] .spoilerText.hidden:hover {
+    background-color: rgb(74, 75, 80);
+}
+
+[data-bs-theme=dark] .spoilerText.hidden {
+    background-color: rgb(60, 64, 70);
 }
 
 .spoilerText.hidden .content {
@@ -217,4 +226,8 @@ footer {
     z-index: 1020;
     width: 100vw;
     height: 100vh;
+}
+
+.discord {
+    background-color: #7289da;
 }
