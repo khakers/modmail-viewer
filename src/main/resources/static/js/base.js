@@ -37,7 +37,7 @@ up.on('up:request:loaded', (event) => {
         if (event.response.status === 403) {
             event.preventDefault();
             // This looks very odd but it seems to work perfectly
-            up.network.loadPage({ url: "" });
+            up.network.loadPage({url: ""});
         }
     }
 });
@@ -59,3 +59,42 @@ up.on('up:request:offline', (event) => {
 function isDiscordPage(url) {
     return !!url.match(/^https:\/\/discord\.com\/oauth2\/authorize\S*/gm);
 }
+
+up.compiler('.content', (element, data, meta) => {
+    if (data.nsfw) {
+        element.append(up.element.createFromHTML(`<div id="nsfw-backdrop" style=" background-color: rgba(255,255,255,0)"></div>`));
+
+        const alertPlaceholder = document.getElementById("alertPlaceholder");
+
+        let modalElement = up.element.createFromHTML(`
+        <div class="modal" id="nsfwModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+         aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel"><i
+                                    class="bi bi-exclamation-triangle-fill text-warning fs-3"></i> NSFW Thread</h1>
+                    </div>
+                    <div class="modal-body">
+                        <p>This Thread has been marked as containing Not Safe For Work content.</p>
+                        <p>Do you wish to continue?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary">Go Back</button>
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Continue</button>
+                    </div>
+                </div>
+            </div>
+        </div>`);
+        alertPlaceholder.append(modalElement);
+
+        const bsModal = new bootstrap.Modal(modalElement);
+
+        modalElement.addEventListener('hide.bs.modal', event => {
+            document.getElementById("nsfw-backdrop").remove();
+            document.getElementById("nsfwModal").remove();
+        });
+        bsModal.show();
+
+    }
+});
