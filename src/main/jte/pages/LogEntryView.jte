@@ -75,13 +75,12 @@
                                   data-bs-toggle="tooltip"></span>
                                 </div>
                                 <div class="col">
-                                    <%--                            <p class="mb-0"></p>--%>
+                                    @if(message.get().isEdited())
+                                        <span class="fw-light float-end text-secondary">(edited)  <i class="bi bi-pencil-fill ms-1"></i></span>
+                                    @endif
                                     <div class="text-wrap text-break messageContent">
                                         $unsafe{renderer.render(parser.parse(message.get().getContent()))}
                                     </div>
-                                    @if(message.get().isEdited())
-                                        <span class="fw-light">(edited)</span>
-                                    @endif
                                     @if(!message.get().getAttachments().isEmpty())
                                         @for(var attachment: message.get().getAttachments())
                                             @if(attachment.isImage())
