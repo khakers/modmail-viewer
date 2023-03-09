@@ -119,15 +119,22 @@
                         @endif
                         @if(entry.get().isOpen())
                             <span>Created by</span>
-                            <span class="fw-semibold">${entry.get().getCreator().name()}</span><span
-                                class="text-muted">#${entry.get().getCreator().discriminator()}</span>
+                            <span class="user-select-all" data-bs-toggle="tooltip"
+                                  data-bs-title="${entry.get().getCreator().id()}"><span
+                                        class="fw-semibold">${entry.get().getCreator().name()}</span><span
+                                        class="text-muted">#${entry.get().getCreator().discriminator()}</span>
+                            </span>
+
                             <span><span class="text-muted" data-timestamp="${entry.get().getCreationTime().toString()}"
                                         data-timestamp-type="relative" data-bs-toggle="tooltip"
                                         data-timestamp-title-type="detailed"></span></span>
                         @else
                             <span>Created by</span>
-                            <span class="fw-semibold">${entry.get().getCreator().name()}</span><span
-                                class="text-muted">#${entry.get().getCreator().discriminator()}</span>
+                            <span class="user-select-all" data-bs-toggle="tooltip"
+                                  data-bs-title="${entry.get().getCreator().id()}"><span
+                                        class="fw-semibold">${entry.get().getCreator().name()}</span><span
+                                        class="text-muted">#${entry.get().getCreator().discriminator()}</span>
+                            </span>
                             <span>was closed <span class="text-muted"
                                                    data-timestamp="${entry.get().getClosedTime().get().toString()}"
                                                    data-timestamp-type="relative" data-bs-toggle="tooltip"
