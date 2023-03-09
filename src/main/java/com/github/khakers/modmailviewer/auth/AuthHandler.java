@@ -105,7 +105,7 @@ public class AuthHandler {
         }
     }
 
-    private String generateOuathState(Context ctx) {
+    private String generateOAuthState(Context ctx) {
         var key = new BigInteger(130, secureRandom).toString(32);
         var state = new ClientState(ctx.fullUrl());
         ouathState.put(key, state);
