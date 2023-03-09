@@ -100,3 +100,4 @@
         </div>
     </div>
 </nav>
+<div id="alertPlaceholder"></div>

@@ -1,3 +1,5 @@
+"use strict";
+
 // Fill out bootstrap tooltips
 up.compiler('[data-bs-toggle="tooltip"]', function (element) {
     new bootstrap.Tooltip(element);
@@ -42,6 +44,15 @@ up.on('up:request:loaded', (event) => {
 
 up.on('up:request:offline', (event) => {
     //handle telling the user we're offline
+    const alertPlaceholder = document.getElementById("alertPlaceholder");
+    const wrapper = document.createElement("div");
+    wrapper.innerHTML = `
+    <div class="alert alert-danger alert-dismissible fade show mx-4 mt-2" role="alert">
+        <strong>ERROR</strong> There was an issue loading this page.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    `;
+    alertPlaceholder.append(wrapper);
 });
 
 
