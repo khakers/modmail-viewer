@@ -5,6 +5,10 @@ import io.javalin.security.RouteRole;
 
 public class RoleUtils {
 
+    public static RouteRole[] anyone() {
+        return new RouteRole[]{Role.ANYONE, Role.REGULAR, Role.MODERATOR, Role.ADMINISTRATOR, Role.OWNER};
+    }
+
     public static RouteRole[] atLeastRegular() {
         return new RouteRole[]{Role.REGULAR, Role.MODERATOR, Role.ADMINISTRATOR, Role.OWNER};
     }
