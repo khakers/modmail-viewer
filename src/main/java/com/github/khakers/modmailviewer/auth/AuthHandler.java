@@ -10,10 +10,7 @@ import com.github.scribejava.core.model.OAuthRequest;
 import com.github.scribejava.core.model.Response;
 import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.oauth.OAuth20Service;
-import io.javalin.http.Context;
-import io.javalin.http.Cookie;
-import io.javalin.http.Handler;
-import io.javalin.http.SameSite;
+import io.javalin.http.*;
 import io.javalin.security.RouteRole;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,15 +30,10 @@ public class AuthHandler {
     //todo logout handler
 
     private static final Logger logger = LogManager.getLogger();
-
-    private final OAuth20Service service;
-
-    private final JwtAuth jwtAuth;
-
     private static final ObjectMapper objectMapper = new ObjectMapper();
-
     private static ModMailLogDB modMailLogDB;
-
+    private final OAuth20Service service;
+    private final JwtAuth jwtAuth;
     private final Map<String, ClientState> ouathState = new HashMap<>();
 
     private final SecureRandom secureRandom = new SecureRandom();
@@ -91,12 +83,13 @@ public class AuthHandler {
             return;
         }
         Role userRole = AuthHandler.getUserRole(ctx);
-        logger.debug("User {} had role {}", ctx.ip(), userRole);
+        SiteUser user = AuthHandler.getUser(ctx);
+        logger.debug("User id{} @ {} had role {}", user.getId(), ctx.ip(), userRole);
         if (routeRoles.contains(userRole)) {
             handler.handle(ctx);
-            logger.debug("User {} was authorized and had request handled", ctx.ip());
+            logger.debug("User id{} @ {} was authorized and had request handled", user.getId(), ctx.ip());
         } else if (userRole != Role.ANYONE) {
-            logger.debug("User {} was not authorized was given a 403", ctx.ip());
+            logger.debug("User id{} @ {} was not authorized was given a 403", user.getId(), ctx.ip());
             ctx.status(403).result();
         } else {
             logger.debug("Redirected {} to auth URL from {}", ctx.ip(), ctx.url());
@@ -122,7 +115,7 @@ public class AuthHandler {
 
     private ClientState getAndVerifyOauthState(Context ctx) throws OAuthException {
         var stateKey = ctx.cookie("state");
-        var state=  ouathState.get(stateKey);
+        var state = ouathState.get(stateKey);
         if (state == null) {
             throw new OAuthException("Invalid state");
         }
@@ -161,7 +154,7 @@ public class AuthHandler {
                     logger.debug(response.getCode());
                     logger.debug(response.getBody());
 
-                    var user = objectMapper.readValue( response.getBody(), SiteUser.class);
+                    var user = objectMapper.readValue(response.getBody(), SiteUser.class);
 
                     // The user is not authorized for any role and thus does not need to be given a token
                     if (modMailLogDB.getUserRole(user) == Role.ANYONE) {
