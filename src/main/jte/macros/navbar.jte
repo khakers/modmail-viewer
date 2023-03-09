@@ -85,7 +85,7 @@
                         </li>
                     </ul>
                 </ul>
-                <div class="d-flex me-2 color text-primary-emphasis">
+                <div class="d-flex mx-2 color text-primary-emphasis">
                     @if(user != null && user.isRealUser())
                     <span class="navbar-text me-3 text-emphasis">
                     Signed in as <span>${user.getUsername()}</span><span>#${user.getDiscriminator()}</span>
