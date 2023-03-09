@@ -104,7 +104,7 @@
                 @for(var entry : gg.jte.support.ForSupport.of(logEntries))
                     <li class="list-group-item @if(entry.isFirst())border-top-0 rounded-0@endif">
                         <h2>
-                            <a href="/logs/${entry.get().getKey()}${TextFragmentUtils.getTextFragmentAsSnippet(search)}" up-follow up-target=".content" up-transition="move-right">${entry.get().getKey()}</a>
+                            <a href="/logs/${entry.get().getKey()}${TextFragmentUtils.getTextFragmentAsSnippet(search)}" up-follow up-target=".content" up-transition="move-left">${entry.get().getKey()}</a>
                         </h2>
                         @if(entry.get().isOpen())
                             <span class="badge rounded-pill text-bg-success fs-6"><i
