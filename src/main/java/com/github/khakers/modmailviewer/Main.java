@@ -89,7 +89,12 @@ public class Main {
         JavalinJte.init(templateEngine);
         var app = Javalin.create(javalinConfig -> {
                     javalinConfig.jsonMapper(new JacksonJavalinJsonMapper());
-                    javalinConfig.staticFiles.add("/static", Location.CLASSPATH);
+                    if (Config.isDevMode) {
+                        logger.info("Loading static files from {}",System.getProperty("user.dir")+"/src/main/resources/static");
+                        javalinConfig.staticFiles.add(System.getProperty("user.dir")+"/src/main/resources/static", Location.EXTERNAL);
+                    } else {
+                        javalinConfig.staticFiles.add("/static", Location.CLASSPATH);
+                    }
                     javalinConfig.staticFiles.enableWebjars();
                     if (Config.isDevMode) {
                         logger.info("Dev mode is ENABLED");
