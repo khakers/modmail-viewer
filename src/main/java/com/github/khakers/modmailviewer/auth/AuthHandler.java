@@ -3,6 +3,7 @@ package com.github.khakers.modmailviewer.auth;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.khakers.modmailviewer.ModMailLogDB;
+import com.github.khakers.modmailviewer.ModmailViewer;
 import com.github.scribejava.apis.DiscordApi;
 import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.exceptions.OAuthException;
@@ -21,7 +22,7 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
@@ -34,16 +35,16 @@ public class AuthHandler {
     private static ModMailLogDB modMailLogDB;
     private final OAuth20Service service;
     private final JwtAuth jwtAuth;
-    private final Map<String, ClientState> ouathState = new HashMap<>();
+    private final Map<String, ClientState> ouathState = new Hashtable<>();
 
     private final SecureRandom secureRandom = new SecureRandom();
 
     public AuthHandler(String callback, String clientId, String clientSecret, String jwtSecret, ModMailLogDB modMailLogDB) {
         this.service = new ServiceBuilder(clientId)
                 .apiSecret(clientSecret)
-                .defaultScope("identify")
+                .defaultScope("identify guilds.members.read")
                 .callback(callback)
-                .userAgent("modmail-viewer")
+                .userAgent("modmail-viewer_" + ModmailViewer.COMMIT_ID)
                 .build(DiscordApi.instance());
         this.jwtAuth = new JwtAuth(jwtSecret);
         AuthHandler.modMailLogDB = modMailLogDB;
@@ -115,13 +116,16 @@ public class AuthHandler {
 
     private ClientState getAndVerifyOauthState(Context ctx) throws OAuthException {
         var stateKey = ctx.cookie("state");
+        if (stateKey==null) {
+            throw new InvalidStateException("No client state was present.");
+        }
         var state = ouathState.get(stateKey);
         if (state == null) {
-            throw new OAuthException("Invalid state");
+            throw new InvalidStateException("Client state was invalid.");
         }
         if (Instant.now().isAfter(state.getTimeGenerated().plus(3, ChronoUnit.MINUTES))) {
             ouathState.remove(stateKey);
-            throw new OAuthException("Invalid state: expired");
+            throw new InvalidStateException("State was expired.");
         }
         ouathState.remove(stateKey);
         ctx.removeCookie("state");
@@ -172,9 +176,13 @@ public class AuthHandler {
             } else {
                 ctx.status(400).result("invalid redirect, no code present");
             }
+        } catch (InvalidStateException e) {
+            logger.error(e);
+            ctx.status(400).result("Invalid State: " + e.getMessage());
+
         } catch (OAuthException e) {
             logger.error(e);
-            ctx.status(400).result("invalid state");
+            ctx.status(500);
         }
     }
 }
