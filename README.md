@@ -1,19 +1,23 @@
 # Modmail Viewer
+[![Discord](https://img.shields.io/discord/1040471918639337577?label=Discord&logo=Discord)](https://discord.gg/V5HA9N5Dn8)
+[![GitHub latest release (latest SemVer)](https://img.shields.io/github/v/release/khakers/modmail-viewer?logo=Git&logoColor=f5f5f5)](https://github.com/khakers/modmail-viewer/releases/latest)
+[![GitHub Help Wanted issues](https://img.shields.io/github/issues/khakers/modmail-viewer/help%20wanted?color=blue)](https://github.com/khakers/modmail-viewer/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22)
 
-A drop in alternative frontend for your [Modmail bot](https://github.com/kyb3r/modmail) instance with built-in Discord authentication, advanced features and better mobile support.
+A drop in alternative frontend for your [Modmail bot](https://github.com/kyb3rr/modmail) instance with built-in Discord authentication, advanced features and better mobile support.
 
 Built from scratch using Javalin, JTE, Bootstrap 5, and Unpoly.
 ![modmail-logviewer-log](https://user-images.githubusercontent.com/22665282/211416462-676f67a2-b818-4b8a-9eb6-f855f3bf64b9.png)
 ![log browsing](https://user-images.githubusercontent.com/22665282/211415993-c1f572f1-f36e-4579-aa84-64a2622ef8ab.png)
 
 
-_Modmail-Viewer_ is currently in beta. There may be breaking or otherwise significant changes between major versions and the
-application may be unstable in some circumstances. Report any bugs you encounter via github issues at this repository (not modmail or logviewer).  
-Use GitHub discussions for feature requests or to ask questions.
+_Modmail-Viewer_ is currently a beta. You should always read update notes before applying updates as there may be breaking changes between major versions, and make sure you run an up to date version to have the latest fixes and support.
+
+Report any bugs you encounter via github issues at this repository (not modmail or logviewer).  
+Use GitHub discussions for feature requests or to ask questions. You *can* send me messages on Discord but there's a very good chance I won't notice your message requests because they have very poor discoverability.
 
 ## Features
 
-* Discord OAuth2 authentication based on your modmail roles.
+* Discord OAuth2 authentication **based on your modmail roles**. (Does not currently support discord roles assigned to modmail roles, [see #35](https://github.com/khakers/modmail-viewer/issues/35))
 * Browsable paginated logs sorted by most recent message and filtered by status.
 * Mobile friendly design.
 * Full message Discord Markdown formatting (Including spoilers, custom emojis, and timestamps).
@@ -31,6 +35,7 @@ Use GitHub discussions for feature requests or to ask questions.
   * If you want internationalization and are interested in providing translations, please contact me and/or open an issue/discussion on GitHub.
 * Basic API
 * Snippet editor (will likely require a bot plugin)
+* Persistent Notes editor 
 * Configurable log sorting
 
 ## Self-hosting
@@ -41,8 +46,7 @@ automatic https OR provide the required keys/certs to the application yourself i
 ### Docker
 
 Running the application with Docker is the fastest and best supported way to run _modmail-viewer_. Additionally, you
-easily can
-run it using any 3rd party service that supports running docker containers.
+can easily run it using any 3rd party service that supports running docker containers.
 
 #### Docker Run
 
@@ -130,6 +134,7 @@ To run the webserver in the background, it's recommended you use a service manag
 | MODMAIL_VIEWER_HTTPS_PORT                  | Port HTTPS traffic will be served at. Defaults to 443                                                                                                                                                                                                        |
 | MODMAIL_VIEWER_SNI                         | Set SNI to be enabled/disabled. Requires SSL to be enabled                                                                                                                                                                                                   |
 | MODMAIL_VIEWER_BRANDING                    | Text to display in the navbar title. Will display "Modmail-Viewer" by default                                                                                                                                                                                |
+| MODMAIL_VIEWER_LOG_LEVEL                   | Set the application log level (INFO, DEBUG, ERROR, TRACE)                  |
 
 
 ## Attribution 

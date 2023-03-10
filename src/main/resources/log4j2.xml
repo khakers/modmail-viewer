@@ -6,6 +6,9 @@
         </Console>
     </Appenders>
     <Loggers>
+         <Logger name="com.github.khakers" level="${env:MODMAIL_VIEWER_LOG_LEVEL:-INFO}" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
         <Root level="INFO">
             <AppenderRef ref="Console"/>
         </Root>
