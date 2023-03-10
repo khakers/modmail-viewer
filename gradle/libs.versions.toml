@@ -15,7 +15,7 @@ log4j = "2.19.0"
 jackson = "2.14.1"
 junit = "5.9.0"
 jwt = "4.2.1"
-scribe = "8.3.2"
+scribe = "8.3.3"
 mongodriver = "4.7.2"
 owasp-encoder = "1.2.^"
 
