@@ -2,7 +2,7 @@
 
 A drop in alternative frontend for your [Modmail bot](https://github.com/kyb3r/modmail) instance with built-in Discord authentication, advanced features and better mobile support.
 
-Built from scratch using Javalin, JTE, and Bootstrap 5.
+Built from scratch using Javalin, JTE, Bootstrap 5, and Unpoly.
 ![modmail-logviewer-log](https://user-images.githubusercontent.com/22665282/211416462-676f67a2-b818-4b8a-9eb6-f855f3bf64b9.png)
 ![log browsing](https://user-images.githubusercontent.com/22665282/211415993-c1f572f1-f36e-4579-aa84-64a2622ef8ab.png)
 
@@ -30,8 +30,6 @@ Use GitHub discussions for feature requests or to ask questions.
 * Internationalization
   * If you want internationalization and are interested in providing translations, please contact me and/or open an issue/discussion on GitHub.
 * Basic API
-* Dark theme (waiting on bootstrap 5.3)
-* Log text search
 * Snippet editor (will likely require a bot plugin)
 * Configurable log sorting
 
