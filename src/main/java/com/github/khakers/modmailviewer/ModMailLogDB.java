@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.github.khakers.modmailviewer.auth.Role;
-import com.github.khakers.modmailviewer.auth.SiteUser;
+import com.github.khakers.modmailviewer.auth.UserToken;
 import com.github.khakers.modmailviewer.data.ModMailLogEntry;
 import com.github.khakers.modmailviewer.data.ModmailConfig;
 import com.github.khakers.modmailviewer.data.internal.TicketStatus;
@@ -292,7 +292,38 @@ public class ModMailLogDB {
 
     }
 
-    public Role getUserRole(SiteUser user) throws Exception {
+    public Role getUserOrGuildRole(UserToken user, long[] roles) throws Exception {
+        var levelPermissions = getConfig().getLevelPermissions();
+
+        var role = Role.ANYONE;
+
+        for (Map.Entry<Role, List<Long>> entry :
+                levelPermissions.entrySet()) {
+            // Check if user ID matches
+            if (entry.getValue().contains(user.getId())) {
+                var foundRole = entry.getKey();
+                logger.trace("Matched user by their ID to role with permission level {}", entry.getKey());
+                // We always want to get the user's highest possible role
+                if (foundRole.value > role.value) {
+                    role = foundRole;
+                }            }
+            // Check if a role id matches
+            for (long roleID :
+                    roles) {
+                if (entry.getValue().contains(roleID)) {
+                    var foundRole = entry.getKey();
+                    logger.trace("Matched user to role id {} with permission level {}", roleID, foundRole);
+                    if (foundRole.value > role.value) {
+                        role = foundRole;
+                    }
+                }
+            }
+        }
+        return role;
+
+    }
+
+    public Role getUserRole(UserToken user) throws Exception {
         var levelPermissions = getConfig().getLevelPermissions();
 
         for (Map.Entry<Role, List<Long>> entry :

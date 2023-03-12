@@ -1,4 +1,4 @@
-@import com.github.khakers.modmailviewer.auth.SiteUser
+@import com.github.khakers.modmailviewer.auth.UserToken
 @import com.github.khakers.modmailviewer.data.internal.TicketStatus
 @import com.github.khakers.modmailviewer.util.Pagination
 @import com.github.khakers.modmailviewer.ModMailLogDB
@@ -14,7 +14,7 @@
 
 @param int page
 @param int pageCount
-@param SiteUser user
+@param UserToken user
 @param ModMailLogDB modMailLogDB
 @param TicketStatus ticketStatusFilter
 @param boolean showNSFW

@@ -1,4 +1,4 @@
-@import com.github.khakers.modmailviewer.auth.SiteUser
+@import com.github.khakers.modmailviewer.auth.UserToken
 @import com.github.khakers.modmailviewer.data.MessageType
 @import io.javalin.http.Context
 
@@ -7,7 +7,7 @@
 
 
 @param com.github.khakers.modmailviewer.data.ModMailLogEntry modmailLog
-@param SiteUser user
+@param UserToken user
 @param com.vladsch.flexmark.parser.Parser parser
 @param com.vladsch.flexmark.html.HtmlRenderer renderer
 

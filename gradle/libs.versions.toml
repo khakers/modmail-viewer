@@ -16,6 +16,7 @@ jackson = "2.14.1"
 junit = "5.9.0"
 jwt = "4.2.1"
 scribe = "8.3.3"
+okhttp = "4.10.0"
 mongodriver = "4.7.2"
 owasp-encoder = "1.2.^"
 
@@ -52,6 +53,10 @@ mongodb-driver = { module = "org.mongodb:mongodb-driver-sync", version.ref = "mo
 
 auth0-jwt = { module = "com.auth0:java-jwt", version.ref = "jwt" }
 scribe-api = { module = "com.github.scribejava:scribejava-apis", version.ref = "scribe" }
+scribe-okhttp = { module = "com.github.scribejava:scribejava-httpclient-okhttp", version.ref = "scribe" }
+
+okhttp-bom = { module = "com.squareup.okhttp3:okhttp-bom", version.ref = "okhttp" }
+okhttp = { module = "com.squareup.okhttp3:okhttp" }
 
 owasp-encoder = { module = "org.owasp.encoder:encoder", version.ref = "owasp-encoder" }
 
@@ -59,7 +64,7 @@ webjar-bootstrap = { module = "org.webjars.npm:bootstrap", version.ref = "bootst
 webjar-bootstrap-icons = { module = "org.webjars.npm:bootstrap-icons", version.ref = "bootstrap-icons" }
 webjar-highlightjs = { module = "org.webjars.npm:highlightjs__cdn-assets", version.ref = "highlightjs" }
 webjar-twemoji = { module = "org.webjars.bowergithub.jdecked:twemoji", version.ref = "twemoji" }
-webjar-unpoly = { module="org.webjars.npm:unpoly", version.ref = "unpoly"}
+webjar-unpoly = { module = "org.webjars.npm:unpoly", version.ref = "unpoly" }
 
 [plugins]
 jte-gradle = { id = "gg.jte.gradle", version.ref = "jte" }
