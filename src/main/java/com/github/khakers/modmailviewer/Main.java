@@ -3,7 +3,7 @@ package com.github.khakers.modmailviewer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.khakers.modmailviewer.auth.AuthHandler;
 import com.github.khakers.modmailviewer.auth.Role;
-import com.github.khakers.modmailviewer.auth.SiteUser;
+import com.github.khakers.modmailviewer.auth.UserToken;
 import com.github.khakers.modmailviewer.data.internal.TicketStatus;
 import com.github.khakers.modmailviewer.markdown.channelmention.ChannelMentionExtension;
 import com.github.khakers.modmailviewer.markdown.customemoji.CustomEmojiExtension;
