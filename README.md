@@ -3,7 +3,7 @@
 [![GitHub latest release (latest SemVer)](https://img.shields.io/github/v/release/khakers/modmail-viewer?logo=Git&logoColor=f5f5f5)](https://github.com/khakers/modmail-viewer/releases/latest)
 [![GitHub Help Wanted issues](https://img.shields.io/github/issues/khakers/modmail-viewer/help%20wanted?color=blue)](https://github.com/khakers/modmail-viewer/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22)
 
-A drop in alternative frontend for your [Modmail bot](https://github.com/kyb3rr/modmail) instance with built-in Discord authentication, advanced features and better mobile support.
+A drop in alternative frontend for your [modmail-dev/modmail bot](https://github.com/modmail-dev/modmail) instance with built-in Discord authentication, advanced features and better mobile support.
 
 Built from scratch in Java using Javalin, JTE, and Bootstrap 5.
 ![modmail-logviewer-log](https://user-images.githubusercontent.com/22665282/211416462-676f67a2-b818-4b8a-9eb6-f855f3bf64b9.png)
