@@ -131,7 +131,7 @@ public class Main {
                     if (!Config.isAuthEnabled) {
                         ctx.redirect("/");
                     }
-                }, RoleUtils.atLeastRegular())
+                }, RoleUtils.atLeastSupporter())
                 .get("/", ctx -> {
                     Integer page = ctx.queryParamAsClass("page", Integer.class)
                             .check(integer -> integer >= 1, "page must be at least 1")
@@ -156,12 +156,12 @@ public class Main {
                                     "logEntries", db.searchPaginatedMostRecentEntriesByMessageActivity(page, ticketFilter, search),
                                     "page", page,
                                     "pageCount", pageCount,
-                                    "user", authHandler != null ? AuthHandler.getUser(ctx) : new SiteUser(),
+                                    "user", authHandler != null ? AuthHandler.getUser(ctx) : new UserToken(0L, "anonymous", "0000", "",new long[]{}, false),
                                     "modMailLogDB", db,
                                     "ticketStatusFilter", ticketFilter,
                                     "showNSFW", showNSFW,
                                     "search", search));
-                }, RoleUtils.atLeastModerator())
+                }, RoleUtils.atLeastSupporter())
                 .get("/logs/{id}", ctx -> {
                     var entry = db.getModMailLogEntry(ctx.pathParam("id"));
                     entry.ifPresentOrElse(
