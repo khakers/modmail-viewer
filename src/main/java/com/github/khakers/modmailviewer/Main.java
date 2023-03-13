@@ -171,7 +171,7 @@ public class Main {
                                             model(
                                                     "ctx", ctx,
                                                     "modmailLog", modMailLogEntry,
-                                                    "user", authHandler != null ? AuthHandler.getUser(ctx) : new SiteUser(),
+                                                    "user", authHandler != null ? AuthHandler.getUser(ctx) : new UserToken(0L, "anonymous", "0000", "",new long[]{}, false),
                                                     "parser", PARSER,
                                                     "renderer", RENDERER));
                                 } catch (JsonProcessingException e) {
