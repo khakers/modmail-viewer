@@ -183,7 +183,7 @@ public class Main {
                                 ctx.result();
                             });
 
-                }, RoleUtils.atLeastModerator())
+                }, RoleUtils.atLeastSupporter())
                 .start(Config.httpPort);
 
         if (Config.isAuthEnabled) {
