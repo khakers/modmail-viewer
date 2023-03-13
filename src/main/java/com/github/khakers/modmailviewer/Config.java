@@ -54,6 +54,8 @@ public class Config {
 
     public static final String BRANDING = notEmptyOrElse(System.getenv(ENV_PREPEND + "_BRANDING"), "Modmail-Viewer");
 
+    public static final boolean isCookiesSecure = isNotSetToTrue(System.getenv(ENV_PREPEND + "_INSECURE"), true);
+
     static {
         var jwtSecretKey = System.getenv("MODMAIL_VIEWER_SECRETKEY");
         if (jwtSecretKey == null || jwtSecretKey.isEmpty()) {
