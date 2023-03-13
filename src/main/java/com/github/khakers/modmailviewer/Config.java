@@ -68,6 +68,10 @@ public class Config {
             JWT_SECRET_KEY = jwtSecretKey;
         }
 
+        if (!isCookiesSecure) {
+            logger.warn("Insecure cookies are enabled. This reduces security and should only be enabled when https is unavailable");
+        }
+
         var webUrl = Assert.requireNonEmpty(System.getenv(ENV_PREPEND + "_URL"), "No URL provided. provide one with the option \"" + ENV_PREPEND + "_URL\"");
         if (webUrl.endsWith("/")) {
             logger.warn(ENV_PREPEND + "_WEB_URL has a trailing slash. Removed it due to conflict with the callback.");
