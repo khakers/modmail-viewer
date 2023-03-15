@@ -24,6 +24,7 @@ import gg.jte.resolve.DirectoryCodeResolver;
 import io.javalin.Javalin;
 import io.javalin.community.ssl.SSLPlugin;
 import io.javalin.http.staticfiles.Location;
+import io.javalin.json.JavalinJackson;
 import io.javalin.rendering.template.JavalinJte;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -93,7 +94,7 @@ public class Main {
 
         JavalinJte.init(templateEngine);
         var app = Javalin.create(javalinConfig -> {
-                    javalinConfig.jsonMapper(new JacksonJavalinJsonMapper());
+                    javalinConfig.jsonMapper(new JavalinJackson());
                     if (Config.isDevMode) {
                         logger.info("Loading static files from {}",System.getProperty("user.dir")+"/src/main/resources/static");
                         javalinConfig.staticFiles.add(System.getProperty("user.dir")+"/src/main/resources/static", Location.EXTERNAL);
