@@ -64,6 +64,11 @@ public class Main {
 
     public static void main(String[] args) {
 
+        var updateThread =  new Thread(()-> {
+            var updateChecker = new UpdateChecker();
+            updateChecker.isUpdateAvailable();
+        });
+
         var db = new ModMailLogDB(Config.MONGODB_URI);
 
         TemplateEngine templateEngine;
@@ -106,7 +111,6 @@ public class Main {
                         logger.warn("Authentication is DISABLED");
                         javalinConfig.accessManager((handler, context, set) -> handler.handle(context));
                     }
-
                     if (Config.isSecure) {
                         logger.info("SSL is ENABLED");
                         SSLPlugin sslPlugin = new SSLPlugin(sslConfig -> {
