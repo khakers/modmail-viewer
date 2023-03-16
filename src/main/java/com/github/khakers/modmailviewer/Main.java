@@ -81,6 +81,7 @@ public class Main {
             templateEngine = TemplateEngine.createPrecompiled(ContentType.Html);
         }
 
+
         AuthHandler authHandler;
         if (Config.isAuthEnabled) {
             authHandler = new AuthHandler(Config.WEB_URL + "/callback",
@@ -94,6 +95,7 @@ public class Main {
 
         JavalinJte.init(templateEngine);
         var app = Javalin.create(javalinConfig -> {
+                    javalinConfig.showJavalinBanner = false;
                     javalinConfig.jsonMapper(new JavalinJackson());
                     if (Config.isDevMode) {
                         logger.info("Loading static files from {}",System.getProperty("user.dir")+"/src/main/resources/static");
@@ -104,6 +106,7 @@ public class Main {
                     javalinConfig.staticFiles.enableWebjars();
                     if (Config.isDevMode) {
                         logger.info("Dev mode is ENABLED");
+                        javalinConfig.showJavalinBanner = true;
                         javalinConfig.plugins.enableDevLogging();
                     }
                     if (Config.isAuthEnabled) {
@@ -161,7 +164,7 @@ public class Main {
                                     "logEntries", db.searchPaginatedMostRecentEntriesByMessageActivity(page, ticketFilter, search),
                                     "page", page,
                                     "pageCount", pageCount,
-                                    "user", authHandler != null ? AuthHandler.getUser(ctx) : new UserToken(0L, "anonymous", "0000", "",new long[]{}, false),
+                                    "user", authHandler != null ? AuthHandler.getUser(ctx) : new UserToken(0L, "anonymous", "0000", "", new long[]{}, false),
                                     "modMailLogDB", db,
                                     "ticketStatusFilter", ticketFilter,
                                     "showNSFW", showNSFW,
@@ -176,7 +179,7 @@ public class Main {
                                             model(
                                                     "ctx", ctx,
                                                     "modmailLog", modMailLogEntry,
-                                                    "user", authHandler != null ? AuthHandler.getUser(ctx) : new UserToken(0L, "anonymous", "0000", "",new long[]{}, false),
+                                                    "user", authHandler != null ? AuthHandler.getUser(ctx) : new UserToken(0L, "anonymous", "0000", "", new long[]{}, false),
                                                     "parser", PARSER,
                                                     "renderer", RENDERER));
                                 } catch (JsonProcessingException e) {
