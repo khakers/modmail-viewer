@@ -10,10 +10,10 @@ Built from scratch in Java using Javalin, JTE, and Bootstrap 5.
 ![log browsing](https://user-images.githubusercontent.com/22665282/211415993-c1f572f1-f36e-4579-aa84-64a2622ef8ab.png)
 
 
-_Modmail-Viewer_ is currently a beta. You should always read update notes before applying updates as there may be breaking changes between major versions, and make sure you run an up to date version to have the latest fixes and support.
+_Modmail-Viewer_ is currently a beta. You should always read update notes before applying updates as there may be breaking changes between major versions, and ensure you are running an up to date version to have the latest fixes and support.
 
 Report any bugs you encounter via github issues at this repository (not modmail or logviewer).  
-Use GitHub discussions for feature requests or to ask questions. You *can* send me messages on Discord but there's a very good chance I won't notice your message requests because they have very poor discoverability.
+Use GitHub discussions for feature requests or to ask questions. If you'd rather not ask on github, you can join the [Discord server](https://discord.gg/V5HA9N5Dn8) instead and ask there. Please prefer not to directly DM me as it's not discoverable for other people that need help and I will likely not notice it for a while.
 
 ## Features
 
