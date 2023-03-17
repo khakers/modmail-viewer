@@ -37,7 +37,7 @@
         <div class="container pt-5">
             <div class="border ${logEntries.isEmpty() ? "rounded" : "rounded-top"} p-2">
                 <div class="row justify-content-center justify-content-lg-end">
-                    <div class="col-xl-3 col-sm-12">
+                    <div class="col-xl-4 col-sm-12">
                         <ul class="nav nav-pills ">
                             <li class="nav-item">
                                 <a class="nav-link @if(ticketStatusFilter == TicketStatus.ALL || ticketStatusFilter == null)active@endif"
@@ -63,23 +63,9 @@
                                             class="bi bi-check-lg"></i> ${modMailLogDB.getTotalTickets(TicketStatus.CLOSED, search)}
                                     Closed</a>
                             </li>
-                            <%--                    <li class="nav-item border-danger btn-outline-danger ps-2">--%>
-                            <%--                        <a class="nav-link border-danger @if(showNSFW)active@endif" href="#"--%>
-                            <%--                           onclick="update('nsfw', '${!showNSFW}')">Show NSFW</a>--%>
-                            <%--                    </li>--%>
-                            <%--                    <li class="nav-item ps-5 ms-auto">--%>
-                            <%--                        <button type="button" class="btn btn-outline-danger" onclick="update('nsfw', '${!showNSFW}')">Show NSFW</button>--%>
-                            <%--                        --%><%-- THis painful if is only required because of 'checked'. JTE does not allow expressions for attribute names --%>
-                            <%--                        @if(showNSFW)--%>
-                            <%--                            <input type="checkbox" class="btn-check" id="btncheck1" autocomplete="off" onclick="update('nsfw', '${!showNSFW}')" checked>--%>
-                            <%--                        @else--%>
-                            <%--                            <input type="checkbox" class="btn-check" id="btncheck1" autocomplete="off" onclick="update('nsfw', '${!showNSFW}')">--%>
-                            <%--                        @endif--%>
-                            <%--                        <label class="btn btn-outline-danger" for="btncheck1">Show NSFW</label>--%>
-                            <%--                    </li>--%>
                         </ul>
                     </div>
-                    <div class="col-xl-9 col-sm-12 pt-2 py-xl-0">
+                    <div class="col-xl-8 col-sm-12 pt-2 py-xl-0">
                         <div id="SearchBox" class="input-group px-xl-0 px-sm-2">
                             <button class="btn btn-outline-danger" type="button" id="ClearSearchButton"><i
                                         class="bi bi-x-lg"></i> Reset
