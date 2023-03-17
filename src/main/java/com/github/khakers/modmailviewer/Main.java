@@ -133,6 +133,7 @@ public class Main {
                         }
                     }
                 })
+                .get("/hello", ctx -> ctx.status(200).result("hello"), RoleUtils.anyone())
                 .get("/logout", ctx -> {
                     ctx.removeCookie("jwt");
                     ctx.result("logout successful");
