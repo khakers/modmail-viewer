@@ -18,6 +18,7 @@ jwt = "4.2.1"
 scribe = "8.3.3"
 okhttp = "4.10.0"
 mongodriver = "4.7.2"
+mongojack = "4.8.0"
 owasp-encoder = "1.2.^"
 
 bootstrap = "5.3.0-alpha1"
@@ -50,6 +51,7 @@ junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", vers
 junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit" }
 
 mongodb-driver = { module = "org.mongodb:mongodb-driver-sync", version.ref = "mongodriver" }
+mongojack = { module = "org.mongojack:mongojack", version.ref = "mongojack"}
 
 auth0-jwt = { module = "com.auth0:java-jwt", version.ref = "jwt" }
 scribe-api = { module = "com.github.scribejava:scribejava-apis", version.ref = "scribe" }

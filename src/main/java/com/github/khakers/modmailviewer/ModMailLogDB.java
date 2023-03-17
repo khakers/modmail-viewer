@@ -11,20 +11,19 @@ import com.github.khakers.modmailviewer.data.ModmailConfig;
 import com.github.khakers.modmailviewer.data.internal.TicketStatus;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.*;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Indexes;
 import com.mongodb.client.model.Sorts;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
+import org.bson.UuidRepresentation;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.jetbrains.annotations.Nullable;
+import org.mongojack.JacksonMongoCollection;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -37,7 +36,7 @@ public class ModMailLogDB {
     private final MongoDatabase database;
 
     private final MongoCollection<Document> configCollection;
-    private final MongoCollection<Document> logCollection;
+    private final JacksonMongoCollection<ModMailLogEntry> logCollection;
 
     private final ObjectMapper objectMapper;
 
@@ -62,7 +61,7 @@ public class ModMailLogDB {
         MongoClient mongoClient = MongoClients.create(settings);
         this.database = mongoClient.getDatabase("modmail_bot");
         database.listCollectionNames().forEach(logger::debug);
-        this.logCollection = database.getCollection("logs");
+        this.logCollection = JacksonMongoCollection.builder().withObjectMapper(objectMapper).build(database,"logs", ModMailLogEntry.class, UuidRepresentation.STANDARD);
         this.configCollection = database.getCollection("config");
 
         var result = logCollection.createIndex(Indexes.descending("messages.timestamp"));
@@ -109,33 +108,17 @@ public class ModMailLogDB {
     }
 
     public Optional<ModMailLogEntry> getModMailLogEntry(String id) {
-        try {
-            var result = logCollection.find(Filters.eq("_id", id)).limit(1).first();
-            if (result == null) {
-                return Optional.empty();
-            }
-            var json = result.toJson();
-            logger.debug("Got JSON value of {}", json);
-            return Optional.of(objectMapper.readValue(json, ModMailLogEntry.class));
-        } catch (Exception e) {
-            logger.error(e);
-            return Optional.empty();
-        }
+        ModMailLogEntry result = logCollection.find(Filters.eq("_id", id)).limit(1).first();
+        return Optional.ofNullable(result);
     }
 
     public List<ModMailLogEntry> getMostRecentEntries(int count) {
         ArrayList<ModMailLogEntry> entries = new ArrayList<>();
-        var foundLogs = logCollection
+        FindIterable<ModMailLogEntry> foundLogs = logCollection
                 .find()
                 .sort(Sorts.descending("created_at"))
                 .limit(count);
-        foundLogs.forEach(document -> {
-            try {
-                entries.add(objectMapper.readValue(document.toJson(), ModMailLogEntry.class));
-            } catch (JsonProcessingException e) {
-                logger.error(e);
-            }
-        });
+        foundLogs.forEach(entries::add);
         return entries;
     }
 
@@ -145,18 +128,12 @@ public class ModMailLogDB {
 
     public List<ModMailLogEntry> getPaginatedMostRecentEntries(int page, int itemsPerPage) {
         ArrayList<ModMailLogEntry> entries = new ArrayList<>();
-        var foundLogs = logCollection
+        FindIterable<ModMailLogEntry> foundLogs = logCollection
                 .find()
                 .sort(Sorts.descending("created_at"))
                 .skip((page - 1) * itemsPerPage)
                 .limit(itemsPerPage);
-        foundLogs.forEach(document -> {
-            try {
-                entries.add(objectMapper.readValue(document.toJson(), ModMailLogEntry.class));
-            } catch (JsonProcessingException e) {
-                logger.error(e);
-            }
-        });
+        foundLogs.forEach(entries::add);
         return entries;
     }
 
@@ -227,21 +204,27 @@ public class ModMailLogDB {
             case OPEN -> Filters.eq("open", true);
         };
         logger.debug("filtering by {} with {} and search text '{}'", ticketStatus, ticketFilter, searchkey);
-        var foundLogs = logCollection
+        FindIterable<ModMailLogEntry> foundLogs = logCollection
                 .find()
                 .filter(Filters.not(Filters.size("messages", 0)))
                 .sort(Sorts.descending("messages.timestamp"))
                 .filter(Objects.nonNull(searchkey) && !searchkey.isBlank() ? Filters.and(ticketFilter, Filters.text(searchkey)) : ticketFilter)
                 .skip((page - 1) * itemsPerPage)
                 .limit(itemsPerPage);
-        foundLogs.forEach(document -> {
-            try {
-                entries.add(objectMapper.readValue(document.toJson(), ModMailLogEntry.class));
-            } catch (JsonProcessingException e) {
-                logger.error(e);
-            }
-        });
+        foundLogs.forEach(entries::add);
+
         logger.trace("Entries: {}", entries);
+        return entries;
+    }
+
+    public List<ModMailLogEntry> getAllLogs() {
+        ArrayList<ModMailLogEntry> entries = new ArrayList<>();
+
+        FindIterable<ModMailLogEntry> foundLogs = logCollection
+                .find();
+        foundLogs.forEach(entries::add);
+
+        logger.trace("Entries: {}", entries.size());
         return entries;
     }
 
@@ -306,7 +289,8 @@ public class ModMailLogDB {
                 // We always want to get the user's highest possible role
                 if (foundRole.value > role.value) {
                     role = foundRole;
-                }            }
+                }
+            }
             // Check if a role id matches
             for (long roleID :
                     roles) {
@@ -339,7 +323,7 @@ public class ModMailLogDB {
         return configCollection;
     }
 
-    public MongoCollection<Document> getLogCollection() {
+    public JacksonMongoCollection<ModMailLogEntry> getLogCollection() {
         return logCollection;
     }
 }
