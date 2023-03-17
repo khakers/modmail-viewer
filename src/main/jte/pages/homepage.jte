@@ -182,7 +182,7 @@
                                href="${QueryParamUtil.updateQueryParams(ctx, "page", String.valueOf(Math.max(page-1, 1)))}">Previous</a>
                         </li>
                         @if(Pagination.needsPaginationCulling(pageCount) && page > 4)
-                            <a class="page-link" href="#">1</a>
+                            <a class="page-link" href="${QueryParamUtil.updateQueryParams(ctx, "page", String.valueOf(1))}">1</a>
                             <li class="page-item"><a class="page-link disabled">...</a></li>
                         @endif
                         @for(int i = 1; i < pageCount+1; ++i)
@@ -204,7 +204,7 @@
                         @endfor
                         @if(Pagination.needsPaginationCulling(pageCount) && page < pageCount-3)
                             <li class="page-item"><a class="page-link disabled">...</a></li>
-                            <a class="page-link sm-visually-hidden" href="#">${pageCount}</a>
+                            <a class="page-link sm-visually-hidden" href="${QueryParamUtil.updateQueryParams(ctx, "page", String.valueOf(pageCount))}">${pageCount}</a>
                         @endif
                         <li class="page-item"><a class="page-link ${nextClass}" up-follow="#logEntryList"
                                                  href="${QueryParamUtil.updateQueryParams(ctx, "page", String.valueOf(page+1))}"
