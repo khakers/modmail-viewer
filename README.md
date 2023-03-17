@@ -116,6 +116,12 @@ automatically with Certbot.
 
 To run the webserver in the background, it's recommended you use a service manager such as Systemd.
 
+## Configuration
+
+### Permissions
+
+See [the wiki page on permissions.](https://github.com/khakers/modmail-viewer/wiki/Permissions)
+
 ### Environment Variables
 
 | Environment Variable                       | Description                                                                                                                                                                                                                                              |
