@@ -63,7 +63,7 @@
                     @endif
                     <%-- Merged message --%>
                     @if(!message.isFirst() && message.get().canMergeMessages(modmailLog.getMessages().get(message.getIndex()-1)))
-                        <li class="list-group-item merge-above ${classes}">
+                        <li class="list-group-item merge-above ${classes}" id="${message.get().getId()}">
                             <div class="row">
                                 <div class="col-2 col-md-1 text-center">
                             <span class="d-none d-xl-inline fs-6 fs-light text-muted user-select-none"
@@ -90,7 +90,7 @@
                         </li>
                     <%-- Unmergable message --%>
                     @else
-                        <li class="list-group-item ${classes}">
+                        <li class="list-group-item ${classes}" id="${message.get().getId()}">
                             <div class="row ">
                                 <div class="col-2 col-md-1 text-center">
                                     <img width="50" src="${message.get().getAuthor().avatarUrl()}"

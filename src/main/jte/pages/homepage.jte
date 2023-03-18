@@ -88,7 +88,7 @@
             @endif
             <ol id="logEntryList" class="list-group">
                 @for(var entry : gg.jte.support.ForSupport.of(logEntries))
-                    <li class="list-group-item @if(entry.isFirst())border-top-0 rounded-0@endif">
+                    <li class="list-group-item @if(entry.isFirst())border-top-0 rounded-0@endif" id="${entry.get().get_id()}">
                         <h2>
                             <a href="/logs/${entry.get().getKey()}${TextFragmentUtils.getTextFragmentAsSnippet(search)}" up-follow up-target=".content" up-transition="move-left">${entry.get().getKey()}</a>
                         </h2>
