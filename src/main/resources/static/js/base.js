@@ -45,14 +45,36 @@ up.on('up:request:loaded', (event) => {
 up.on('up:request:offline', (event) => {
     //handle telling the user we're offline
     const alertPlaceholder = document.getElementById("alertPlaceholder");
-    const wrapper = document.createElement("div");
-    wrapper.innerHTML = `
-    <div class="alert alert-danger alert-dismissible fade show mx-4 mt-2" role="alert">
-        <strong>ERROR</strong> There was an issue loading this page.
+    let alert = up.element.createFromHTML(`
+    <div class="alert alert-danger alert-dismissible fade show mx-4 mt-2 shadow-lg" role="alert">
+        <strong>ERROR OFFLINE</strong> Couldn't contact the server.
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
-    `;
-    alertPlaceholder.append(wrapper);
+    `);
+    alertPlaceholder.append(alert);
+    const bsAlert = new bootstrap.Alert(alert);
+    setTimeout(() => {
+        bsAlert.close();
+    }, 7500);
+});
+
+//Handle http status errors
+up.on('up:request:loaded', (event) => {
+    if (!event.response.ok) {
+        //handle telling the user we're offline
+        const alertPlaceholder = document.getElementById("alertPlaceholder");
+        let alert = up.element.createFromHTML(`
+    <div class="alert alert-danger alert-dismissible fade show mx-4 mt-2 shadow-lg" role="alert">
+        <strong>ERROR ${event.response.status}</strong> There was an issue loading the requested page. 
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    `);
+        alertPlaceholder.append(alert);
+        const bsAlert = new bootstrap.Alert(alert);
+        setTimeout(() => {
+            bsAlert.close();
+        }, 7500);
+    }
 });
 
 
