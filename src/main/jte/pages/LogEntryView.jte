@@ -28,6 +28,9 @@
         <div class="container py-4">
             <div class="row">
                 <h1>Modmail log ${modmailLog.getKey()}</h1>
+                @if(modmailLog.getTitle().isPresent())
+                    <h2>${modmailLog.getTitle().get()}</h2>
+                @endif
             </div>
             <div class="row">
                 <div class="col">
