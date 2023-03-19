@@ -134,7 +134,7 @@ public class AuthHandler {
         var key = new BigInteger(130, secureRandom).toString(32);
         var state = new ClientState(ctx.fullUrl());
         ouathState.put(key, state);
-        ctx.cookie(new Cookie("state", key, "/", 240, true, 1, true));
+        ctx.cookie(new Cookie("state", key, "/", 240, Config.isCookiesSecure, 1, true));
         return key;
     }
 
@@ -161,7 +161,7 @@ public class AuthHandler {
         // Same site strict cause browser not to send the cookie upon redirect from oauth
         // Which would mean we would need load a page that redirects the user with js
         var jwt = jwtAuth.generateJWT(user, roles);
-        ctx.cookie(new Cookie("jwt", jwt, "/", 10800, true, 1, true, "", "", SameSite.LAX));
+        ctx.cookie(new Cookie("jwt", jwt, "/", 10800, Config.isCookiesSecure, 1, true, "", "", SameSite.LAX));
         logger.trace("new JWT generated with value {}", jwt);
     }
 

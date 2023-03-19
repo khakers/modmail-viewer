@@ -55,6 +55,8 @@ public class Config {
 
     public static final String BRANDING = notEmptyOrElse(System.getenv(ENV_PREPEND + "_BRANDING"), "Modmail-Viewer");
 
+    public static final boolean isCookiesSecure = isNotSetToTrue(System.getenv(ENV_PREPEND + "_INSECURE"), true);
+
     static {
         var jwtSecretKey = System.getenv("MODMAIL_VIEWER_SECRETKEY");
         if (jwtSecretKey == null || jwtSecretKey.isEmpty()) {
@@ -65,6 +67,10 @@ public class Config {
             logger.warn("Your secret key is too short! it should be at least 32 characters (256 bits). Short keys can be trivially brute forced allowing an attacker to create their own auth tokens");
         } else {
             JWT_SECRET_KEY = jwtSecretKey;
+        }
+
+        if (!isCookiesSecure) {
+            logger.warn("Insecure cookies are enabled. This reduces security and should only be enabled when https is unavailable");
         }
 
         var webUrl = Assert.requireNonEmpty(System.getenv(ENV_PREPEND + "_URL"), "No URL provided. provide one with the option \"" + ENV_PREPEND + "_URL\"");
