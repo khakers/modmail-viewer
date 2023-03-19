@@ -86,7 +86,7 @@ up.compiler('.content', (element, data, meta) => {
     if (data.nsfw) {
         element.append(up.element.createFromHTML(`<div id="nsfw-backdrop" style=" background-color: rgba(255,255,255,0)"></div>`));
 
-        const alertPlaceholder = document.getElementById("alertPlaceholder");
+        const alertPlaceholder = document.getElementsByClassName("page-container").item(0);
 
         let modalElement = up.element.createFromHTML(`
         <div class="modal" id="nsfwModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"

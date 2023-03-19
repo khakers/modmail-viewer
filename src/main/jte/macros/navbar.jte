@@ -100,4 +100,4 @@
         </div>
     </div>
 </nav>
-<div id="alertPlaceholder" class="z-1 position-absolute" style="padding-top: 56px"></div>
+<div id="alertPlaceholder" class="position-absolute" style="padding-top: 56px; z-index: 1;"></div>
