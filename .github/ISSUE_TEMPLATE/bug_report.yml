@@ -61,12 +61,10 @@ body:
       description: |
         examples:
           - **OS**: Ubuntu 20.04
-          - **Node**: 13.14.0
-          - **npm**: 7.6.3
+          - **Java**: 17.04
       value: |
           - OS:
-          - Node:
-          - npm:
+          - Java:
       render: Markdown
     validations:
       required: false
@@ -76,3 +74,5 @@ body:
       label: Relevant log output
       description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
       render: Shell
+    validations:
+      required: false
