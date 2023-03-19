@@ -65,7 +65,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        var updateThread =  new Thread(()-> {
+        var updateThread = new Thread(() -> {
             var updateChecker = new UpdateChecker();
             updateChecker.isUpdateAvailable();
         });
@@ -98,8 +98,8 @@ public class Main {
                     javalinConfig.showJavalinBanner = false;
                     javalinConfig.jsonMapper(new JavalinJackson());
                     if (Config.isDevMode) {
-                        logger.info("Loading static files from {}",System.getProperty("user.dir")+"/src/main/resources/static");
-                        javalinConfig.staticFiles.add(System.getProperty("user.dir")+"/src/main/resources/static", Location.EXTERNAL);
+                        logger.info("Loading static files from {}", System.getProperty("user.dir") + "/src/main/resources/static");
+                        javalinConfig.staticFiles.add(System.getProperty("user.dir") + "/src/main/resources/static", Location.EXTERNAL);
                     } else {
                         javalinConfig.staticFiles.add("/static", Location.CLASSPATH);
                     }
@@ -154,7 +154,7 @@ public class Main {
                             .getOrDefault(Boolean.TRUE);
                     String search = ctx.queryParamAsClass("search", String.class)
                             .check(s -> s.length() > 0 && s.length() < 120
-                            , "search text cannot be greater than 50 characters")
+                                    , "search text cannot be greater than 50 characters")
                             .getOrDefault("");
                     var ticketFilter = TicketStatus.valueOf(statusFilter.toUpperCase());
                     var pageCount = db.getPaginationCount(ticketFilter, search);
