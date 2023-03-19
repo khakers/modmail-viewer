@@ -125,6 +125,14 @@
                                                    data-timestamp="${entry.get().getClosedTime().get().toString()}"
                                                    data-timestamp-type="relative" data-bs-toggle="tooltip"
                                                    data-timestamp-title-type="detailed"></span></span>
+                            @if(entry.get().getCloser().isPresent())
+                                <span>by</span>
+                                <span class="user-select-all" data-bs-toggle="tooltip"
+                                      data-bs-title="${entry.get().getCloser().get().id()}"><span
+                                            class="fw-semibold">${entry.get().getCloser().get().name()}</span><span
+                                            class="text-muted">#${entry.get().getCloser().get().discriminator()}</span>
+                                </span>
+                            @endif
 
                         @endif
                         ·
