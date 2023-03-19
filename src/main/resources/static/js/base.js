@@ -102,13 +102,17 @@ up.compiler('.content', (element, data, meta) => {
                         <p>Do you wish to continue?</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary">Go Back</button>
+                        <a type="button" class="btn btn-primary" href="/"><i class="bi bi-house"></i> Homepage</a>
+                        <button type="button" class="btn btn-secondary" id="nsfwGoBack"><i class="bi bi-arrow-left"></i> Go Back</button>
                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Continue</button>
                     </div>
                 </div>
             </div>
         </div>`);
         alertPlaceholder.append(modalElement);
+        document.getElementById("nsfwGoBack").addEventListener("click", (event) => {
+            history.back();
+        });
 
         const bsModal = new bootstrap.Modal(modalElement);
 
