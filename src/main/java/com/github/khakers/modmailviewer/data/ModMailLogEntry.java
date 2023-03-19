@@ -1,9 +1,6 @@
 package com.github.khakers.modmailviewer.data;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
@@ -13,8 +10,9 @@ import java.util.Optional;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class ModMailLogEntry {
-//    @ObjectId
+    @JsonProperty("_id")
     private final String _id;
+    @JsonProperty("key")
     private final String key;
 
     @JsonProperty("open")
@@ -64,22 +62,45 @@ public final class ModMailLogEntry {
 
 
     @JsonCreator
-    public ModMailLogEntry(@JsonProperty("key") String key,
-                           @JsonProperty("open") boolean open,
-                           @JsonProperty("created_at") Instant creationTime,
-                           @JsonProperty("closed_at") @Nullable Instant closedTime,
-                           @JsonProperty("bot_id") long botId,
-                           @JsonProperty("channel_id") long channelId,
-                           @JsonProperty("guild_id") long guildId,
-                           @JsonProperty("recipient") User recipient,
-                           @JsonProperty("creator") User creator,
-                           @JsonProperty("closer") @Nullable User closer,
-                           @JsonProperty("close_message") @Nullable String closeMessage,
-                           @JsonProperty("messages") List<Message> messages,
-                           @JsonProperty("nsfw") boolean nsfw,
-                           @JsonProperty("tot;e") String title) {
-        this.key = key;
+    public ModMailLogEntry(
+            @JsonProperty("_id")
+            String _id,
+            @JsonProperty("key")
+            String key,
+            @JsonProperty("open")
+            boolean open,
+            @JsonProperty("created_at")
+            Instant creationTime,
+            @JsonProperty("closed_at")
+            @Nullable
+            Instant closedTime,
+            @JsonProperty("bot_id")
+            long botId,
+            @JsonProperty("channel_id")
+            long channelId,
+            @JsonProperty("guild_id")
+            long guildId,
+            @JsonProperty("recipient")
+            User recipient,
+            @JsonProperty("creator")
+            User creator,
+            @JsonProperty("closer")
+            @Nullable
+            User closer,
+            @JsonProperty("close_message")
+            @Nullable
+            String closeMessage,
+            @JsonSetter(nulls = Nulls.AS_EMPTY)
+            @JsonProperty("messages")
+            List<Message> messages,
+            @JsonProperty("nsfw")
+            boolean nsfw,
+            @JsonProperty("title")
+            @Nullable
+            String title
+    ) {
         this._id = key;
+        this.key = key;
         this.open = open;
         this.creationTime = creationTime;
         this.closedTime = closedTime;
@@ -140,6 +161,7 @@ public final class ModMailLogEntry {
         return Optional.ofNullable(closeMessage);
     }
 
+    @JsonSetter(nulls = Nulls.AS_EMPTY)
     public List<Message> getMessages() {
         return messages;
     }
@@ -150,6 +172,10 @@ public final class ModMailLogEntry {
 
     public Optional<String> getTitle() {
         return Optional.ofNullable(title);
+    }
+
+    public String get_id() {
+        return _id;
     }
 
     @Override
