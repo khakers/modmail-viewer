@@ -12,6 +12,9 @@
                                     class="bi bi-journal-text"></i> Licenses</a></span>
                     <span class="col-sm-auto"><a class="nav-link" href="https://github.com/khakers/modmail-viewer"><i
                                     class="bi bi-github"></i> Github</a></span>
+                    <span class="col-sm-auto"><a class="nav-link" href="https://github.com/khakers/modmail-viewer/issues/new?assignees=&labels=bug&template=bug_report.yml&title=%5BBug%5D%3A+&version=${org.owasp.encoder.Encode.forUriComponent(com.github.khakers.modmailviewer.ModmailViewer.PRECISE_GIT_VERSION_ID)}"><i
+                                    class="bi bi-bug"></i> Report Bug</a></span>
+
                 </div>
             </div>
         </div>
