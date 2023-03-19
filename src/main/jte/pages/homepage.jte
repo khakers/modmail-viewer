@@ -1,4 +1,4 @@
-@import com.github.khakers.modmailviewer.auth.SiteUser
+@import com.github.khakers.modmailviewer.auth.UserToken
 @import com.github.khakers.modmailviewer.data.internal.TicketStatus
 @import com.github.khakers.modmailviewer.util.Pagination
 @import com.github.khakers.modmailviewer.ModMailLogDB
@@ -14,7 +14,7 @@
 
 @param int page
 @param int pageCount
-@param SiteUser user
+@param UserToken user
 @param ModMailLogDB modMailLogDB
 @param TicketStatus ticketStatusFilter
 @param boolean showNSFW
@@ -26,64 +26,55 @@
     <title>Modmail Logs</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <%--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"--%>
-    <%--          integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">--%>
-    <%--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css"--%>
-    <%--          integrity="sha384-xeJqLiuOvjUBq3iGOjvSQSIlwrpqjSHXpduPd6rQpuiM3f5/ijby8pCsnbu5S81n"--%>
-    <%--          crossorigin="anonymous">--%>
-    <link href="/webjars/bootstrap/5.2.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/webjars/bootstrap-icons/1.10.2/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="styles.css">
+
+    @template.macros.HeaderImports()
 </head>
 <body>
 
 <div class="page-container">
     @template.macros.navbar(ctx = ctx, user = user)
-    <div class="content">
+    <div class="content" up-main>
         <div class="container pt-5">
-            <div class="border rounded-top p-2">
+            <div class="border ${logEntries.isEmpty() ? "rounded" : "rounded-top"} p-2">
                 <div class="row justify-content-center justify-content-lg-end">
-                    <div class="col-xl-3 col-sm-12">
+                    <div class="col-xl-4 col-sm-12">
                         <ul class="nav nav-pills ">
                             <li class="nav-item">
-                                <a class="nav-link @if(ticketStatusFilter == TicketStatus.ALL)active@endif"
+                                <a class="nav-link @if(ticketStatusFilter == TicketStatus.ALL || ticketStatusFilter == null)active@endif"
+                                   up-follow up-target=".content"
+                                   up-transition="cross-fade"
+                                   up-alias="/"
                                    href="${QueryParamUtil.updateQueryParams(ctx, "status", "all")}"
                                 >${modMailLogDB.getTotalTickets(TicketStatus.ALL, search)} All</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link @if(ticketStatusFilter == TicketStatus.OPEN)active@endif"
+                                   up-follow up-target=".content"
+                                   up-transition="cross-fade"
                                    href="${QueryParamUtil.updateQueryParams(ctx, "status", "open")}"><i
                                             class="bi bi-record-circle"></i> ${modMailLogDB.getTotalTickets(TicketStatus.OPEN, search)}
                                     Open</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link @if(ticketStatusFilter == TicketStatus.CLOSED)active@endif"
+                                   up-target=".content" up-follow
+                                   up-transition="cross-fade"
                                    href="${QueryParamUtil.updateQueryParams(ctx, "status", "closed")}"><i
                                             class="bi bi-check-lg"></i> ${modMailLogDB.getTotalTickets(TicketStatus.CLOSED, search)}
                                     Closed</a>
                             </li>
-                            <%--                    <li class="nav-item border-danger btn-outline-danger ps-2">--%>
-                            <%--                        <a class="nav-link border-danger @if(showNSFW)active@endif" href="#"--%>
-                            <%--                           onclick="update('nsfw', '${!showNSFW}')">Show NSFW</a>--%>
-                            <%--                    </li>--%>
-                            <%--                    <li class="nav-item ps-5 ms-auto">--%>
-                            <%--                        <button type="button" class="btn btn-outline-danger" onclick="update('nsfw', '${!showNSFW}')">Show NSFW</button>--%>
-                            <%--                        --%><%-- THis painful if is only required because of 'checked'. JTE does not allow expressions for attribute names --%>
-                            <%--                        @if(showNSFW)--%>
-                            <%--                            <input type="checkbox" class="btn-check" id="btncheck1" autocomplete="off" onclick="update('nsfw', '${!showNSFW}')" checked>--%>
-                            <%--                        @else--%>
-                            <%--                            <input type="checkbox" class="btn-check" id="btncheck1" autocomplete="off" onclick="update('nsfw', '${!showNSFW}')">--%>
-                            <%--                        @endif--%>
-                            <%--                        <label class="btn btn-outline-danger" for="btncheck1">Show NSFW</label>--%>
-                            <%--                    </li>--%>
                         </ul>
                     </div>
-                    <div class="col-xl-9 col-sm-12 pt-2 py-xl-0">
+                    <div class="col-xl-8 col-sm-12 pt-2 py-xl-0">
                         <div id="SearchBox" class="input-group px-xl-0 px-sm-2">
-                            <button class="btn btn-outline-danger" type="button" id="ClearSearchButton"><i class="bi bi-x-lg"></i> Clear</button>
-                            <input id="SearchBoxInput" type="text" class="form-control" placeholder="Search"
-                                   aria-label="Search Text" aria-describedby="SearchButton">
-                            <button class="btn btn-outline-primary" type="button" id="SearchButton"> <i class="bi bi-search"></i> Search</button>
+                            <button class="btn btn-outline-danger" type="button" id="ClearSearchButton"><i
+                                        class="bi bi-x-lg"></i> Reset
+                            </button>
+                            <input id="SearchBoxInput" type="search" class="form-control" placeholder="Search Modmail logs..."
+                                   aria-label="Search Text" aria-describedby="SearchButton" value="${search}">
+                            <button class="btn btn-outline-primary" type="button" id="SearchButton"><i
+                                        class="bi bi-search"></i> Search
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -95,10 +86,12 @@
                     <p class="text-center text-muted">¯\_(ツ)_/¯</p>
                 </div>
             @endif
-            <ol class="list-group">
+            <ol id="logEntryList" class="list-group">
                 @for(var entry : gg.jte.support.ForSupport.of(logEntries))
-                    <li class="list-group-item @if(entry.isFirst())border-top-0 rounded-0@endif">
-                        <h2><a href="/logs/${entry.get().getKey()}${TextFragmentUtils.getTextFragmentAsSnippet(search)}">${entry.get().getKey()}</a></h2>
+                    <li class="list-group-item @if(entry.isFirst())border-top-0 rounded-0@endif" id="${entry.get().get_id()}">
+                        <h2>
+                            <a href="/logs/${entry.get().getKey()}${TextFragmentUtils.getTextFragmentAsSnippet(search)}" up-follow up-target=".content" up-transition="move-left">${entry.get().getKey()}</a>
+                        </h2>
                         @if(entry.get().isOpen())
                             <span class="badge rounded-pill text-bg-success fs-6"><i
                                         class="bi bi-record-circle"></i> Open</span>
@@ -112,24 +105,40 @@
                         @endif
                         @if(entry.get().isOpen())
                             <span>Created by</span>
-                            <span class="fw-semibold">${entry.get().getCreator().name()}</span><span
-                                class="text-secondary">#${entry.get().getCreator().discriminator()}</span>
+                            <span class="user-select-all" data-bs-toggle="tooltip"
+                                  data-bs-title="${entry.get().getCreator().id()}"><span
+                                        class="fw-semibold">${entry.get().getCreator().name()}</span><span
+                                        class="text-muted">#${entry.get().getCreator().discriminator()}</span>
+                            </span>
+
                             <span><span class="text-muted" data-timestamp="${entry.get().getCreationTime().toString()}"
                                         data-timestamp-type="relative" data-bs-toggle="tooltip"
                                         data-timestamp-title-type="detailed"></span></span>
                         @else
                             <span>Created by</span>
-                            <span class="fw-semibold">${entry.get().getCreator().name()}</span><span
-                                class="text-secondary">#${entry.get().getCreator().discriminator()}</span>
+                            <span class="user-select-all" data-bs-toggle="tooltip"
+                                  data-bs-title="${entry.get().getCreator().id()}"><span
+                                        class="fw-semibold">${entry.get().getCreator().name()}</span><span
+                                        class="text-muted">#${entry.get().getCreator().discriminator()}</span>
+                            </span>
                             <span>was closed <span class="text-muted"
                                                    data-timestamp="${entry.get().getClosedTime().get().toString()}"
                                                    data-timestamp-type="relative" data-bs-toggle="tooltip"
                                                    data-timestamp-title-type="detailed"></span></span>
+                            @if(entry.get().getCloser().isPresent())
+                                <span>by</span>
+                                <span class="user-select-all" data-bs-toggle="tooltip"
+                                      data-bs-title="${entry.get().getCloser().get().id()}"><span
+                                            class="fw-semibold">${entry.get().getCloser().get().name()}</span><span
+                                            class="text-muted">#${entry.get().getCloser().get().discriminator()}</span>
+                                </span>
+                            @endif
 
                         @endif
                         ·
                         <span>${entry.get().getMessages().size()} messages</span>
-                        ·
+                        @if(!entry.get().getMessages().isEmpty())
+                            ·
                         <span>Last message sent <span class="text-muted"
                                                       data-timestamp="${entry.get().getMessages().get(entry.get().getMessages().size()-1).getCreationTime().toString()}"
                                                       data-timestamp-type="relative" data-bs-toggle="tooltip"
@@ -137,9 +146,11 @@
                             <span class="user-select-all" data-bs-toggle="tooltip"
                                   data-bs-title="${entry.get().getMessages().get(entry.get().getMessages().size()-1).getAuthor().id()}"><span
                                         class="fw-semibold">${entry.get().getMessages().get(entry.get().getMessages().size()-1).getAuthor().name()}</span><span
-                                        class="text-secondary">#${entry.get().getMessages().get(entry.get().getMessages().size()-1).getAuthor().discriminator()}</span>
+                                        class="text-muted">#${entry.get().getMessages().get(entry.get().getMessages().size()-1).getAuthor().discriminator()}</span>
                             </span>
                         </span>
+                        @endif
+
                     </li>
                 @endfor
 
@@ -156,15 +167,16 @@
         @endif
         @if(pageCount > 1)
             <div class="container col d-flex justify-content-center p-4">
-                <nav aria-label="Page navigation example">
+                <nav aria-label="Page navigation">
                     <ul class="pagination">
 
                         <%--                        onclick="update('page', '${Math.max(page-1, 1)}')"--%>
-                        <li class="page-item"><a class="page-link ${previousClass}"
-                                                 href="${QueryParamUtil.updateQueryParams(ctx, "page", String.valueOf(Math.max(page-1, 1)))}">Previous</a>
+                        <li class="page-item">
+                            <a class="page-link ${previousClass}" up-follow="#logEntryList"
+                               href="${QueryParamUtil.updateQueryParams(ctx, "page", String.valueOf(Math.max(page-1, 1)))}">Previous</a>
                         </li>
                         @if(Pagination.needsPaginationCulling(pageCount) && page > 4)
-                            <a class="page-link" href="#">1</a>
+                            <a class="page-link" href="${QueryParamUtil.updateQueryParams(ctx, "page", String.valueOf(1))}">1</a>
                             <li class="page-item"><a class="page-link disabled">...</a></li>
                         @endif
                         @for(int i = 1; i < pageCount+1; ++i)
@@ -178,6 +190,7 @@
                                         <span class="page-link ${isActive}">${i}</span>
                                     @else
                                         <a class="page-link"
+                                           up-follow="#logEntryList"
                                            href="${QueryParamUtil.updateQueryParams(ctx, "page", String.valueOf(i))}">${i}</a>
                                     @endif
                                 </li>
@@ -185,9 +198,9 @@
                         @endfor
                         @if(Pagination.needsPaginationCulling(pageCount) && page < pageCount-3)
                             <li class="page-item"><a class="page-link disabled">...</a></li>
-                            <a class="page-link sm-visually-hidden" href="#">${pageCount}</a>
+                            <a class="page-link sm-visually-hidden" href="${QueryParamUtil.updateQueryParams(ctx, "page", String.valueOf(pageCount))}">${pageCount}</a>
                         @endif
-                        <li class="page-item"><a class="page-link ${nextClass}"
+                        <li class="page-item"><a class="page-link ${nextClass}" up-follow="#logEntryList"
                                                  href="${QueryParamUtil.updateQueryParams(ctx, "page", String.valueOf(page+1))}"
                             >Next</a></li>
                     </ul>
@@ -197,14 +210,5 @@
     </div>
     @template.macros.footer()
 </div>
-
-<script src="timeformat.js"></script>
-<script src="util.js"></script>
-<script src="/js/TicketFilterHandler.js"></script>
-<script src="/webjars/bootstrap/5.2.2/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
-</script>
 </body>
 </html>

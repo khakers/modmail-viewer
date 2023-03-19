@@ -3,7 +3,7 @@ package com.github.khakers.modmailviewer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.khakers.modmailviewer.auth.AuthHandler;
 import com.github.khakers.modmailviewer.auth.Role;
-import com.github.khakers.modmailviewer.auth.SiteUser;
+import com.github.khakers.modmailviewer.auth.UserToken;
 import com.github.khakers.modmailviewer.data.internal.TicketStatus;
 import com.github.khakers.modmailviewer.markdown.channelmention.ChannelMentionExtension;
 import com.github.khakers.modmailviewer.markdown.customemoji.CustomEmojiExtension;
@@ -24,6 +24,7 @@ import gg.jte.resolve.DirectoryCodeResolver;
 import io.javalin.Javalin;
 import io.javalin.community.ssl.SSLPlugin;
 import io.javalin.http.staticfiles.Location;
+import io.javalin.json.JavalinJackson;
 import io.javalin.rendering.template.JavalinJte;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -64,6 +65,11 @@ public class Main {
 
     public static void main(String[] args) {
 
+        var updateThread = new Thread(() -> {
+            var updateChecker = new UpdateChecker();
+            updateChecker.isUpdateAvailable();
+        });
+
         var db = new ModMailLogDB(Config.MONGODB_URI);
 
         TemplateEngine templateEngine;
@@ -74,6 +80,7 @@ public class Main {
         } else {
             templateEngine = TemplateEngine.createPrecompiled(ContentType.Html);
         }
+
 
         AuthHandler authHandler;
         if (Config.isAuthEnabled) {
@@ -88,11 +95,18 @@ public class Main {
 
         JavalinJte.init(templateEngine);
         var app = Javalin.create(javalinConfig -> {
-                    javalinConfig.jsonMapper(new JacksonJavalinJsonMapper());
-                    javalinConfig.staticFiles.add("/static", Location.CLASSPATH);
+                    javalinConfig.showJavalinBanner = false;
+                    javalinConfig.jsonMapper(new JavalinJackson());
+                    if (Config.isDevMode) {
+                        logger.info("Loading static files from {}", System.getProperty("user.dir") + "/src/main/resources/static");
+                        javalinConfig.staticFiles.add(System.getProperty("user.dir") + "/src/main/resources/static", Location.EXTERNAL);
+                    } else {
+                        javalinConfig.staticFiles.add("/static", Location.CLASSPATH);
+                    }
                     javalinConfig.staticFiles.enableWebjars();
                     if (Config.isDevMode) {
                         logger.info("Dev mode is ENABLED");
+                        javalinConfig.showJavalinBanner = true;
                         javalinConfig.plugins.enableDevLogging();
                     }
                     if (Config.isAuthEnabled) {
@@ -101,7 +115,6 @@ public class Main {
                         logger.warn("Authentication is DISABLED");
                         javalinConfig.accessManager((handler, context, set) -> handler.handle(context));
                     }
-
                     if (Config.isSecure) {
                         logger.info("SSL is ENABLED");
                         SSLPlugin sslPlugin = new SSLPlugin(sslConfig -> {
@@ -120,13 +133,14 @@ public class Main {
                         }
                     }
                 })
+                .get("/hello", ctx -> ctx.status(200).result("hello"), RoleUtils.anyone())
                 .get("/logout", ctx -> {
                     ctx.removeCookie("jwt");
                     ctx.result("logout successful");
                     if (!Config.isAuthEnabled) {
                         ctx.redirect("/");
                     }
-                }, RoleUtils.atLeastRegular())
+                }, RoleUtils.atLeastSupporter())
                 .get("/", ctx -> {
                     Integer page = ctx.queryParamAsClass("page", Integer.class)
                             .check(integer -> integer >= 1, "page must be at least 1")
@@ -140,7 +154,7 @@ public class Main {
                             .getOrDefault(Boolean.TRUE);
                     String search = ctx.queryParamAsClass("search", String.class)
                             .check(s -> s.length() > 0 && s.length() < 120
-                            , "search text cannot be greater than 50 characters")
+                                    , "search text cannot be greater than 50 characters")
                             .getOrDefault("");
                     var ticketFilter = TicketStatus.valueOf(statusFilter.toUpperCase());
                     var pageCount = db.getPaginationCount(ticketFilter, search);
@@ -151,22 +165,22 @@ public class Main {
                                     "logEntries", db.searchPaginatedMostRecentEntriesByMessageActivity(page, ticketFilter, search),
                                     "page", page,
                                     "pageCount", pageCount,
-                                    "user", authHandler != null ? AuthHandler.getUser(ctx) : new SiteUser(),
+                                    "user", authHandler != null ? AuthHandler.getUser(ctx) : new UserToken(0L, "anonymous", "0000", "", new long[]{}, false),
                                     "modMailLogDB", db,
                                     "ticketStatusFilter", ticketFilter,
                                     "showNSFW", showNSFW,
                                     "search", search));
-                }, RoleUtils.atLeastModerator())
+                }, RoleUtils.atLeastSupporter())
                 .get("/logs/{id}", ctx -> {
                     var entry = db.getModMailLogEntry(ctx.pathParam("id"));
                     entry.ifPresentOrElse(
                             modMailLogEntry -> {
                                 try {
-                                    ctx.render("pages/logspage.jte",
+                                    ctx.render("pages/LogEntryView.jte",
                                             model(
                                                     "ctx", ctx,
                                                     "modmailLog", modMailLogEntry,
-                                                    "user", authHandler != null ? AuthHandler.getUser(ctx) : new SiteUser(),
+                                                    "user", authHandler != null ? AuthHandler.getUser(ctx) : new UserToken(0L, "anonymous", "0000", "", new long[]{}, false),
                                                     "parser", PARSER,
                                                     "renderer", RENDERER));
                                 } catch (JsonProcessingException e) {
@@ -178,7 +192,7 @@ public class Main {
                                 ctx.result();
                             });
 
-                }, RoleUtils.atLeastModerator())
+                }, RoleUtils.atLeastSupporter())
                 .start(Config.httpPort);
 
         if (Config.isAuthEnabled) {

@@ -50,6 +50,7 @@ public class Config {
             ? Assert.requireNonEmpty(System.getenv(ENV_PREPEND + "_DISCORD_OAUTH_CLIENT_SECRET"), "No Discord client ID provided. Provide one with the option \""+ENV_PREPEND+"_DISCORD_OAUTH_CLIENT_SECRET\"")
             : null;
 
+    public static final long DISCORD_GUILD_ID = Long.parseLong(Assert.requireNonEmpty(System.getenv(ENV_PREPEND + "_DISCORD_GUILD_ID"), "No Discord guild ID provided. Provide one with the option \""+ENV_PREPEND+"_DISCORD_GUILD_ID\""));
     public static final String JWT_SECRET_KEY;
 
     public static final String BRANDING = notEmptyOrElse(System.getenv(ENV_PREPEND + "_BRANDING"), "Modmail-Viewer");

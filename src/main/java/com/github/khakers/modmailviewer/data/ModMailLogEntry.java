@@ -1,8 +1,6 @@
 package com.github.khakers.modmailviewer.data;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
@@ -10,45 +8,78 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static com.github.khakers.modmailviewer.util.DateFormatters.DATABASE_TIMESTAMP_FORMAT;
-
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class ModMailLogEntry {
+    @JsonProperty("_id")
+    private final String _id;
+    @JsonProperty("key")
     private final String key;
-    private final boolean open;
-    private final Instant creationTime;
-    @Nullable
-    private final Instant closedTime;
-    private final long botId;
-    private final long channelId;
-    private final long guildId;
-    private final User recipient;
-    private final User creator;
-    @Nullable
-    private final User closer;
-    private final Optional<String> closeMessage;
-    private final List<Message> messages;
-    private final boolean nsfw;
-    private final Optional<String> title;
 
-    //    @BsonCreator
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    @JsonProperty("open")
+    private final boolean open;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSSSSS[XXX]", timezone = "UTC")
+    @JsonProperty("created_at")
+    private final Instant creationTime;
+
+    @Nullable
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSSSSS[XXX]", timezone = "UTC")
+    @JsonProperty("closed_at")
+    private final Instant closedTime;
+
+    @JsonProperty("bot_id")
+    private final long botId;
+
+    @JsonProperty("channel_id")
+    private final long channelId;
+
+    @JsonProperty("guild_id")
+    private final long guildId;
+
+    @JsonProperty("recipient")
+    private final User recipient;
+
+    @JsonProperty("creator")
+    private final User creator;
+
+    @Nullable
+    @JsonProperty("closer")
+    private final User closer;
+
+    @Nullable
+    @JsonProperty("close_message")
+    private final String closeMessage;
+
+    @JsonProperty("messages")
+    private final List<Message> messages;
+
+    @JsonProperty("nsfw")
+    private final boolean nsfw;
+
+    @Nullable
+    @JsonProperty("title")
+    private final String title;
+
+
+    @JsonCreator
     public ModMailLogEntry(
+            @JsonProperty("_id")
+            String _id,
             @JsonProperty("key")
             String key,
             @JsonProperty("open")
             boolean open,
             @JsonProperty("created_at")
-            String creationTime,
+            Instant creationTime,
             @JsonProperty("closed_at")
             @Nullable
-            String closedTime,
+            Instant closedTime,
             @JsonProperty("bot_id")
-            String botId,
+            long botId,
             @JsonProperty("channel_id")
-            String channelId,
+            long channelId,
             @JsonProperty("guild_id")
-            String guildId,
+            long guildId,
             @JsonProperty("recipient")
             User recipient,
             @JsonProperty("creator")
@@ -57,33 +88,34 @@ public final class ModMailLogEntry {
             @Nullable
             User closer,
             @JsonProperty("close_message")
+            @Nullable
             String closeMessage,
-            @JsonProperty("message")
+            @JsonSetter(nulls = Nulls.AS_EMPTY)
+            @JsonProperty("messages")
             List<Message> messages,
             @JsonProperty("nsfw")
-            Boolean nsfw,
+            boolean nsfw,
             @JsonProperty("title")
+            @Nullable
             String title
     ) {
+        this._id = key;
         this.key = key;
         this.open = open;
-        this.creationTime = DATABASE_TIMESTAMP_FORMAT.parse(creationTime, Instant::from);
-        if (closedTime != null) {
-            this.closedTime = DATABASE_TIMESTAMP_FORMAT.parse(closedTime, Instant::from);
-        } else {
-            this.closedTime = null;
-        }
-        this.botId = Long.parseLong(botId);
-        this.channelId = Long.parseLong(channelId);
-        this.guildId = Long.parseLong(guildId);
+        this.creationTime = creationTime;
+        this.closedTime = closedTime;
+        this.botId = botId;
+        this.channelId = channelId;
+        this.guildId = guildId;
         this.recipient = recipient;
         this.creator = creator;
         this.closer = closer;
-        this.closeMessage = Optional.ofNullable(closeMessage);
+        this.closeMessage = closeMessage;
         this.messages = messages;
-        this.nsfw = Objects.requireNonNullElse(nsfw, false);
-        this.title = Optional.ofNullable(title);
+        this.nsfw = nsfw;
+        this.title = title;
     }
+
 
     public String getKey() {
         return key;
@@ -126,9 +158,10 @@ public final class ModMailLogEntry {
     }
 
     public Optional<String> getCloseMessage() {
-        return closeMessage;
+        return Optional.ofNullable(closeMessage);
     }
 
+    @JsonSetter(nulls = Nulls.AS_EMPTY)
     public List<Message> getMessages() {
         return messages;
     }
@@ -138,13 +171,18 @@ public final class ModMailLogEntry {
     }
 
     public Optional<String> getTitle() {
-        return title;
+        return Optional.ofNullable(title);
+    }
+
+    public String get_id() {
+        return _id;
     }
 
     @Override
     public String toString() {
         return "ModMailLogEntry{" +
-                "key='" + key + '\'' +
+                "_id='" + _id + '\'' +
+                ", key='" + key + '\'' +
                 ", open=" + open +
                 ", creationTime=" + creationTime +
                 ", closedTime=" + closedTime +
@@ -154,10 +192,10 @@ public final class ModMailLogEntry {
                 ", recipient=" + recipient +
                 ", creator=" + creator +
                 ", closer=" + closer +
-                ", closeMessage=" + closeMessage +
+                ", closeMessage='" + closeMessage + '\'' +
                 ", messages=" + messages +
                 ", nsfw=" + nsfw +
-                ", title=" + title +
+                ", title='" + title + '\'' +
                 '}';
     }
 
@@ -166,12 +204,11 @@ public final class ModMailLogEntry {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ModMailLogEntry that = (ModMailLogEntry) o;
-        return open == that.open && botId == that.botId && channelId == that.channelId && guildId == that.guildId && nsfw == that.nsfw && key.equals(that.key) && creationTime.equals(that.creationTime) && closedTime.equals(that.closedTime) && recipient.equals(that.recipient) && creator.equals(that.creator) && closer.equals(that.closer) && closeMessage.equals(that.closeMessage) && messages.equals(that.messages) && title.equals(that.title);
+        return open == that.open && botId == that.botId && channelId == that.channelId && guildId == that.guildId && nsfw == that.nsfw && Objects.equals(_id, that._id) && Objects.equals(key, that.key) && Objects.equals(creationTime, that.creationTime) && Objects.equals(closedTime, that.closedTime) && Objects.equals(recipient, that.recipient) && Objects.equals(creator, that.creator) && Objects.equals(closer, that.closer) && Objects.equals(closeMessage, that.closeMessage) && Objects.equals(messages, that.messages) && Objects.equals(title, that.title);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(key, open, creationTime, closedTime, botId, channelId, guildId, recipient, creator, closer, closeMessage, messages, nsfw, title);
+        return Objects.hash(_id, key, open, creationTime, closedTime, botId, channelId, guildId, recipient, creator, closer, closeMessage, messages, nsfw, title);
     }
-
 }

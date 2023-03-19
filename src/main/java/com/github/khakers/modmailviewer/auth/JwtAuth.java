@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.Base64;
 
 public class JwtAuth {
@@ -29,12 +30,13 @@ public class JwtAuth {
 
     }
 
-    public String generateJWT(SiteUser user) {
+    public String generateJWT(UserToken user, long[] roles) {
         return JWT.create()
                 .withClaim("username", user.username)
                 .withClaim("id", user.id)
                 .withClaim("discriminator", user.discriminator)
                 .withClaim("avatar", user.getAvatar().orElse(null))
+                .withArrayClaim("roles", Arrays.stream(roles).boxed().toArray(Long[]::new))
                 .withIssuedAt(Instant.now())
                 .withExpiresAt(Instant.now().plus(3, ChronoUnit.HOURS))
                 .sign(algorithm);
@@ -45,10 +47,11 @@ public class JwtAuth {
         return new String(Base64.getDecoder().decode(decodedJWT.getPayload()));
     }
 
-    public static SiteUser decodeJWT(String jwt, ObjectMapper objectMapper) throws JsonProcessingException, JWTVerificationException {
+    public static UserToken decodeAndVerifyJWT(String jwt, ObjectMapper objectMapper) throws JsonProcessingException, JWTVerificationException {
         var decodedJWT = jwtVerifier.verify(jwt);
         var string = new String(Base64.getDecoder().decode(decodedJWT.getPayload()));
-        return objectMapper.readValue(string, SiteUser.class);
+        logger.trace("jwt decoded as {}", string);
+        return objectMapper.readValue(string, UserToken.class);
     }
 
 

@@ -1,5 +1,5 @@
 <footer>
-    <div class="navbar-dark nav-footer bg-dark text-bg-dark ps-3 py-3 border-top ">
+    <div class="navbar-dark nav-footer text-dark bg-dark border-dark-subtle ps-3 py-3 border-top ">
         <div class="row align-items-center me-0 justify-content-xl-between">
             <div class="col-sm-12 col-xl-5 align-items-center text-center text-xl-start navbar-text pb-0 pt-0 text-sm-nowrap">
                 Powered by Modmail-Viewer
@@ -12,6 +12,9 @@
                                     class="bi bi-journal-text"></i> Licenses</a></span>
                     <span class="col-sm-auto"><a class="nav-link" href="https://github.com/khakers/modmail-viewer"><i
                                     class="bi bi-github"></i> Github</a></span>
+                    <span class="col-sm-auto"><a class="nav-link" href="https://github.com/khakers/modmail-viewer/issues/new?assignees=&labels=bug&template=bug_report.yml&title=%5BBug%5D%3A+&version=${org.owasp.encoder.Encode.forUriComponent(com.github.khakers.modmailviewer.ModmailViewer.PRECISE_GIT_VERSION_ID)}"><i
+                                    class="bi bi-bug"></i> Report Bug</a></span>
+
                 </div>
             </div>
         </div>

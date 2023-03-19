@@ -8,16 +8,24 @@ docker-java-application = "9.0.0"
 gradle-license = "0.9.0"
 gradle-git-properties = "2.4.1"
 
-javalin = "5.2.0"
+javalin = "5.4.2"
 jte = "2.2.3"
 flexmark = "0.64.0"
 log4j = "2.19.0"
 jackson = "2.14.1"
 junit = "5.9.0"
 jwt = "4.2.1"
-scribe = "8.3.2"
-mongodriver = "4.7.2"
+scribe = "8.3.3"
+okhttp = "4.10.0"
+mongodriver = "4.8.2"
+mongojack = "4.8.0"
 owasp-encoder = "1.2.^"
+
+bootstrap = "5.3.0-alpha1"
+bootstrap-icons = "1.10.3"
+highlightjs = "11.7.0"
+twemoji = "14.1.0"
+unpoly = "3.0.0-rc2"
 
 [libraries]
 javalin = { module = "io.javalin:javalin", version.ref = "javalin" }
@@ -43,16 +51,27 @@ junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", vers
 junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit" }
 
 mongodb-driver = { module = "org.mongodb:mongodb-driver-sync", version.ref = "mongodriver" }
+mongojack = { module = "org.mongojack:mongojack", version.ref = "mongojack"}
 
-auth0-jwt = { module = "com.auth0:java-jwt", version.ref =  "jwt"}
-scribe-api = { module = "com.github.scribejava:scribejava-apis", version.ref = "scribe"}
+auth0-jwt = { module = "com.auth0:java-jwt", version.ref = "jwt" }
+scribe-api = { module = "com.github.scribejava:scribejava-apis", version.ref = "scribe" }
+scribe-okhttp = { module = "com.github.scribejava:scribejava-httpclient-okhttp", version.ref = "scribe" }
 
-owasp-encoder = { module = "org.owasp.encoder:encoder", version.ref = "owasp-encoder"}
+okhttp-bom = { module = "com.squareup.okhttp3:okhttp-bom", version.ref = "okhttp" }
+okhttp = { module = "com.squareup.okhttp3:okhttp" }
+
+owasp-encoder = { module = "org.owasp.encoder:encoder", version.ref = "owasp-encoder" }
+
+webjar-bootstrap = { module = "org.webjars.npm:bootstrap", version.ref = "bootstrap" }
+webjar-bootstrap-icons = { module = "org.webjars.npm:bootstrap-icons", version.ref = "bootstrap-icons" }
+webjar-highlightjs = { module = "org.webjars.npm:highlightjs__cdn-assets", version.ref = "highlightjs" }
+webjar-twemoji = { module = "org.webjars.bowergithub.jdecked:twemoji", version.ref = "twemoji" }
+webjar-unpoly = { module = "org.webjars.npm:unpoly", version.ref = "unpoly" }
 
 [plugins]
 jte-gradle = { id = "gg.jte.gradle", version.ref = "jte" }
 gradle-release = { id = "net.researchgate.release", version.ref = "gradle-release" }
 docker-java = { id = "com.bmuschko.docker-java-application", version.ref = "docker-java-application" }
-license = { id = "com.jaredsburrows.license", version.ref = "gradle-license"}
-gradle-git-properties = { id = "com.gorylenko.gradle-git-properties", version.ref = "gradle-git-properties"}
+license = { id = "com.jaredsburrows.license", version.ref = "gradle-license" }
+gradle-git-properties = { id = "com.gorylenko.gradle-git-properties", version.ref = "gradle-git-properties" }
 

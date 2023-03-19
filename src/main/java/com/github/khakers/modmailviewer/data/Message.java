@@ -1,17 +1,17 @@
 package com.github.khakers.modmailviewer.data;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.github.khakers.modmailviewer.util.DateFormatters;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 
-public final class Message {
+public final class Message implements Comparable<Message> {
     private final String id;
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSSSSS[XXX]", timezone = "UTC", locale = "en")
     private final Instant creationTime;
     private final String content;
     private final List<Attachment> attachments;
@@ -19,26 +19,43 @@ public final class Message {
     private final MessageType type;
     private final boolean isEdited;
 
-    private static final Logger logger = LogManager.getLogger();
+//    public Message(
+//            @JsonProperty("message_id")
+//            String id,
+//            @JsonProperty("timestamp")
+//            String creationTime,
+//            @JsonProperty("content")
+//            String content,
+//            @JsonProperty("attachments")
+//            List<Attachment> attachments,
+//            @JsonProperty("author")
+//            User author,
+//            @JsonProperty("type")
+//            MessageType type,
+//            @JsonProperty("edited")
+//            boolean isEdited
+//    ) {
+//        this.id = id;
+//        this.creationTime = DateFormatters.DATABASE_TIMESTAMP_FORMAT.parse(creationTime, Instant::from);
+//        this.content = content;
+//        this.attachments = attachments;
+//        this.author = author;
+//        this.type = type;
+//        this.isEdited = isEdited;
+//    }
 
     public Message(
-            @JsonProperty("message_id")
-            String id,
+            @JsonProperty("message_id") String id,
             @JsonProperty("timestamp")
-            String creationTime,
-            @JsonProperty("content")
-            String content,
-            @JsonProperty("attachments")
-            List<Attachment> attachments,
-            @JsonProperty("author")
-            User author,
-            @JsonProperty("type")
-            MessageType type,
-            @JsonProperty("edited")
-            boolean isEdited
-    ) {
+            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSSSSS[XXX]", timezone = "UTC", locale = "en")
+            Instant creationTime,
+            @JsonProperty("content") String content,
+            @JsonProperty("attachments") List<Attachment> attachments,
+            @JsonProperty("author") User author,
+            @JsonProperty("type") MessageType type,
+            @JsonProperty("edited") boolean isEdited) {
         this.id = id;
-        this.creationTime = DateFormatters.DATABASE_TIMESTAMP_FORMAT.parse(creationTime, Instant::from);
+        this.creationTime = creationTime;
         this.content = content;
         this.attachments = attachments;
         this.author = author;
@@ -119,4 +136,44 @@ public final class Message {
                 "isEdited=" + isEdited + ']';
     }
 
+    /**
+     * Compares this object with the specified object for order.  Returns a
+     * negative integer, zero, or a positive integer as this object is less
+     * than, equal to, or greater than the specified object.
+     *
+     * <p>The implementor must ensure {@link Integer#signum
+     * signum}{@code (x.compareTo(y)) == -signum(y.compareTo(x))} for
+     * all {@code x} and {@code y}.  (This implies that {@code
+     * x.compareTo(y)} must throw an exception if and only if {@code
+     * y.compareTo(x)} throws an exception.)
+     *
+     * <p>The implementor must also ensure that the relation is transitive:
+     * {@code (x.compareTo(y) > 0 && y.compareTo(z) > 0)} implies
+     * {@code x.compareTo(z) > 0}.
+     *
+     * <p>Finally, the implementor must ensure that {@code
+     * x.compareTo(y)==0} implies that {@code signum(x.compareTo(z))
+     * == signum(y.compareTo(z))}, for all {@code z}.
+     *
+     * @param o the object to be compared.
+     * @return a negative integer, zero, or a positive integer as this object
+     * is less than, equal to, or greater than the specified object.
+     * @throws NullPointerException if the specified object is null
+     * @throws ClassCastException   if the specified object's type prevents it
+     *                              from being compared to this object.
+     * @apiNote It is strongly recommended, but <i>not</i> strictly required that
+     * {@code (x.compareTo(y)==0) == (x.equals(y))}.  Generally speaking, any
+     * class that implements the {@code Comparable} interface and violates
+     * this condition should clearly indicate this fact.  The recommended
+     * language is "Note: this class has a natural ordering that is
+     * inconsistent with equals."
+     */
+    @Override
+    public int compareTo(@NotNull Message o) {
+        if (this.creationTime.isBefore(o.creationTime))
+            return 1;
+        else if (this.creationTime.isAfter(o.creationTime))
+            return -1;
+        return 0;
+    }
 }
