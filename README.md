@@ -17,13 +17,13 @@ Use GitHub discussions for feature requests or to ask questions. If you'd rather
 
 ## Features
 
-* Discord OAuth2 authentication **based on your modmail roles**. (Does not currently support discord roles assigned to modmail roles, [see #35](https://github.com/khakers/modmail-viewer/issues/35))
+* Discord OAuth2 authentication **based on your modmail roles**. See [the wiki page on permissions.](https://github.com/khakers/modmail-viewer/wiki/Permissions) 
 * Browsable paginated logs sorted by most recent message and filtered by status.
 * Mobile friendly design.
 * Full message Discord Markdown formatting (Including spoilers, custom emojis, and timestamps).
 * Customizable Branding
 * Log text search
-* SSL cert support 
+* HTTPS support 
 * NSFW warnings
 * Image spoiler support
 
