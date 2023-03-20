@@ -17,7 +17,7 @@ junit = "5.9.0"
 jwt = "4.2.1"
 scribe = "8.3.3"
 okhttp = "4.10.0"
-mongodriver = "4.8.2"
+mongodriver = "4.9.0"
 mongojack = "4.8.0"
 owasp-encoder = "1.2.^"
 
