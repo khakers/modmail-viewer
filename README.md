@@ -6,6 +6,11 @@
 A drop in alternative frontend for your [modmail-dev/modmail bot](https://github.com/modmail-dev/modmail) instance with built-in Discord authentication, advanced features and better mobile support.
 
 Built from scratch using Javalin, JTE, Bootstrap 5, and Unpoly.
+
+
+[Demo Site running the latest commit from Master](https://demo.modmail-viewer.khakers.dev/logs/1bef379de4ac)
+
+
 ![modmail-logviewer-log](https://user-images.githubusercontent.com/22665282/211416462-676f67a2-b818-4b8a-9eb6-f855f3bf64b9.png)
 ![log browsing](https://user-images.githubusercontent.com/22665282/211415993-c1f572f1-f36e-4579-aa84-64a2622ef8ab.png)
 
@@ -22,6 +27,7 @@ Use GitHub discussions for feature requests or to ask questions. If you'd rather
 * Mobile friendly design.
 * Full message Discord Markdown formatting (Including spoilers, custom emojis, and timestamps).
 * Customizable Branding
+* Dark/Light Themes
 * Log text search
 * HTTPS support 
 * NSFW warnings
