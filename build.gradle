@@ -85,6 +85,7 @@ jte {
 }
 
 gitProperties {
+    failOnNoGitDirectory = false
     customProperty("buildTimestamp", Instant.now())
 }
 
