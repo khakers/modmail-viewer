@@ -110,7 +110,7 @@
                                                     <span class="badge text-bg-primary align-middle fst-normal"
                                                           style="font-size: 12px;">
                                             <i class="bi bi-shield-shaded"></i>
-                                            Moderator
+                                            Staff
                                         </span>
                                                 @endif
                                                 @if(message.get().getType()==com.github.khakers.modmailviewer.data.MessageType.anonymous)
