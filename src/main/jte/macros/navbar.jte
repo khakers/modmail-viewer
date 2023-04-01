@@ -33,7 +33,7 @@
                 </li>
             </ul>
             <div class="d-flex me-2">
-                <ul class="nav-item dropdown my-0" id="themeSelector">
+                <ul class="nav-item dropdown my-0 ps-0" id="themeSelector">
                     <button class="btn btn-link nav-link py-2 px-0 px-lg-2 dropdown-toggle d-flex align-items-center"
                             id="bd-theme"
                             type="button"
