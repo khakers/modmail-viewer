@@ -1,3 +1,4 @@
+@import com.github.khakers.modmailviewer.Config
 <link rel="stylesheet" href="/webjars/unpoly/3.0.0-rc2/unpoly.min.css"/>
 
 <link href="/webjars/bootstrap/5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -20,6 +21,9 @@
         integrity="sha256-XYd0657/E6vXWd2/YltfmmLHI1HFxm5P9qC5eg/e19Q=" crossorigin="anonymous" defer></script>
 <script src="/js/ThemeSelector.js" defer></script>
 <script src="/js/base.js" defer></script>
-
-
+@if(Config.ANALYTICS_STRING != null)
+    $unsafe{Config.ANALYTICS_STRING}
+@elseif(Config.ANALYTICS_STRING_BASE64 != null)
+    $unsafe{Config.ANALYTICS_STRING_BASE64}
+@endif
 

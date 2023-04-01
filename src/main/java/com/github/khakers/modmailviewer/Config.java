@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.Objects;
 
 public class Config {
@@ -27,13 +28,14 @@ public class Config {
     public static final String WEB_URL; 
 
     public static final boolean isSecure = isSetToTrue(System.getenv(ENV_PREPEND + "_SSL"));
+
     @Nullable
     public static final String SSL_CERT = isSecure
-            ? Assert.requireNonEmpty(System.getenv(ENV_PREPEND + "_SSL_CERT"), "SSL was enabled but no certificate file path was provided. Provide one with the option \""+ENV_PREPEND+"_SSL_CERT\"")
+            ? Assert.requireNonEmpty(System.getenv(ENV_PREPEND + "_SSL_CERT"), "SSL was enabled but no certificate file path was provided. Provide one with the option \"" + ENV_PREPEND + "_SSL_CERT\"")
             : null;
     @Nullable
     public static final String SSL_KEY = isSecure
-            ? Assert.requireNonEmpty(System.getenv(ENV_PREPEND + "_SSL_KEY"), "SSL was enabled but no key file path was provided. Provide one with the option \""+ENV_PREPEND+"_DISCORD_SSL_KEY\"")
+            ? Assert.requireNonEmpty(System.getenv(ENV_PREPEND + "_SSL_KEY"), "SSL was enabled but no key file path was provided. Provide one with the option \"" + ENV_PREPEND + "_DISCORD_SSL_KEY\"")
             : null;
     public static final boolean isHttpsOnly = isSecure && isNotNullAndFalse(System.getenv(ENV_PREPEND + "_HTTPS_ONLY"), true);
 
@@ -44,10 +46,10 @@ public class Config {
     public static final boolean isSNIEnabled = isSecure && !isDevMode && isNotNullAndFalse(System.getenv(ENV_PREPEND + "_SNI"), false);
 
     public static final String DISCORD_CLIENT_ID = isAuthEnabled
-            ? Assert.requireNonEmpty(System.getenv(ENV_PREPEND + "_DISCORD_OAUTH_CLIENT_ID"), "No Discord client ID provided. Provide one with the option \""+ENV_PREPEND+"_DISCORD_OAUTH_CLIENT_ID\"")
+            ? Assert.requireNonEmpty(System.getenv(ENV_PREPEND + "_DISCORD_OAUTH_CLIENT_ID"), "No Discord client ID provided. Provide one with the option \"" + ENV_PREPEND + "_DISCORD_OAUTH_CLIENT_ID\"")
             : null;
     public static final String DISCORD_CLIENT_SECRET = isAuthEnabled
-            ? Assert.requireNonEmpty(System.getenv(ENV_PREPEND + "_DISCORD_OAUTH_CLIENT_SECRET"), "No Discord client ID provided. Provide one with the option \""+ENV_PREPEND+"_DISCORD_OAUTH_CLIENT_SECRET\"")
+            ? Assert.requireNonEmpty(System.getenv(ENV_PREPEND + "_DISCORD_OAUTH_CLIENT_SECRET"), "No Discord client ID provided. Provide one with the option \"" + ENV_PREPEND + "_DISCORD_OAUTH_CLIENT_SECRET\"")
             : null;
 
     public static final long DISCORD_GUILD_ID = Long.parseLong(Assert.requireNonEmpty(System.getenv(ENV_PREPEND + "_DISCORD_GUILD_ID"), "No Discord guild ID provided. Provide one with the option \""+ENV_PREPEND+"_DISCORD_GUILD_ID\""));
@@ -56,6 +58,9 @@ public class Config {
     public static final String BRANDING = notEmptyOrElse(System.getenv(ENV_PREPEND + "_BRANDING"), "Modmail-Viewer");
 
     public static final boolean isCookiesSecure = isNotSetToTrue(System.getenv(ENV_PREPEND + "_INSECURE"), true);
+
+    public static final String ANALYTICS_STRING = System.getenv(ENV_PREPEND + "_ANALYTICS");
+    public static final String ANALYTICS_STRING_BASE64 = new String(Base64.getDecoder().decode(Objects.requireNonNullElse(System.getenv(ENV_PREPEND + "_ANALYTICS_B64"), "")));
 
     static {
         var jwtSecretKey = System.getenv("MODMAIL_VIEWER_SECRETKEY");
@@ -91,7 +96,7 @@ public class Config {
     /**
      * Returns the value of obj if it's not empty, otherwise returns defaultObj
      *
-     * @param obj the value to check for emptiness and return if not
+     * @param obj        the value to check for emptiness and return if not
      * @param defaultObj default value to return if obj is empty
      * @return obj if not empty, otherwise defaultObj
      */
@@ -118,7 +123,6 @@ public class Config {
     /**
      * Returns true if the given String value is not null and the content is not "false".
      *
-     *
      * @param s String
      * @return
      */
@@ -130,7 +134,7 @@ public class Config {
      * Returns true if the given String value is not "false".
      * Returns ifNull if the given string is null
      *
-     * @param s String
+     * @param s      String
      * @param ifNull Return value if the String is null
      * @return
      */
@@ -153,13 +157,12 @@ public class Config {
     }
 
 
-
     /**
      * Returns true if the given String value is not null and the content is "true".
      * Returns ifNull if the given string is null
      * Explicitly requires a value of "true" to return true
      *
-     * @param s String
+     * @param s      String
      * @param ifNull Return value if the String is null
      * @return
      */
@@ -175,7 +178,7 @@ public class Config {
      * Returns ifNull if the given string is null
      * Explicitly requires a value of "true" to return true
      *
-     * @param s String
+     * @param s      String
      * @param ifNull Return value if the String is null
      * @return
      */

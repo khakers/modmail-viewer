@@ -149,6 +149,8 @@ See [the wiki page on permissions.](https://github.com/khakers/modmail-viewer/wi
 | MODMAI_VIEWER_INSECURE                     | Disable setting cookies as secure. **Only do this if your site is *only* accessible via http**                                                                                                                                                               |
 | MODMAIL_VIEWER_BRANDING                    | Text to display in the navbar title. Will display "Modmail-Viewer" by default                                                                                                                                                                                |
 | MODMAIL_VIEWER_LOG_LEVEL                   | Set the application log level (INFO, DEBUG, ERROR, TRACE)                                                                                                                                                                                                    |
+| MODMAIL_VIEWER_ANALYTICS                   | Allows you to add the html for your analytics solution. This is inserted at the end of the head (and should thus likely be marked as defer for performance reasons)                                                                                          |
+| MODMAIL_VIEWER_ANALYTICS_BASE64            | Same as the above, but expects it's value to be base64 encoded. This is exists in the off chance that you run into character encoding issues using the standard variable. Will only work if standard option is provited                                      |
 
 
 ## Attribution 
