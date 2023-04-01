@@ -187,7 +187,7 @@
                                                 <span class="badge text-bg-primary align-middle fst-normal"
                                                       style="font-size: 12px;">
                                             <i class="bi bi-shield-shaded"></i>
-                                            Moderator
+                                            Staff
                                         </span>
                                             @endif
                                             <span class="badge text-bg-info align-middle fst-normal"
