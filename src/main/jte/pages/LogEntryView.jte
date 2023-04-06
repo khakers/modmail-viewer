@@ -1,15 +1,13 @@
+@import com.github.khakers.modmailviewer.Main
 @import com.github.khakers.modmailviewer.auth.UserToken
 @import com.github.khakers.modmailviewer.data.MessageType
-@import io.javalin.http.Context
 
+@param com.github.khakers.modmailviewer.log.LogPage page
+!{var parser = Main.PARSER;}
+!{var renderer = Main.RENDERER;}
+!{var modmailLog = page.log;}
+!{var user = page.getCurrentUser();}
 
-@param Context ctx
-
-
-@param com.github.khakers.modmailviewer.data.ModMailLogEntry modmailLog
-@param UserToken user
-@param com.vladsch.flexmark.parser.Parser parser
-@param com.vladsch.flexmark.html.HtmlRenderer renderer
 
 <!doctype html>
 <html lang="en" xmlns="http://www.w3.org/1999/html">
@@ -23,7 +21,7 @@
 <body>
 
 <div class="page-container">
-    @template.macros.navbar(ctx = ctx, user = user)
+    @template.macros.navbar(user = user)
     <div class="content" up-main data-nsfw="${modmailLog.isNsfw()}">
         <div class="container py-4">
             <div class="row">
@@ -76,7 +74,8 @@
                                 </div>
                                 <div class="col">
                                     @if(message.get().isEdited())
-                                        <span class="fw-light float-end text-secondary">(edited)  <i class="bi bi-pencil-fill ms-1"></i></span>
+                                        <span class="fw-light float-end text-secondary">(edited)  <i
+                                                    class="bi bi-pencil-fill ms-1"></i></span>
                                     @endif
                                     <div class="text-wrap text-break messageContent">
                                         $unsafe{renderer.render(parser.parse(message.get().getContent()))}
@@ -217,7 +216,7 @@
             </ol>
         </div>
     </div>
-    @template.macros.footer()
+    @template.macros.footer(page = page)
 </div>
 </body>
 </html>

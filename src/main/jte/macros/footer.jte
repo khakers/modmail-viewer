@@ -1,9 +1,12 @@
+@param com.github.khakers.modmailviewer.Page page
 <footer>
     <div class="navbar-dark nav-footer text-dark bg-dark border-dark-subtle ps-3 py-3 border-top ">
         <div class="row align-items-center me-0 justify-content-xl-between">
-            <div class="col-sm-12 col-xl-5 align-items-center text-center text-xl-start navbar-text pb-0 pt-0 text-sm-nowrap">
+            <div class="col-sm-12 col-xl-5 align-items-center text-center text-xl-start navbar-text pb-0 pt-0 text-sm-nowrap" up-hungry>
                 Powered by Modmail-Viewer
                 Version: ${com.github.khakers.modmailviewer.ModmailViewer.VERSION}
+                |
+                Rendered in ${page.getRenderTime()}
             </div>
             <div class="col-sm-12 col-xl-5 d-inline-block justify-content-center justify-content-xl-end gap-3 text-center text-xl-end text-xl-start">
                 <div class="row justify-content-center justify-content-xl-end gx-2 g-3">

@@ -98,4 +98,8 @@ public class UserToken {
                 ", isRealUser=" + isRealUser +
                 '}';
     }
+
+    public static UserToken getAnonymousUser() {
+        return new UserToken(0L, "anonymous", "0000", "", new long[]{}, false);
+    }
 }

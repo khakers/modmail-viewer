@@ -32,9 +32,10 @@ up.on('up:fragment:inserted', (event) => {
     });
 });
 
+//Handle failure to load due to being unauthorized
 up.on('up:request:loaded', (event) => {
     if (!event.response.ok) {
-        if (event.response.status === 403) {
+        if (event.response.status === 401) {
             event.preventDefault();
             // This looks very odd but it seems to work perfectly
             up.network.loadPage({url: ""});

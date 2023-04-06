@@ -97,9 +97,9 @@ public class AuthHandler {
     }
 
     public void HandleAuth(@NotNull Handler handler, @NotNull Context ctx, @NotNull Set<? extends RouteRole> routeRoles) throws Exception {
-        logger.debug("{} roles: {}", ctx.endpointHandlerPath(), routeRoles);
+        logger.trace("{} roles: {}", ctx.endpointHandlerPath(), routeRoles);
         if (routeRoles.contains(Role.ANYONE)) {
-            logger.debug("endpoint allows ANYONE");
+            logger.trace("endpoint allows ANYONE");
             handler.handle(ctx);
             return;
         }
@@ -118,12 +118,11 @@ public class AuthHandler {
         } else {
             logger.debug("Redirected {} to auth URL from {}", ctx.ip(), ctx.url());
             ctx.header("X-Auth-Redirect", "1");
-            // Handling for Unpoly, if we detect a request coming from it, we send a 403 instead of redirecting, which would get hit by CORS
-            // our frontend code can handle a 403 and specifically fully load the page to get a redirect to where we wanted to go.
+            // Handling for Unpoly, if we detect a request coming from it, we send a 401 instead of redirecting, which would get hit by CORS
+            // our frontend code can handle a 401 and specifically fully load the page to get a redirect to where we wanted to go.
 
             if (ctx.header("x-up-version") != null) {
-                ctx.status(HttpStatus.FORBIDDEN);
-                return;
+                throw new UnauthorizedResponse();
             }
             ctx.redirect(service.getAuthorizationUrl(generateOAuthState(ctx)), HttpStatus.TEMPORARY_REDIRECT);
         }

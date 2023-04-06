@@ -1,24 +1,21 @@
-@import com.github.khakers.modmailviewer.auth.UserToken
 @import com.github.khakers.modmailviewer.data.internal.TicketStatus
 @import com.github.khakers.modmailviewer.util.Pagination
-@import com.github.khakers.modmailviewer.ModMailLogDB
 @import com.github.khakers.modmailviewer.util.QueryParamUtil
 @import com.github.khakers.modmailviewer.util.TextFragmentUtils
-@import io.javalin.http.Context
 
 
-@param Context ctx
+
+@param com.github.khakers.modmailviewer.log.LogsPage page
 
 
-@param java.util.List<com.github.khakers.modmailviewer.data.ModMailLogEntry> logEntries
-
-@param int page
-@param int pageCount
-@param UserToken user
-@param ModMailLogDB modMailLogDB
-@param TicketStatus ticketStatusFilter
-@param boolean showNSFW
-@param String search
+!{var logEntries = page.logEntries;}
+!{var pageIndex = page.currentPage;}
+!{var pageCount = page.pageCount;}
+!{var user = page.getCurrentUser();}
+!{var ticketStatusFilter = page.ticketStatusFilter;}
+!{var search = page.searchString;}
+!{var ctx = page.getCtx();}
+!{var modMailLogDB = page.modMailLogDB;}
 
 <!doctype html>
 <html lang="en" xmlns="http://www.w3.org/1999/html">
@@ -32,7 +29,7 @@
 <body>
 
 <div class="page-container">
-    @template.macros.navbar(ctx = ctx, user = user)
+    @template.macros.navbar(user = user)
     <div class="content" up-main>
         <div class="container pt-5">
             <div class="border ${logEntries.isEmpty() ? "rounded" : "rounded-top"} p-2">
@@ -158,35 +155,35 @@
         </div>
         <%-- todo Fix mobile pagination --%>
         !{String previousClass = null;}
-        @if(page==1)
+        @if(pageIndex==1)
             !{previousClass="disabled";}
         @endif
         !{String nextClass = null;}
-        @if(page==pageCount)
+        @if(pageIndex==pageCount)
             !{nextClass="disabled";}
         @endif
         @if(pageCount > 1)
             <div class="container col d-flex justify-content-center p-4">
-                <nav aria-label="Page navigation">
+                <nav aria-label="com.github.khakers.modmailviewer.Page navigation">
                     <ul class="pagination">
 
-                        <%--                        onclick="update('page', '${Math.max(page-1, 1)}')"--%>
+                        <%--                        onclick="update('pageIndex', '${Math.max(pageIndex-1, 1)}')"--%>
                         <li class="page-item">
                             <a class="page-link ${previousClass}" up-follow="#logEntryList"
-                               href="${QueryParamUtil.updateQueryParams(ctx, "page", String.valueOf(Math.max(page-1, 1)))}">Previous</a>
+                               href="${QueryParamUtil.updateQueryParams(ctx, "page", String.valueOf(Math.max(pageIndex-1, 1)))}">Previous</a>
                         </li>
-                        @if(Pagination.needsPaginationCulling(pageCount) && page > 4)
+                        @if(Pagination.needsPaginationCulling(pageCount) && pageIndex > 4)
                             <a class="page-link" href="${QueryParamUtil.updateQueryParams(ctx, "page", String.valueOf(1))}">1</a>
                             <li class="page-item"><a class="page-link disabled">...</a></li>
                         @endif
                         @for(int i = 1; i < pageCount+1; ++i)
-                            @if(Pagination.shouldDisplayPage(i, page, pageCount))
+                            @if(Pagination.shouldDisplayPage(i, pageIndex, pageCount))
                                 !{String isActive = null;}
-                                @if(i == page)
+                                @if(i == pageIndex)
                                     !{isActive="active";}
                                 @endif
                                 <li class="page-item">
-                                    @if(i == page)
+                                    @if(i == pageIndex)
                                         <span class="page-link ${isActive}">${i}</span>
                                     @else
                                         <a class="page-link"
@@ -196,19 +193,19 @@
                                 </li>
                             @endif
                         @endfor
-                        @if(Pagination.needsPaginationCulling(pageCount) && page < pageCount-3)
+                        @if(Pagination.needsPaginationCulling(pageCount) && pageIndex < pageCount-3)
                             <li class="page-item"><a class="page-link disabled">...</a></li>
                             <a class="page-link sm-visually-hidden" href="${QueryParamUtil.updateQueryParams(ctx, "page", String.valueOf(pageCount))}">${pageCount}</a>
                         @endif
                         <li class="page-item"><a class="page-link ${nextClass}" up-follow="#logEntryList"
-                                                 href="${QueryParamUtil.updateQueryParams(ctx, "page", String.valueOf(page+1))}"
+                                                 href="${QueryParamUtil.updateQueryParams(ctx, "page", String.valueOf(pageIndex+1))}"
                             >Next</a></li>
                     </ul>
                 </nav>
             </div>
         @endif
     </div>
-    @template.macros.footer()
+    @template.macros.footer(page = page)
 </div>
 </body>
 </html>
