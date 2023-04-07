@@ -10,6 +10,7 @@ public final class JteContext {
 
     public static void init(Context ctx) {
         JteContext context = getContext();
+        //todo language
         context.localizer = new JteLocalizer(Localizer.getInstance("en"));
     }
 

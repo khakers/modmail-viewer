@@ -17,7 +17,7 @@ public final class Localizer {
 
     public static Localizer getInstance(@NotNull Locale locale) {
         return byLocale.computeIfAbsent(locale, k -> {
-            ResourceBundle bundle = ResourceBundle.getBundle("localization/text", k);
+            ResourceBundle bundle = ResourceBundle.getBundle("localization/LocalizationBundle", k);
             return new Localizer(bundle);
         });
     }
