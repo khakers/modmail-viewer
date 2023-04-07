@@ -21,7 +21,7 @@
 <body>
 
 <div class="page-container">
-    @template.macros.navbar(user = user)
+    @template.macros.navbar(page = page)
     <div class="content" up-main data-nsfw="${modmailLog.isNsfw()}">
         <div class="container py-4">
             <div class="row">

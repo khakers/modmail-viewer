@@ -29,7 +29,7 @@
 <body>
 
 <div class="page-container">
-    @template.macros.navbar(user = user)
+    @template.macros.navbar(page = page)
     <div class="content" up-main>
         <div class="container pt-5">
             <div class="border ${logEntries.isEmpty() ? "rounded" : "rounded-top"} p-2">

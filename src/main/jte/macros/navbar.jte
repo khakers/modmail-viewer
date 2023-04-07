@@ -1,6 +1,8 @@
 @import com.github.khakers.modmailviewer.Config
-@import com.github.khakers.modmailviewer.auth.UserToken
-@import java.util.Optional
+@import com.github.khakers.modmailviewer.Page
+
+@param Page page
+!{var user = page.getCurrentUser();}
 
 @param Optional<UserToken> user
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
@@ -31,8 +33,8 @@
                     <a class="nav-link" aria-current="page" href="/" up-follow up-target=".content" up-history='true'>Home</a>
                 </li>
             </ul>
-            <div class="d-flex me-2">
-                <ul class="nav-item dropdown my-0 ps-0" id="themeSelector">
+            <div class="row gx-3 ms-1 align-items-start me-2">
+                <ul class="nav-item col-lg-1 col-12 dropdown my-0 ps-0" id="themeSelector">
                     <button class="btn btn-link nav-link py-2 px-0 px-lg-2 dropdown-toggle d-flex align-items-center"
                             id="bd-theme"
                             type="button"
@@ -83,7 +85,7 @@
                         </li>
                     </ul>
                 </ul>
-                <div class="d-flex mx-2 color text-primary-emphasis">
+                <div class="col-12 col-lg d-flex mx-2 color text-primary-emphasis">
                     @if(user.isPresent() && user.get().isRealUser())
                         <span class="navbar-text me-3 text-emphasis">
                     Signed in as <span>${user.get().getUsername()}</span><span>#${user.get().getDiscriminator()}</span>
