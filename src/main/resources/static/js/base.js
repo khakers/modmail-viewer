@@ -13,16 +13,22 @@ up.compiler('.spoilerText', function (element) {
     });
 });
 
-up.compiler('pre code', function (element) {
+up.compiler('pre code', element => {
     hljs.highlightElement(element);
 });
 
-up.compiler("#nsfwModal", function (element) {
+up.compiler("#nsfwModal", element => {
     const bsModal = new bootstrap.Modal(element);
     element.addEventListener('hide.bs.modal', event => {
         document.getElementById("nsfw-backdrop").hidden = true;
     });
     bsModal.show();
+});
+
+up.compiler(".discordAvatar", (element) => {
+    if (element.naturalHeight === 0) {
+        element.src = `https://cdn.discordapp.com/embed/avatars/${element.dataset.avatarId}.png`
+    }
 });
 
 up.on('up:fragment:inserted', (event) => {

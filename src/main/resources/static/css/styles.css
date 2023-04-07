@@ -231,3 +231,24 @@ footer {
 .discord {
     background-color: #7289da;
 }
+
+.user-badge {
+    font-size: 12px;
+}
+
+#alertPlaceholder {
+    padding-top: 56px;
+    z-index: 1;
+}
+
+#langSelector ul {
+    --bs-dropdown-min-width: 4rem;
+}
+
+#themeSelector ul {
+    --bs-dropdown-min-width: 8rem;
+}
+
+.discordAvatar {
+    height: inherit;
+}

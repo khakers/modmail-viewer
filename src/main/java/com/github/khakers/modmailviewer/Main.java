@@ -25,12 +25,15 @@ import io.javalin.config.JavalinConfig;
 import io.javalin.http.NotFoundResponse;
 import io.javalin.http.staticfiles.Location;
 import io.javalin.json.JavalinJackson;
+import io.javalin.plugin.bundled.GlobalHeaderConfig;
 import io.javalin.rendering.template.JavalinJte;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class Main {
 
@@ -136,6 +139,7 @@ public class Main {
     private static void configure(JavalinConfig config) {
         config.showJavalinBanner = false;
         config.jsonMapper(new JavalinJackson());
+        config.plugins.enableGlobalHeaders(Main::configureHeaders);
         if (Config.isHttpsOnly) {
             logger.info("HTTPS only is ENABLED");
             config.plugins.enableSslRedirects();
@@ -171,5 +175,25 @@ public class Main {
             });
             config.plugins.register(sslPlugin);
         }
+    }
+
+    private static GlobalHeaderConfig configureHeaders() {
+        var globalHeaderConfig =  new GlobalHeaderConfig();
+        globalHeaderConfig.xFrameOptions(GlobalHeaderConfig.XFrameOptions.DENY);
+        globalHeaderConfig.xContentTypeOptionsNoSniff();
+        globalHeaderConfig.xPermittedCrossDomainPolicies(GlobalHeaderConfig.CrossDomainPolicy.NONE);
+        globalHeaderConfig.crossOriginOpenerPolicy(GlobalHeaderConfig.CrossOriginOpenerPolicy.SAME_ORIGIN);
+        globalHeaderConfig.crossOriginResourcePolicy(GlobalHeaderConfig.CrossOriginResourcePolicy.SAME_ORIGIN);
+        if (Config.isSTSEnabled) {
+            globalHeaderConfig.strictTransportSecurity(Duration.ofDays(356), true);
+        }
+        if (Config.CUSTOM_CSP != null && Config.CUSTOM_CSP.isBlank()) {
+            globalHeaderConfig.contentSecurityPolicy(Config.CUSTOM_CSP);
+        } else {
+            globalHeaderConfig.contentSecurityPolicy(String.format("default-src 'self'; img-src *; media-src media.discordapp.com; style-src-attr 'unsafe-hashes' 'self' 'sha256-biLFinpqYMtWHmXfkA1BPeCY0/fNt46SAZ+BBk5YUog='; script-src-elem 'self' https://cdn.jsdelivr.net/npm/@twemoji/api@14.1.0/dist/twemoji.min.js %s;", Objects.requireNonNullElse(Config.CSP_SCRIPT_SRC_ELEM_EXTRA, "")));
+
+        }
+
+        return globalHeaderConfig;
     }
 }

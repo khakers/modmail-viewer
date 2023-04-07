@@ -96,8 +96,8 @@
                             <div class="row ">
                                 <div class="col-2 col-md-1 text-center">
                                     <img width="50" src="${message.get().getAuthor().avatarUrl()}"
-                                         onerror="this.src='https://cdn.discordapp.com/embed/avatars/${Integer.parseInt(message.get().getAuthor().discriminator()) % 5}.png';this.onerror=null"
-                                         class="rounded-circle" style="height: inherit;" alt="user avatar">
+                                         data-avatar-id="${Integer.parseInt(message.get().getAuthor().discriminator()) % 5}"
+                                         class="rounded-circle discordAvatar" alt="user avatar">
                                 </div>
                                 <div class="col">
                                     <div class="row ">
@@ -106,29 +106,25 @@
                                     <span data-bs-toggle="tooltip"
                                           title="${message.get().getAuthor().name()+"#"+message.get().getAuthor().discriminator()}">${message.get().getAuthor().name()}</span>
                                                 @if(message.get().getAuthor().mod())
-                                                    <span class="badge text-bg-primary align-middle fst-normal"
-                                                          style="font-size: 12px;">
+                                                    <span class="badge text-bg-primary align-middle fst-normal user-badge">
                                             <i class="bi bi-shield-shaded"></i>
                                             Staff
                                         </span>
                                                 @endif
                                                 @if(message.get().getType()==com.github.khakers.modmailviewer.data.MessageType.anonymous)
-                                                    <span class="badge text-bg-secondary align-middle fst-normal"
-                                                          style="font-size: 12px;">
+                                                    <span class="badge text-bg-secondary align-middle fst-normal user-badge">
                                             <i class="bi bi-incognito"></i>
                                             Anonymous
                                         </span>
                                                 @endif
                                                 @if(message.get().getType()==MessageType.system)
-                                                    <span class="badge text-bg-info align-middle fst-normal"
-                                                          style="font-size: 12px;">
+                                                    <span class="badge text-bg-info align-middle fst-normal user-badge">
                                             <i class="bi bi-gear-fill"></i>
                                             System
                                         </span>
                                                 @endif
                                                 @if(message.get().getType()==com.github.khakers.modmailviewer.data.MessageType.internal)
-                                                    <span class="badge text-bg-secondary align-middle fst-normal"
-                                                          style="font-size: 12px;">
+                                                    <span class="badge text-bg-secondary align-middle fst-normal user-badge">
                                             <i class="bi bi-eye-slash"></i>
                                             Internal
                                         </span>
@@ -172,8 +168,8 @@
                         <div class="row ">
                             <div class="col-2 col-md-1 text-center">
                                 <img width="50" src="${modmailLog.getCloser().get().avatarUrl()}"
-                                     onerror="this.src='https://cdn.discordapp.com/embed/avatars/${Integer.parseInt(modmailLog.getCloser().get().discriminator()) % 5}.png';this.onerror=null"
-                                     class="rounded-circle" style="height: inherit;" alt="user avatar">
+                                     data-avatar-id="${Integer.parseInt(modmailLog.getCloser().get().discriminator()) % 5}"
+                                     class="rounded-circle discordAvatar" alt="user avatar">
                             </div>
                             <div class="col">
                                 <div class="row ">
@@ -183,14 +179,12 @@
                                           title="${modmailLog.getCloser().get().name()+"#"+modmailLog.getCloser().get().discriminator()}">${modmailLog.getCloser().get().name()}</span>
                                             <span class="fw-normal fs-5">closed the thread</span>
                                             @if(modmailLog.getCloser().get().mod())
-                                                <span class="badge text-bg-primary align-middle fst-normal"
-                                                      style="font-size: 12px;">
+                                                <span class="badge text-bg-primary align-middle fst-normal user-badge">
                                             <i class="bi bi-shield-shaded"></i>
                                             Staff
                                         </span>
                                             @endif
-                                            <span class="badge text-bg-info align-middle fst-normal"
-                                                  style="font-size: 12px;">
+                                            <span class="badge text-bg-info align-middle fst-normal user-badge">
                                         <i class="bi bi-gear-fill"></i>
                                         System
                                     </span>

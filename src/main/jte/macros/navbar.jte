@@ -44,8 +44,7 @@
                         </svg>
                         <span class="d-lg-none ms-2">Toggle theme</span>
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme"
-                        style="--bs-dropdown-min-width: 8rem;">
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme">
                         <li>
                             <button type="button" class="dropdown-item d-flex align-items-center"
                                     data-bs-theme-value="light">
@@ -99,4 +98,4 @@
         </div>
     </div>
 </nav>
-<div id="alertPlaceholder" class="position-absolute" style="padding-top: 56px; z-index: 1;"></div>
+<div id="alertPlaceholder" class="position-absolute"></div>

@@ -45,6 +45,8 @@ public class Config {
 
     public static final boolean isSNIEnabled = isSecure && !isDevMode && isNotNullAndFalse(System.getenv(ENV_PREPEND + "_SNI"), false);
 
+    public static final boolean isSTSEnabled = isNotNullAndFalse(System.getenv(ENV_PREPEND + "_HSTS"), false);
+
     public static final String DISCORD_CLIENT_ID = isAuthEnabled
             ? Assert.requireNonEmpty(System.getenv(ENV_PREPEND + "_DISCORD_OAUTH_CLIENT_ID"), "No Discord client ID provided. Provide one with the option \"" + ENV_PREPEND + "_DISCORD_OAUTH_CLIENT_ID\"")
             : null;
@@ -61,6 +63,10 @@ public class Config {
 
     public static final String ANALYTICS_STRING = System.getenv(ENV_PREPEND + "_ANALYTICS");
     public static final String ANALYTICS_STRING_BASE64 = new String(Base64.getDecoder().decode(Objects.requireNonNullElse(System.getenv(ENV_PREPEND + "_ANALYTICS_B64"), "")));
+
+    public static final String CUSTOM_CSP = System.getenv(ENV_PREPEND + "_CSP");
+
+    public static final String CSP_SCRIPT_SRC_ELEM_EXTRA = System.getenv(ENV_PREPEND + "_CSP_SCRIPT_SRC_ELEM_EXTRA");
 
     static {
         var jwtSecretKey = System.getenv("MODMAIL_VIEWER_SECRETKEY");
