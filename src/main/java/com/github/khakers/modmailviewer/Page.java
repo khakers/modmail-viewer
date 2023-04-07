@@ -52,6 +52,10 @@ public abstract class Page {
         return Math.round(millis * 1000.0) / 1000.0 + "ms";
     }
 
+    public String getTitle() {
+        return "Modmail-Viewer";
+    }
+
     public void render() {
         JteContext.init(ctx);
         ctx.render(getTemplate(), Collections.singletonMap("page", this));

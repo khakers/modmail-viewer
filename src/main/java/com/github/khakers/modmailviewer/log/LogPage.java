@@ -23,6 +23,11 @@ public class LogPage extends Page {
     }
 
     @Override
+    public String getTitle() {
+        return "Modmail Log " + log.getTitle().orElse(log.getKey());
+    }
+
+    @Override
     public String getTemplate() {
         return "pages/LogEntryView.jte";
     }
