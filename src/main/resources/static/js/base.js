@@ -91,7 +91,7 @@ function isDiscordPage(url) {
 
 up.compiler('.content', (element, data, meta) => {
     if (data.nsfw) {
-        element.append(up.element.createFromHTML(`<div id="nsfw-backdrop" style=" background-color: rgba(255,255,255,0)"></div>`));
+        element.append(up.element.createFromHTML(`<div id="nsfw-backdrop"></div>`));
 
         const alertPlaceholder = document.getElementsByClassName("page-container").item(0);
 
