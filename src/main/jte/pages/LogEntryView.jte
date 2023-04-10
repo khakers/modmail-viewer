@@ -8,21 +8,7 @@
 !{var modmailLog = page.log;}
 !{var user = page.getCurrentUser();}
 
-
-<!doctype html>
-<html lang="en" xmlns="http://www.w3.org/1999/html">
-<head>
-    <title>Modmail Log ${modmailLog.getTitle().orElse(modmailLog.getKey())}</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    @template.macros.HeaderImports()
-</head>
-<body>
-
-<div class="page-container">
-    @template.macros.navbar(page = page)
-    <div class="content" up-main data-nsfw="${modmailLog.isNsfw()}">
+@template.layout.Page(page = page, content = @`
         <div class="container py-4">
             <div class="row">
                 <h1>Modmail log ${modmailLog.getKey()}</h1>
@@ -209,8 +195,5 @@
                 @endif
             </ol>
         </div>
-    </div>
-    @template.macros.footer(page = page)
-</div>
-</body>
-</html>
+`)
+

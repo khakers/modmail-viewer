@@ -56,6 +56,10 @@ public abstract class Page {
         return "Modmail-Viewer";
     }
 
+    public boolean isNSFW() {
+        return false;
+    }
+
     public void render() {
         JteContext.init(ctx);
         ctx.render(getTemplate(), Collections.singletonMap("page", this));

@@ -28,6 +28,11 @@ public class LogPage extends Page {
     }
 
     @Override
+    public boolean isNSFW() {
+        return log.isNsfw();
+    }
+
+    @Override
     public String getTemplate() {
         return "pages/LogEntryView.jte";
     }
