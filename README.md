@@ -1,5 +1,4 @@
 # Modmail Viewer
-[![Discord](https://img.shields.io/discord/1040471918639337577?label=Discord&logo=Discord)](https://discord.gg/V5HA9N5Dn8)
 [![GitHub latest release (latest SemVer)](https://img.shields.io/github/v/release/khakers/modmail-viewer?logo=Git&logoColor=f5f5f5)](https://github.com/khakers/modmail-viewer/releases/latest)
 [![GitHub Help Wanted issues](https://img.shields.io/github/issues/khakers/modmail-viewer/help%20wanted?color=blue)](https://github.com/khakers/modmail-viewer/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22)
 
@@ -21,7 +20,9 @@ Built from scratch using Javalin, JTE, Bootstrap 5, and Unpoly.
 _Modmail-Viewer_ is currently a beta. You should always read update notes before applying updates as there may be breaking changes between major versions, and ensure you are running an up to date version to have the latest fixes and support.
 
 Report any bugs you encounter via github issues at this repository (not modmail or logviewer).  
-Use GitHub discussions for feature requests or to ask questions. If you'd rather not ask on github, you can join the [Discord server](https://discord.gg/V5HA9N5Dn8) instead and ask there. Please prefer not to directly DM me as it's not discoverable for other people that need help and I will likely not notice it for a while.
+Use GitHub discussions for feature requests or to ask questions. Please prefer not to directly DM me, as it's not discoverable for other people that may help, and it's possible that I won't not notice it for a while.
+
+**Interested in a custom version or features?** Contact me privately on discord to sponsor features or to commision changes.
 
 ## Features
 
@@ -45,7 +46,6 @@ Use GitHub discussions for feature requests or to ask questions. If you'd rather
 * Basic API
 * Snippet editor (will likely require a bot plugin)
 * Persistent Notes editor 
-* Configurable log sorting
 
 ## Self-hosting
 
