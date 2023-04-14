@@ -28,6 +28,7 @@ bootstrap-icons = "1.10.3"
 highlightjs = "11.7.0"
 twemoji = "14.1.0"
 unpoly = "3.3.0"
+chartjs = "4.2.1"
 
 [libraries]
 javalin = { module = "io.javalin:javalin", version.ref = "javalin" }
@@ -53,7 +54,7 @@ junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", vers
 junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit" }
 
 mongodb-driver = { module = "org.mongodb:mongodb-driver-sync", version.ref = "mongodriver" }
-mongojack = { module = "org.mongojack:mongojack", version.ref = "mongojack"}
+mongojack = { module = "org.mongojack:mongojack", version.ref = "mongojack" }
 
 auth0-jwt = { module = "com.auth0:java-jwt", version.ref = "jwt" }
 scribe-api = { module = "com.github.scribejava:scribejava-apis", version.ref = "scribe" }
@@ -69,6 +70,8 @@ webjar-bootstrap-icons = { module = "org.webjars.npm:bootstrap-icons", version.r
 webjar-highlightjs = { module = "org.webjars.npm:highlightjs__cdn-assets", version.ref = "highlightjs" }
 webjar-twemoji = { module = "org.webjars.bowergithub.jdecked:twemoji", version.ref = "twemoji" }
 webjar-unpoly = { module = "org.webjars.npm:unpoly", version.ref = "unpoly" }
+webjar-chartjs = { module = "org.webjars.npm:chart.js", version.ref = "chartjs" }
+
 
 [plugins]
 jte-gradle = { id = "gg.jte.gradle", version.ref = "jte" }
