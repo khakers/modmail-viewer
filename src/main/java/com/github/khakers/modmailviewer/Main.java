@@ -148,6 +148,7 @@ public class Main {
 //                })
                 .get("/logs", LogController.serveLogsPage, RoleUtils.atLeastSupporter())
                 .get("/logs/{id}", LogController.serveLogPage, RoleUtils.atLeastSupporter())
+                .get("/dashboard", DashboardController.serveDashboardPage, RoleUtils.atLeastSupporter())
                 //todo maybe after?
                 .after("/logs/{id}", ctx -> {
                     if (ctx.statusCode() == HttpStatus.FORBIDDEN.getCode()) {
