@@ -1,9 +1,11 @@
 package com.github.khakers.modmailviewer.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.khakers.modmailviewer.auth.Role;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -27,6 +29,8 @@ public class ModmailConfig {
 
     @JsonProperty("recipient_thread_close")
     private int recipientThreadClose;
+    @JsonIgnore
+    private Map<Long, Role> flatUserPermMap;
 
     public long getBotID() {
         return botID;
@@ -50,6 +54,17 @@ public class ModmailConfig {
 
     public int getRecipientThreadClose() {
         return recipientThreadClose;
+    }
+
+    @JsonIgnore
+    public Map<Long, Role> getFlatUserPerms() {
+        if (flatUserPermMap != null) {
+            return flatUserPermMap;
+        }
+        Map<Long, Role> roleMap = new HashMap<>();
+        levelPermissions.forEach((role, longs) -> longs.forEach(id -> roleMap.put(id, role)));
+        flatUserPermMap = roleMap;
+        return roleMap;
     }
 
     @Override
