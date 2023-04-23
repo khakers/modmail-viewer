@@ -22,6 +22,14 @@
         integrity="sha256-XYd0657/E6vXWd2/YltfmmLHI1HFxm5P9qC5eg/e19Q=" crossorigin="anonymous" defer></script>
 <script src="/js/ThemeSelector.js" defer></script>
 <script src="/js/base.js" defer></script>
+
+<script src="/webjars/chartjs-plugin-autocolors/0.2.2/dist/chartjs-plugin-autocolors.min.js" defer></script>
+<script src="/webjars/chart.js/4.2.1/dist/chart.umd.js" defer></script>
+
+<script src="/js/dashboard.js" defer></script>
+
+
+
 @if(Config.ANALYTICS_STRING != null)
     $unsafe{Config.ANALYTICS_STRING}
 @elseif(Config.ANALYTICS_STRING_BASE64 != null)

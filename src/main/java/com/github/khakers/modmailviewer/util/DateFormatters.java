@@ -33,8 +33,14 @@ public class DateFormatters {
           .withZone(ZoneId.of("UTC"));
 
     public static final String PYTHON_STR_ISO_OFFSET_DATE_TIME_STRING = "uuuu-MM-dd HH:mm[:ss[.n]][XXX]";
+
     public static final DateTimeFormatter SIMPLE_TIME_FORMAT = new DateTimeFormatterBuilder()
           .appendPattern("HH:mm a")
           .toFormatter()
           .withZone(ZoneId.of("UTC"));
+
+    public static final DateTimeFormatter MINI_DATE_FORMAT = new DateTimeFormatterBuilder()
+            .appendPattern("yyyy-MM-dd")
+            .toFormatter()
+            .withZone(ZoneId.of("UTC"));
 }

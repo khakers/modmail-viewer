@@ -40,7 +40,7 @@
                 <div class="card <%--text-bg-success--%>">
                     <h6 class="card-header"><i class="bi bi-envelope-exclamation"></i> Unanswered Tickets</h6>
                     <div class="card-body">
-                        <h6 class="card-title fs-1">${9999}</h6>
+                        <h6 class="card-title fs-1">${Main.metricsDao.getUnansweredTicketCount()}</h6>
                     </div>
                 </div>
             </div>
@@ -48,15 +48,15 @@
                 <div class="card">
                     <h6 class="card-header"><i class="bi bi-stopwatch"></i> Average Reply Time</h6>
                     <div class="card-body">
-                        <h6 class="card-title fs-1">${"99:99:99"}</h6>
+                        <h6 class="card-title fs-1">${Main.metricsDao.getAverageFirstReplyTime(90).toString()}</h6>
                     </div>
                 </div>
             </div>
             <div class="col">
                 <div class="card">
-                    <h6 class="card-header"><i class="bi bi-stopwatch"></i> Median Resolution Time</h6>
+                    <h6 class="card-header"><i class="bi bi-stopwatch"></i> Average Resolution Time</h6>
                     <div class="card-body">
-                        <h6 class="card-title fs-1">${"99:99:99"}</h6>
+                        <h6 class="card-title fs-1">${Main.metricsDao.getAverageResolutionTime(90).toString()}</h6>
                     </div>
                 </div>
             </div>
@@ -72,7 +72,7 @@
                         <%--                                additional content. This content is a little longer.</p>--%>
                         <%--                            <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>--%>
                     </div>
-                    <canvas id="ticketClosersChart" width="400" height="400" data-chart-data="${"Main.metricsDao.getTicketClosersJson()"}"></canvas>
+                    <canvas id="ticketClosersChart" width="400" height="400" data-chart-data="${Main.metricsDao.getTicketClosersJson()}"></canvas>
                     <%--                        <code class="card-footer">${moderatorCloses.toString()}</code>--%>
                 </div>
             </div>
@@ -89,7 +89,7 @@
                             </select>
                         </form>
                     </div>
-                    <canvas id="ticketActionsPerDayChart" width="400" height="400" style="max-height: 480px;" data-chart-data="${"Main.metricsDao.getTicketsPerDayJson(90)"}"></canvas>
+                    <canvas id="ticketActionsPerDayChart" width="400" height="400" style="max-height: 480px;" data-chart-data="${Main.metricsDao.getTicketsPerDayJson(90)}"></canvas>
                     <%--                        <code class="card-footer"></code>--%>
                 </div>
                 <%--                    <div class="card">--%>

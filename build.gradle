@@ -47,6 +47,7 @@ dependencies {
     implementation libs.webjar.highlightjs
     implementation libs.webjar.unpoly
     implementation libs.webjar.chartjs
+    implementation libs.webjar.chartjs.plugin.autocolors
 
     implementation libs.mongodb.driver
     implementation libs.mongojack

@@ -7,6 +7,8 @@ import com.github.khakers.modmailviewer.auditlog.MongoAuditEventLogger;
 import com.github.khakers.modmailviewer.auditlog.NoopAuditEventLogger;
 import com.github.khakers.modmailviewer.auth.AuthHandler;
 import com.github.khakers.modmailviewer.auth.Role;
+import com.github.khakers.modmailviewer.dashboard.DashboardController;
+import com.github.khakers.modmailviewer.dashboard.MetricsDao;
 import com.github.khakers.modmailviewer.log.LogController;
 import com.github.khakers.modmailviewer.markdown.channelmention.ChannelMentionExtension;
 import com.github.khakers.modmailviewer.markdown.customemoji.CustomEmojiExtension;
@@ -113,6 +115,8 @@ public class Main {
 
     public static final UpdateChecker updateChecker = new UpdateChecker();
 
+    public static MetricsDao metricsDao;
+
     public static void main(String[] args) {
 
 
@@ -125,6 +129,7 @@ public class Main {
         }
 
         registerValidators();
+        metricsDao = new MetricsDao();
 
         JavalinJte.init(templateEngine);
         var app = Javalin.create(Main::configure)
@@ -203,9 +208,19 @@ public class Main {
         }
         if (Config.isDevMode) {
             logger.info("Loading static files from {}", System.getProperty("user.dir") + "/src/main/resources/static");
-            config.staticFiles.add(System.getProperty("user.dir") + "/src/main/resources/static", Location.EXTERNAL);
+            config.staticFiles.add(staticFileConfig -> {
+                staticFileConfig.mimeTypes.add(io.javalin.http.ContentType.TEXT_JS, "js");
+                staticFileConfig.mimeTypes.add(io.javalin.http.ContentType.TEXT_CSS, "css");
+                staticFileConfig.location = Location.EXTERNAL;
+                staticFileConfig.directory = System.getProperty("user.dir") + "/src/main/resources/static";
+            });
         } else {
-            config.staticFiles.add("/static", Location.CLASSPATH);
+            config.staticFiles.add(staticFileConfig -> {
+                staticFileConfig.mimeTypes.add(io.javalin.http.ContentType.TEXT_JS, "js");
+                staticFileConfig.mimeTypes.add(io.javalin.http.ContentType.TEXT_CSS, "css");
+                staticFileConfig.location = Location.CLASSPATH;
+                staticFileConfig.directory = "/static";
+            });
         }
         config.staticFiles.enableWebjars();
         if (Config.isDevMode) {
@@ -247,7 +262,7 @@ public class Main {
         if (Config.CUSTOM_CSP != null && !Config.CUSTOM_CSP.isBlank()) {
             globalHeaderConfig.contentSecurityPolicy(Config.CUSTOM_CSP);
         } else {
-            globalHeaderConfig.contentSecurityPolicy(String.format("default-src 'self';  img-src * 'self' data:; media-src media.discordapp.com; style-src-attr 'unsafe-hashes' 'self' 'sha256-biLFinpqYMtWHmXfkA1BPeCY0/fNt46SAZ+BBk5YUog='; script-src-elem 'self' https://cdn.jsdelivr.net/npm/@twemoji/api@14.1.0/dist/twemoji.min.js %s;", Objects.requireNonNullElse(Config.CSP_SCRIPT_SRC_ELEM_EXTRA, "")));
+            globalHeaderConfig.contentSecurityPolicy(String.format("default-src 'self';  img-src * 'self' data:; object-src 'none'; media-src media.discordapp.com; style-src-attr 'unsafe-hashes' 'self' 'sha256-biLFinpqYMtWHmXfkA1BPeCY0/fNt46SAZ+BBk5YUog='; script-src-elem 'self' https://cdn.jsdelivr.net/npm/@twemoji/api@14.1.0/dist/twemoji.min.js %s;", Objects.requireNonNullElse(Config.CSP_SCRIPT_SRC_ELEM_EXTRA, "")));
 
         }
 
