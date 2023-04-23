@@ -1,6 +1,7 @@
 # Modmail Viewer
 [![GitHub latest release (latest SemVer)](https://img.shields.io/github/v/release/khakers/modmail-viewer?logo=Git&logoColor=f5f5f5)](https://github.com/khakers/modmail-viewer/releases/latest)
 [![GitHub Help Wanted issues](https://img.shields.io/github/issues/khakers/modmail-viewer/help%20wanted?color=blue)](https://github.com/khakers/modmail-viewer/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22)
+[![Wiki](https://img.shields.io/badge/wiki-documentation-forestgreen)](https://github.com/khakers/modmail-viewer/wiki/)
 
 
 [![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/9oZTzt?referralCode=Bs9kVa)
@@ -12,17 +13,19 @@ Built from scratch using Javalin, JTE, Bootstrap 5, and Unpoly.
 
 [Demo Site running the latest commit from Master](https://demo.modmail-viewer.khakers.dev/logs/1bef379de4ac)
 
+<details>
+<summary>Screenshots</summary>
 
 ![modmail-logviewer-log](https://user-images.githubusercontent.com/22665282/211416462-676f67a2-b818-4b8a-9eb6-f855f3bf64b9.png)
 ![log browsing](https://user-images.githubusercontent.com/22665282/211415993-c1f572f1-f36e-4579-aa84-64a2622ef8ab.png)
-
+</details>
 
 _Modmail-Viewer_ is currently a beta. You should always read update notes before applying updates as there may be breaking changes between major versions, and ensure you are running an up to date version to have the latest fixes and support.
 
-Report any bugs you encounter via github issues at this repository (not modmail or logviewer).  
+Report any bugs you encounter via github issues at this repository (not modmail or logviewer, as this is a community project).  
 Use GitHub discussions for feature requests or to ask questions. Please prefer not to directly DM me, as it's not discoverable for other people that may help, and it's possible that I won't not notice it for a while.
 
-**Interested in a custom version or features?** Contact me privately on discord to sponsor features or to commision changes.
+**Interested in a custom version or features for your server?** Contact me privately on discord to sponsor features or to commision changes.
 
 ## Features
 
@@ -40,9 +43,9 @@ Use GitHub discussions for feature requests or to ask questions. Please prefer n
 
 ## Future Ideas
 
-* Stats dashboard
-* Internationalization
-  * If you want internationalization and are interested in providing translations, please contact me and/or open an issue/discussion on GitHub.
+* Stats dashboard (WIP, see feature/dashboard-2 branch)
+* Internationalization (Work is currently being done to support localization of text strings)
+  * If you want to help with internationalization and are interested in providing translations, please contact me and/or open an issue/discussion on GitHub.
 * Basic API
 * Snippet editor (will likely require a bot plugin)
 * Persistent Notes editor 
@@ -99,8 +102,7 @@ services:
 Should be located next to your docker-compose.yml, contains secrets.
 
 > **Note**
-> You'll need to create a Discord application (or use the one you created for modmail) and retrieve your OAuth2 client ID and Client secret from the OAuth2 section of the [developer dashboard](https://discord.com/developers/applications)
-> Additionally, you must add a redirect URI to your Discord applications OAuth2 Redirects. This depends on how you access your site but will look something like "https://"modmail.example.com/callback" 
+> See [the wiki page on authentication setup](https://github.com/khakers/modmail-viewer/wiki/Authentication-setup) for more information.
 
 ```properties
 MODMAIL_VIEWER_DISCORD_OAUTH_CLIENT_ID=123456789
@@ -157,4 +159,4 @@ See [the wiki page on permissions.](https://github.com/khakers/modmail-viewer/wi
 
 
 ## Attribution 
-This project uses graphics from [Twemoji](https://twemoji.twitter.com/) licensed under CC-BY 4.0: https://creativecommons.org/licenses/by/4.0/
+This project uses graphics from [Twemoji](https://twemoji.twitter.com/) licensed under CC-BY 4.0: https://creativecommons.org/licenses/by/4.0/ using the jdecked/temoji library
