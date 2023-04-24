@@ -5,14 +5,6 @@ up.compiler('[data-bs-toggle="tooltip"]', function (element) {
     new bootstrap.Tooltip(element);
 });
 
-up.compiler('.spoilerText', function (element) {
-    element.addEventListener("click", (event) => {
-        let target = event.target;
-        target.classList.remove("hidden");
-        target.setAttribute("role", "presentation");
-    });
-});
-
 up.compiler('pre code', element => {
     hljs.highlightElement(element);
 });

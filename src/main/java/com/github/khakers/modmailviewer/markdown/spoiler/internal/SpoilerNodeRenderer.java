@@ -35,18 +35,9 @@ public class SpoilerNodeRenderer implements NodeRenderer {
 
     private void render(Spoiler node, NodeRendererContext context, HtmlWriter html) {
         if (spoilerStyleHtmlOpen == null || spoilerStyleHtmlClose == null) {
-            html
-                    .attr("class", "spoilerText hidden")
-                    .attr("role", "button")
-                        .withAttr()
-                        .tag("span")
-                    .attr("class", "content")
-                        .withAttr()
-                        .tag("span");
+            html.tag("text-spoiler");
             context.renderChildren(node);
-            html
-                    .tag("/span")
-                    .tag("/span");
+            html.tag("/text-spoiler");
         } else {
             html.raw(spoilerStyleHtmlOpen);
             context.renderChildren(node);

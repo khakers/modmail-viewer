@@ -28,30 +28,30 @@ code {
     white-space: pre-wrap;
 }
 
-.spoilerText {
+text-spoiler {
     border-radius: 3px;
     background-color: var(--bs-secondary-bg);
     transition: all .1s ease;
     padding: 0 2px;
 }
 
-[data-bs-theme=light] .spoilerText.hidden:hover {
+[data-bs-theme=light] text-spoiler.hidden:hover {
     background-color: rgb(74, 75, 80);
 }
 
-[data-bs-theme=light] .spoilerText.hidden {
+[data-bs-theme=light] text-spoiler.hidden {
     background-color: rgb(32, 34, 37);
 }
 
-[data-bs-theme=dark] .spoilerText.hidden:hover {
+[data-bs-theme=dark] text-spoiler.hidden:hover {
     background-color: rgb(74, 75, 80);
 }
 
-[data-bs-theme=dark] .spoilerText.hidden {
+[data-bs-theme=dark] text-spoiler.hidden {
     background-color: rgb(60, 64, 70);
 }
 
-.spoilerText.hidden .content {
+text-spoiler.hidden span {
     opacity: 0;
     pointer-events: none;
 }

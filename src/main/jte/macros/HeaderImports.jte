@@ -12,6 +12,8 @@
 <script src="/webjars/unpoly/3.0.0/unpoly.min.js" defer></script>
 <script src="/webjars/unpoly/3.0.0/unpoly-bootstrap5.min.js" defer></script>
 
+<script src="/js/components/spoiler/spoiler.js" defer></script>
+
 <script src="/timeformat.js" defer></script>
 <script src="/util.js" defer></script>
 <script src="/js/TicketFilterHandler.js" defer></script>
