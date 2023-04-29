@@ -8,6 +8,35 @@
 
 @template.layout.Page(page = page, content = @`
     <div class="container pt-5">
+        <div id="dashboardControlPanel" class="mb-3 p-2 ps-3 border rounded">
+            <div class="row justify-content-between">
+                <div class="col">
+                    <form id="dailyTicketsForm">
+                        <div class="row">
+                            <div class="col-auto">
+                                <label for="chartPeriodSelect" class="col-form-label">Time Period:</label>
+                            </div>
+                            <div class="col">
+                                <select class="form-select" name="dashboardPeriodSelect" id="chartPeriodSelect" aria-label="Time Period Select">
+                                    <option value="15">15 days</option>
+                                    <option value="30">30 days</option>
+                                    <option value="60">60 days</option>
+                                    <option selected value="90">90 days</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col">
+                    <button type="button" id="dashboardReloadButton" class="btn btn-outline-primary float-end">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+                            <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
         <div class="row row-cols-1 row-cols-md-auto g-3 justify-content-between">
             <div class="col">
                 <%-- Total Tickets --%>
@@ -80,14 +109,6 @@
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Tickets closed per day</h5>
-                        <form id="dailyTicketsForm">
-                            <select class="form-select" name="dailyTicketsPeriodSelect" id="dailyTicketsPeriodSelect" aria-label="Default select example">
-                                <option value="15">15 days</option>
-                                <option value="30">30 days</option>
-                                <option value="60">60 days</option>
-                                <option selected value="90">90 days</option>
-                            </select>
-                        </form>
                     </div>
                     <canvas id="ticketActionsPerDayChart" width="400" height="400" style="max-height: 480px;" data-chart-data="${Main.metricsDao.getTicketsPerDayJson(90)}"></canvas>
                     <%--                        <code class="card-footer"></code>--%>

@@ -167,6 +167,9 @@ const ticketActionsPerDayChart = new Chart(ticketActionsPerDayCanvas.getContext(
 });
 charts.push(ticketActionsPerDayChart)
 
+up.on('click', "#dashboardReloadButton", (event, element) => {
+    up.reload();
+});
 
 function refreshTicketClosersChart() {
     fetch('/api/ticketclosers')
@@ -189,12 +192,12 @@ function refreshTicketClosersChart() {
         });
 }
 
-document.getElementById("dailyTicketsPeriodSelect").addEventListener("change", ev => {
+document.getElementById("chartPeriodSelect").addEventListener("change", ev => {
     refreshTicketActionsPerDayChart();
 });
 
 function refreshTicketActionsPerDayChart() {
-    const selector = document.getElementById("dailyTicketsPeriodSelect");
+    const selector = document.getElementById("dashboardPeriodSelect");
     // selector.value
 
     fetch('/api/stats/ticketactivity?' + new URLSearchParams({
