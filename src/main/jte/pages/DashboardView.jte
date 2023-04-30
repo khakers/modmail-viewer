@@ -101,7 +101,7 @@
                         <%--                                additional content. This content is a little longer.</p>--%>
                         <%--                            <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>--%>
                     </div>
-                    <canvas id="ticketClosersChart" width="400" height="400" data-chart-data="${Main.metricsDao.getTicketClosersJson()}"></canvas>
+                    <canvas class="chart" id="ticketClosersChart" width="400" height="400" data-chart-data="${Main.metricsDao.getTicketClosersJson()}"></canvas>
                     <%--                        <code class="card-footer">${moderatorCloses.toString()}</code>--%>
                 </div>
             </div>
@@ -110,7 +110,7 @@
                     <div class="card-body">
                         <h5 class="card-title">Tickets closed per day</h5>
                     </div>
-                    <canvas id="ticketActionsPerDayChart" width="400" height="400" style="max-height: 480px;" data-chart-data="${Main.metricsDao.getTicketsPerDayJson(90)}"></canvas>
+                    <canvas class="chart" id="ticketActionsPerDayChart" width="400" data-chart-data="${Main.metricsDao.getTicketsPerDayJson(90)}"></canvas>
                     <%--                        <code class="card-footer"></code>--%>
                 </div>
                 <%--                    <div class="card">--%>

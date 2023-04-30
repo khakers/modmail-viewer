@@ -3,7 +3,6 @@ const autocolors = window['chartjs-plugin-autocolors'];
 
 Chart.register(autocolors);
 
-
 let style = getComputedStyle(document.body)
 Chart.defaults.color = style.getPropertyValue('--bs-secondary-text');
 Chart.defaults.font.size = 14;
@@ -75,28 +74,6 @@ const ticketClosersChart = new Chart(ticketClosersCanvas.getContext('2d'), {
 });
 charts.push(ticketClosersChart);
 
-
-// const ticketClosersChart = new Chart(ticketClosersCanvas, {
-//     type: 'bar',
-//     data: {
-//         labels: [],
-//         datasets: [{
-//             label: 'Tickets Closed',
-//             data: [],
-//             hoverOffset: 8,
-//             borderWidth: 1
-//         }]
-//     },
-//
-//     options: {
-//         indexAxis: 'y',
-//         normalized: true,
-//         layout: {
-//             padding: 15
-//         },
-//     }
-// });
-
 const ticketActionsPerDayCanvas = document.getElementById('ticketActionsPerDayChart');
 
 let ticketActionsPerDayData = JSON.parse(ticketActionsPerDayCanvas.dataset.chartData);
@@ -121,7 +98,8 @@ const ticketActionsPerDayChart = new Chart(ticketActionsPerDayCanvas.getContext(
 
                 tension: 0.3,
                 borderWidth: 4,
-                borderJoinStyle: 'round'
+                borderJoinStyle: 'round',
+                pointStyle: false
             },
             {
                 label: 'New Tickets',
@@ -133,6 +111,7 @@ const ticketActionsPerDayChart = new Chart(ticketActionsPerDayCanvas.getContext(
 
                 tension: 0.3,
                 borderWidth: 4,
+                pointStyle: false
             }
         ]
     },

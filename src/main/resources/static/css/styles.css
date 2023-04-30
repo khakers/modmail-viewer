@@ -265,3 +265,8 @@ up-modal-box {
 #updateToast .toast-header .bi::before {
     vertical-align: .125em;
 }
+
+.chart {
+    height: 400px;
+    max-height: 480px;
+}
