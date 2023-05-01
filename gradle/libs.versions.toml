@@ -10,7 +10,7 @@ gradle-git-properties = "2.4.1"
 
 javalin = "5.4.2"
 jte = "2.3.1"
-flexmark = "0.64.0"
+flexmark = "0.64.2"
 log4j = "2.19.0"
 jackson = "2.14.1"
 junit = "5.9.0"
