@@ -61,8 +61,12 @@ public class ModMailLogDB {
         MongoClient mongoClient = MongoClients.create(settings);
         this.database = mongoClient.getDatabase("modmail_bot");
         database.listCollectionNames().forEach(logger::debug);
-        this.logCollection = JacksonMongoCollection.builder().withObjectMapper(objectMapper).build(database,"logs", ModMailLogEntry.class, UuidRepresentation.STANDARD);
+        this.logCollection = JacksonMongoCollection.builder().withObjectMapper(objectMapper).build(database, "logs", ModMailLogEntry.class, UuidRepresentation.STANDARD);
         this.configCollection = database.getCollection("config");
+        if (configCollection.countDocuments() > 1 && Config.BOT_ID == 0) {
+            logger.warn("Multiple configuration documents were found in your MongoDB database. " +
+                    "You *MUST* set the BOT_ID variable to your bots ID in order for the correct modmail configuration to be used.");
+        }
 
         var result = logCollection.createIndex(Indexes.descending("messages.timestamp"));
 //        var textIndex = logCollection.createIndex(Indexes.text("messages.content"));
@@ -256,7 +260,13 @@ public class ModMailLogDB {
             cacheTime = Instant.now();
             return cachedConfig;
         }
-        var conf = configCollection.find().first();
+        Document conf = null;
+        if (Config.BOT_ID == 0) {
+            conf = configCollection.find().first();
+        } else {
+            conf = configCollection.find(Filters.eq("bot_id", Config.BOT_ID)).first();
+        }
+
         if (conf != null) {
             try {
                 logger.trace(conf.toJson());
