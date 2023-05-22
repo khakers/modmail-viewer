@@ -31,7 +31,6 @@
 </head>
 <body>
 
-<div class="page-container">
     @template.macros.navbar(ctx = ctx, user = user)
     <div class="content" up-main>
         <div class="container pt-5">
@@ -209,6 +208,5 @@
         @endif
     </div>
     @template.macros.footer()
-</div>
 </body>
 </html>

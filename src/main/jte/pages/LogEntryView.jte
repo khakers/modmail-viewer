@@ -22,7 +22,6 @@
 </head>
 <body>
 
-<div class="page-container">
     @template.macros.navbar(ctx = ctx, user = user)
     <div class="content" up-main data-nsfw="${modmailLog.isNsfw()}">
         <div class="container py-4">
@@ -218,6 +217,5 @@
         </div>
     </div>
     @template.macros.footer()
-</div>
 </body>
 </html>
