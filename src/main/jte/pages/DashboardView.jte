@@ -37,7 +37,7 @@
                 </div>
             </div>
         </div>
-        <div class="row row-cols-1 row-cols-md-auto g-3 justify-content-between">
+        <div class="row row-cols-1 row-cols-md-3 g-3 justify-content-between">
             <div class="col">
                 <%-- Total Tickets --%>
                 <div class="card">
