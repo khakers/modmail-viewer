@@ -3,14 +3,23 @@ const autocolors = window['chartjs-plugin-autocolors'];
 
 Chart.register(autocolors);
 
-let style = getComputedStyle(document.body)
-Chart.defaults.color = style.getPropertyValue('--bs-secondary-text');
-Chart.defaults.font.size = 14;
-Chart.defaults.font.family = style.getPropertyValue('--bs-body-font-family')
-Chart.defaults.font.weight = style.getPropertyValue("--bs-body-font-weight")
-Chart.defaults.font.lineHeight = style.getPropertyValue("--bs-body-line-height")
-Chart.defaults.borderColor = style.getPropertyValue("--bs-border-color")
 
+
+let style = getComputedStyle(document.body);
+
+let font = {
+    family: style.getPropertyValue("--bs-body-font-family"),
+    size: 14,
+    style: 'normal',
+    lineHeight: style.getPropertyValue("--bs-body-line-height"),
+    weight: 500
+}
+
+Chart.defaults.color = style.getPropertyValue('--bs-secondary-color');
+Chart.defaults.font = font;
+Chart.defaults.borderColor = style.getPropertyValue("--bs-border-color");
+Chart.defaults.plugins.legend.labels.color = style.getPropertyValue('--bs-secondary-color');
+Chart.defaults.plugins.legend.labels.font = font;
 
 const charts = [];
 
@@ -26,7 +35,7 @@ let observer = new MutationObserver((mutations, observer) => {
             charts.forEach((chart) => {
                 chart.borderColor = getComputedStyle(document.body).getPropertyValue("--bs-border-color");
                 chart.update('none');
-                console.log(chart)
+                // console.log(chart);
             })
         }
     });
@@ -34,7 +43,7 @@ let observer = new MutationObserver((mutations, observer) => {
 
 observer.observe(document.documentElement, {
     attributes: true
-})
+});
 
 up.compiler('#ticketClosersChart', (element) => {
     const ticketClosersCanvas = element;
