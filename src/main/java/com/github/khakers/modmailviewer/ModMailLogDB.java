@@ -401,7 +401,6 @@ public class ModMailLogDB {
                 .toArray(String[]::new));
     }
 
-
     /**
      * Calculate the amount of tickets each moderator has closed
      * Due to limitations introduced by modmailbot quirks, We determine if a user is a mod based on if their discord id is listed in the config as at least a mod
@@ -411,6 +410,7 @@ public class ModMailLogDB {
     public Map<String, Integer> getTicketsClosedByUser() throws Exception {
         var map = new HashMap<String, Integer>();
         var perms = getConfig().getFlatUserPerms();
+        //todo optimize this code
         logCollection.find(Filters.eq("open", false)).forEach(logEntry -> {
             // It appears that the user closing the ticket is *always* a mod
             // This sucks but

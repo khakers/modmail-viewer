@@ -198,8 +198,17 @@ up.on('click', "#dashboardReloadButton", (event, element) => {
 //         });
 // }
 //
+up.on('change', document.getElementById('#chartPeriodSelect'), (event, element) => {
+    console.log(event.target.value)
+
+    const params = up.Params.fromURL(window.location.href);
+    params.set('period', event.target.value);
+
+    up.navigate({params: params, url: window.location.pathname});
+
+});
 // document.getElementById("chartPeriodSelect").addEventListener("change", ev => {
-//     refreshTicketActionsPerDayChart();
+//
 // });
 //
 // function refreshTicketActionsPerDayChart() {
