@@ -77,7 +77,7 @@
                 <div class="card">
                     <h6 class="card-header"><i class="bi bi-stopwatch"></i> Average Reply Time</h6>
                     <div class="card-body">
-                        <h6 class="card-title fs-1">${Main.metricsDao.getAverageFirstReplyTime(90).toString()}</h6>
+                        <h6 class="card-title fs-1"><relative-duration duration="${Main.metricsDao.getAverageFirstReplyTime(90).toMillis()}"></relative-duration></h6>
                     </div>
                 </div>
             </div>
@@ -85,7 +85,7 @@
                 <div class="card">
                     <h6 class="card-header"><i class="bi bi-stopwatch"></i> Average Resolution Time</h6>
                     <div class="card-body">
-                        <h6 class="card-title fs-1">${Main.metricsDao.getAverageResolutionTime(90).toString()}</h6>
+                        <h6 class="card-title fs-1"><relative-duration duration="${Main.metricsDao.getAverageResolutionTime(90).toMillis()}"></relative-duration></h6>
                     </div>
                 </div>
             </div>

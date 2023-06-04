@@ -30,6 +30,7 @@ twemoji = "14.1.0"
 unpoly = "3.3.0"
 chartjs = "4.2.1"
 chartjs-plugin-autocolors = "0.2.2"
+humanize-duration = "3.28.0"
 
 [libraries]
 javalin = { module = "io.javalin:javalin", version.ref = "javalin" }
@@ -73,6 +74,7 @@ webjar-twemoji = { module = "org.webjars.bowergithub.jdecked:twemoji", version.r
 webjar-unpoly = { module = "org.webjars.npm:unpoly", version.ref = "unpoly" }
 webjar-chartjs = { module = "org.webjars.npm:chart.js", version.ref = "chartjs" }
 webjar-chartjs-plugin-autocolors = { module = "org.webjars.npm:chartjs-plugin-autocolors", version.ref = "chartjs-plugin-autocolors" }
+webjar-humanize-duration = { module = "org.webjars.npm:humanize-duration", version.ref = "humanize-duration" }
 
 
 [plugins]

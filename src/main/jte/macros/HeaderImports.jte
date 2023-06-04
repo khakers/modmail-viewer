@@ -14,6 +14,9 @@
 
 <script src="/js/components/spoiler/spoiler.js" defer></script>
 
+<script src="/webjars/humanize-duration/3.28.0/humanize-duration.js" defer></script>
+<script src="/js/components/relative-duration/relative-duration.js" defer></script>
+
 <script src="/timeformat.js" defer></script>
 <script src="/util.js" defer></script>
 <script src="/webjars/bootstrap/5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
