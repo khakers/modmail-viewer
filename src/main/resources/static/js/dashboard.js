@@ -23,19 +23,30 @@ Chart.defaults.plugins.legend.labels.font = font;
 
 const charts = [];
 
-// Monitor theme change in order to update the chart default colors to be visible+
+// Monitor theme change in order to update the chart default colors to be visible
 let observer = new MutationObserver((mutations, observer) => {
     mutations.forEach((mutation) => {
         if (mutation.type === "attributes" && mutation.attributeName === "data-bs-theme") {
-            console.log(mutation.target.attributes["data-bs-theme"]);
-            Chart.defaults.color = getComputedStyle(document.body).getPropertyValue('--bs-secondary-text');
-            Chart.defaults.borderColor = getComputedStyle(document.body).getPropertyValue("--bs-border-color");
-            console.log(Chart.defaults.color);
-            console.log(Chart.defaults.borderColor);
+            let secondaryColor = style.getPropertyValue('--bs-secondary-color');
+            let borderColor = style.getPropertyValue("--bs-border-color");
+            // console.log(mutation.target.attributes["data-bs-theme"]);
+            Chart.defaults.color = secondaryColor;
+            Chart.defaults.borderColor = borderColor;
+            Chart.defaults.plugins.legend.labels.color = secondaryColor;
+            // console.log(Chart.defaults.color);
+            // console.log(Chart.defaults.borderColor);
             charts.forEach((chart) => {
-                chart.borderColor = getComputedStyle(document.body).getPropertyValue("--bs-border-color");
-                chart.update('none');
+                chart.borderColor = borderColor;
+                chart.options.plugins.legend.labels.color = secondaryColor;
+
+                if (chart.options.scales.x !== undefined) {
+                    chart.options.scales.x.ticks.color = secondaryColor;
+                }
+                if (chart.options.scales.y !== undefined) {
+                    chart.options.scales.y.ticks.color = secondaryColor;
+                }
                 // console.log(chart);
+                chart.update('none');
             })
         }
     });
@@ -81,6 +92,7 @@ up.compiler('#ticketClosersChart', (element) => {
             }
         }
     });
+    // console.log(ticketClosersChart.options);
     charts.push(ticketClosersChart);
     // console.log(charts)
 
