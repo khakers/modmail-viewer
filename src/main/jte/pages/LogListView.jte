@@ -1,4 +1,5 @@
 @import com.github.khakers.modmailviewer.data.internal.TicketStatus
+@import com.github.khakers.modmailviewer.util.DiscordUtils
 @import com.github.khakers.modmailviewer.util.Pagination
 @import com.github.khakers.modmailviewer.util.QueryParamUtil
 @import com.github.khakers.modmailviewer.util.TextFragmentUtils
@@ -92,9 +93,11 @@
                     @if(entry.get().isOpen())
                         <span>Created by</span>
                         <span class="user-select-all" data-bs-toggle="tooltip"
-                              data-bs-title="${entry.get().getCreator().id()}"><span
-                                    class="fw-semibold">${entry.get().getCreator().name()}</span><span
-                                    class="text-muted">#${entry.get().getCreator().discriminator()}</span>
+                              data-bs-title="${entry.get().getCreator().id()}">
+                            <span class="fw-semibold">${entry.get().getCreator().name()}</span>
+                            @if(!DiscordUtils.isMigratedUserName(entry.get().getCreator()))
+                                <span class="text-muted">#${entry.get().getCreator().discriminator()}</span>
+                            @endif
                             </span>
 
                         <span><span class="text-muted" data-timestamp="${entry.get().getCreationTime().toString()}"
@@ -103,9 +106,11 @@
                     @else
                         <span>Created by</span>
                         <span class="user-select-all" data-bs-toggle="tooltip"
-                              data-bs-title="${entry.get().getCreator().id()}"><span
-                                    class="fw-semibold">${entry.get().getCreator().name()}</span><span
-                                    class="text-muted">#${entry.get().getCreator().discriminator()}</span>
+                              data-bs-title="${entry.get().getCreator().id()}">
+                            <span class="fw-semibold">${entry.get().getCreator().name()}</span>
+                            @if(!DiscordUtils.isMigratedUserName(entry.get().getCreator()))
+                                <span class="text-muted">#${entry.get().getCreator().discriminator()}</span>
+                            @endif
                             </span>
                         <span>was closed <span class="text-muted"
                                                data-timestamp="${entry.get().getClosedTime().get().toString()}"
@@ -114,9 +119,11 @@
                         @if(entry.get().getCloser().isPresent())
                             <span>by</span>
                             <span class="user-select-all" data-bs-toggle="tooltip"
-                                  data-bs-title="${entry.get().getCloser().get().id()}"><span
-                                        class="fw-semibold">${entry.get().getCloser().get().name()}</span><span
-                                        class="text-muted">#${entry.get().getCloser().get().discriminator()}</span>
+                                  data-bs-title="${entry.get().getCloser().get().id()}">
+                                <span class="fw-semibold">${entry.get().getCloser().get().name()}</span>
+                                @if(!DiscordUtils.isMigratedUserName(entry.get().getCreator()))
+                                    <span class="text-muted">#${entry.get().getCloser().get().discriminator()}</span>
+                                @endif
                                 </span>
                         @endif
 
@@ -130,9 +137,11 @@
                                                       data-timestamp-type="relative" data-bs-toggle="tooltip"
                                                       data-timestamp-title-type="detailed"></span> by
                             <span class="user-select-all" data-bs-toggle="tooltip"
-                                  data-bs-title="${entry.get().getMessages().get(entry.get().getMessages().size()-1).getAuthor().id()}"><span
-                                        class="fw-semibold">${entry.get().getMessages().get(entry.get().getMessages().size()-1).getAuthor().name()}</span><span
-                                        class="text-muted">#${entry.get().getMessages().get(entry.get().getMessages().size()-1).getAuthor().discriminator()}</span>
+                                  data-bs-title="${entry.get().getMessages().get(entry.get().getMessages().size()-1).getAuthor().id()}">
+                                <span class="fw-semibold">${entry.get().getMessages().get(entry.get().getMessages().size()-1).getAuthor().name()}</span>
+                            @if(!DiscordUtils.isMigratedUserName(entry.get().getCreator()))
+                                <span class="text-muted">#${entry.get().getMessages().get(entry.get().getMessages().size()-1).getAuthor().discriminator()}</span>
+                            @endif
                             </span>
                         </span>
                     @endif

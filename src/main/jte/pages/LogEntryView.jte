@@ -1,5 +1,6 @@
 @import com.github.khakers.modmailviewer.Main
 @import com.github.khakers.modmailviewer.data.MessageType
+@import com.github.khakers.modmailviewer.util.DiscordUtils
 @import static com.github.khakers.modmailviewer.jte.JteContext.*
 
 
@@ -82,7 +83,7 @@
                         <div class="row ">
                             <div class="col-2 col-md-1 text-center">
                                 <img width="50" src="${message.get().getAuthor().avatarUrl()}"
-                                     data-avatar-id="${Integer.parseInt(message.get().getAuthor().discriminator()) % 5}"
+                                     data-avatar-id="${DiscordUtils.getAvatarId(message.get().getAuthor())}"
                                      class="rounded-circle discordAvatar" alt="user avatar">
                             </div>
                             <div class="col">
@@ -90,7 +91,7 @@
                                     <div class="col">
                                         <h3>
                                     <span data-bs-toggle="tooltip"
-                                          title="${message.get().getAuthor().name()+"#"+message.get().getAuthor().discriminator()}">${message.get().getAuthor().name()}</span>
+                                          title="${message.get().getAuthor().name()+ (DiscordUtils.isMigratedUserName(message.get().getAuthor()) ? "" :("#"+message.get().getAuthor().discriminator()))}">${message.get().getAuthor().name()}</span>
                                             @if(message.get().getAuthor().mod())
                                                 <span class="badge text-bg-primary align-middle fst-normal user-badge">
                                             <i class="bi bi-shield-shaded"></i>
@@ -154,7 +155,7 @@
                     <div class="row ">
                         <div class="col-2 col-md-1 text-center">
                             <img width="50" src="${modmailLog.getCloser().get().avatarUrl()}"
-                                 data-avatar-id="${Integer.parseInt(modmailLog.getCloser().get().discriminator()) % 5}"
+                                 data-avatar-id="${DiscordUtils.getAvatarId(modmailLog.getCloser().get())}"
                                  class="rounded-circle discordAvatar" alt="user avatar">
                         </div>
                         <div class="col">
@@ -162,7 +163,7 @@
                                 <div class="col">
                                     <h3>
                                         <span data-bs-toggle="tooltip"
-                                              title="${modmailLog.getCloser().get().name()+"#"+modmailLog.getCloser().get().discriminator()}">${modmailLog.getCloser().get().name()}</span>
+                                              title="${modmailLog.getCloser().get().name() + (DiscordUtils.isMigratedUserName(modmailLog.getCloser().get()) ? "" :("#"+modmailLog.getCloser().get().discriminator()))}">${modmailLog.getCloser().get().name()}</span>
                                         <span class="fw-normal fs-5">${localize("LOG_CLOSED_THREAD_TEXT")}</span>
                                         @if(modmailLog.getCloser().get().mod())
                                             <span class="badge text-bg-primary align-middle fst-normal user-badge">
