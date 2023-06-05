@@ -1,5 +1,6 @@
 @import com.github.khakers.modmailviewer.auth.UserToken
 @import com.github.khakers.modmailviewer.data.internal.TicketStatus
+@import com.github.khakers.modmailviewer.util.DiscordUtils
 @import com.github.khakers.modmailviewer.util.Pagination
 @import com.github.khakers.modmailviewer.ModMailLogDB
 @import com.github.khakers.modmailviewer.util.QueryParamUtil
@@ -107,7 +108,7 @@
                             <span class="user-select-all" data-bs-toggle="tooltip"
                                   data-bs-title="${entry.get().getCreator().id()}"><span
                                         class="fw-semibold">${entry.get().getCreator().name()}</span><span
-                                        class="text-muted">#${entry.get().getCreator().discriminator()}</span>
+                                        class="text-muted">${DiscordUtils.getDiscriminatorString(entry.get().getCreator())}</span>
                             </span>
 
                             <span><span class="text-muted" data-timestamp="${entry.get().getCreationTime().toString()}"
@@ -118,7 +119,7 @@
                             <span class="user-select-all" data-bs-toggle="tooltip"
                                   data-bs-title="${entry.get().getCreator().id()}"><span
                                         class="fw-semibold">${entry.get().getCreator().name()}</span><span
-                                        class="text-muted">#${entry.get().getCreator().discriminator()}</span>
+                                        class="text-muted">${DiscordUtils.getDiscriminatorString(entry.get().getCreator())}</span>
                             </span>
                             <span>was closed <span class="text-muted"
                                                    data-timestamp="${entry.get().getClosedTime().get().toString()}"
@@ -129,7 +130,7 @@
                                 <span class="user-select-all" data-bs-toggle="tooltip"
                                       data-bs-title="${entry.get().getCloser().get().id()}"><span
                                             class="fw-semibold">${entry.get().getCloser().get().name()}</span><span
-                                            class="text-muted">#${entry.get().getCloser().get().discriminator()}</span>
+                                            class="text-muted">${DiscordUtils.getDiscriminatorString(entry.get().getCloser().get())}</span>
                                 </span>
                             @endif
 
@@ -145,7 +146,7 @@
                             <span class="user-select-all" data-bs-toggle="tooltip"
                                   data-bs-title="${entry.get().getMessages().get(entry.get().getMessages().size()-1).getAuthor().id()}"><span
                                         class="fw-semibold">${entry.get().getMessages().get(entry.get().getMessages().size()-1).getAuthor().name()}</span><span
-                                        class="text-muted">#${entry.get().getMessages().get(entry.get().getMessages().size()-1).getAuthor().discriminator()}</span>
+                                        class="text-muted">${DiscordUtils.getDiscriminatorString(entry.get().getMessages().get(entry.get().getMessages().size()-1).getAuthor())}</span>
                             </span>
                         </span>
                         @endif

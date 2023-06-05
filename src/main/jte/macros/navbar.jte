@@ -1,5 +1,6 @@
 @import com.github.khakers.modmailviewer.Config
 @import com.github.khakers.modmailviewer.auth.UserToken
+@import com.github.khakers.modmailviewer.util.DiscordUtils
 @import io.javalin.http.Context
 
 @param Context ctx
@@ -88,7 +89,7 @@
                 <div class="d-flex mx-2 color text-primary-emphasis">
                     @if(user != null && user.isRealUser())
                     <span class="navbar-text me-3 text-emphasis">
-                    Signed in as <span>${user.getUsername()}</span><span>#${user.getDiscriminator()}</span>
+                    Signed in as <span>${user.getUsername()}</span><span>${DiscordUtils.getDiscriminatorString(user)}</span>
                 </span>
                     <a class="btn btn-danger" href="/logout">signout</a>
                     @endif

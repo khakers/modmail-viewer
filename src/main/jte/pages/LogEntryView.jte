@@ -1,5 +1,6 @@
 @import com.github.khakers.modmailviewer.auth.UserToken
 @import com.github.khakers.modmailviewer.data.MessageType
+@import com.github.khakers.modmailviewer.util.DiscordUtils
 @import io.javalin.http.Context
 
 
@@ -96,7 +97,7 @@
                             <div class="row ">
                                 <div class="col-2 col-md-1 text-center">
                                     <img width="50" src="${message.get().getAuthor().avatarUrl()}"
-                                         onerror="this.src='https://cdn.discordapp.com/embed/avatars/${Integer.parseInt(message.get().getAuthor().discriminator()) % 5}.png';this.onerror=null"
+                                         onerror="this.src='https://cdn.discordapp.com/embed/avatars/${DiscordUtils.getAvatarId(message.get().getAuthor())}.png';this.onerror=null"
                                          class="rounded-circle" style="height: inherit;" alt="user avatar">
                                 </div>
                                 <div class="col">
@@ -104,7 +105,7 @@
                                         <div class="col">
                                             <h3>
                                     <span data-bs-toggle="tooltip"
-                                          title="${message.get().getAuthor().name()+"#"+message.get().getAuthor().discriminator()}">${message.get().getAuthor().name()}</span>
+                                          title="${message.get().getAuthor().name()+DiscordUtils.getDiscriminatorString(message.get().getAuthor())}">${message.get().getAuthor().name()}</span>
                                                 @if(message.get().getAuthor().mod())
                                                     <span class="badge text-bg-primary align-middle fst-normal"
                                                           style="font-size: 12px;">
@@ -172,7 +173,7 @@
                         <div class="row ">
                             <div class="col-2 col-md-1 text-center">
                                 <img width="50" src="${modmailLog.getCloser().get().avatarUrl()}"
-                                     onerror="this.src='https://cdn.discordapp.com/embed/avatars/${Integer.parseInt(modmailLog.getCloser().get().discriminator()) % 5}.png';this.onerror=null"
+                                     onerror="this.src='https://cdn.discordapp.com/embed/avatars/${DiscordUtils.getAvatarId(modmailLog.getCloser().get())}.png';this.onerror=null"
                                      class="rounded-circle" style="height: inherit;" alt="user avatar">
                             </div>
                             <div class="col">
@@ -180,7 +181,7 @@
                                     <div class="col">
                                         <h3>
                                     <span data-bs-toggle="tooltip"
-                                          title="${modmailLog.getCloser().get().name()+"#"+modmailLog.getCloser().get().discriminator()}">${modmailLog.getCloser().get().name()}</span>
+                                          title="${modmailLog.getCloser().get().name()+DiscordUtils.getDiscriminatorString(modmailLog.getCloser().get())}">${modmailLog.getCloser().get().name()}</span>
                                             <span class="fw-normal fs-5">closed the thread</span>
                                             @if(modmailLog.getCloser().get().mod())
                                                 <span class="badge text-bg-primary align-middle fst-normal"
