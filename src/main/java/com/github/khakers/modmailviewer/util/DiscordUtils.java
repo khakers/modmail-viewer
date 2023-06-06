@@ -1,5 +1,6 @@
 package com.github.khakers.modmailviewer.util;
 
+import com.github.khakers.modmailviewer.auth.UserToken;
 import com.github.khakers.modmailviewer.data.User;
 
 public class DiscordUtils {
@@ -11,6 +12,10 @@ public class DiscordUtils {
      */
     public static boolean isMigratedUserName(User user) {
         return user.discriminator().equals("0") || user.discriminator().isBlank();
+    }
+
+    public static boolean isMigratedUserName(UserToken user) {
+        return user.getDiscriminator().equals("0") || user.getDiscriminator().isBlank();
     }
 
     /**

@@ -46,6 +46,8 @@ public class Config {
     public static final boolean isSNIEnabled = isSecure && !isDevMode && isNotNullAndFalse(System.getenv(ENV_PREPEND + "_SNI"), false);
 
     public static final boolean isSTSEnabled = isNotNullAndFalse(System.getenv(ENV_PREPEND + "_HSTS"), false);
+    public static final boolean isDetailedAuditingEnabled = true;
+    public static final boolean isApiAuditingEnabled = true;
 
     public static final String DISCORD_CLIENT_ID = isAuthEnabled
             ? Assert.requireNonEmpty(System.getenv(ENV_PREPEND + "_DISCORD_OAUTH_CLIENT_ID"), "No Discord client ID provided. Provide one with the option \"" + ENV_PREPEND + "_DISCORD_OAUTH_CLIENT_ID\"")

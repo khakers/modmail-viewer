@@ -1,5 +1,10 @@
 package com.github.khakers.modmailviewer;
 
+import com.github.khakers.modmailviewer.auditlog.AuditLogger;
+import com.github.khakers.modmailviewer.auditlog.MongoAuditLogger;
+import com.github.khakers.modmailviewer.auditlog.NoopAuditLogger;
+import com.github.khakers.modmailviewer.auditlog.event.AuditEvent;
+import com.github.khakers.modmailviewer.auditlog.event.AuditEventSource;
 import com.github.khakers.modmailviewer.auth.AuthHandler;
 import com.github.khakers.modmailviewer.auth.Role;
 import com.github.khakers.modmailviewer.log.LogController;
@@ -10,6 +15,10 @@ import com.github.khakers.modmailviewer.markdown.timestamp.TimestampExtension;
 import com.github.khakers.modmailviewer.markdown.underline.UnderlineExtension;
 import com.github.khakers.modmailviewer.markdown.usermention.UserMentionExtension;
 import com.github.khakers.modmailviewer.util.RoleUtils;
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import com.vladsch.flexmark.ext.autolink.AutolinkExtension;
 import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
 import com.vladsch.flexmark.html.HtmlRenderer;
@@ -29,9 +38,12 @@ import io.javalin.plugin.bundled.GlobalHeaderConfig;
 import io.javalin.rendering.template.JavalinJte;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bson.codecs.configuration.CodecRegistries;
+import org.bson.codecs.pojo.PojoCodecProvider;
 
 import java.nio.file.Path;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -64,7 +76,23 @@ public class Main {
     private static final Logger logger = LogManager.getLogger();
     private static final String envPrepend = "MODMAIL_VIEWER";
 
+    private static final MongoClient mongoClient = MongoClients.create(MongoClientSettings.builder()
+            .applyConnectionString(new ConnectionString(Config.MONGODB_URI))
+                    .codecRegistry(
+                            CodecRegistries.fromRegistries(
+                                    MongoClientSettings
+                                            .getDefaultCodecRegistry(),
+                                    CodecRegistries
+                                            .fromProviders(PojoCodecProvider.builder()
+                                                    .automatic(true)
+                                                    .build())))
+            .build());
+
     public static final ModMailLogDB db = new ModMailLogDB(Config.MONGODB_URI);
+
+    public static final AuditLogger auditLogger = Config.isAuthEnabled
+            ? new MongoAuditLogger(mongoClient, Config.MONGODB_URI, "modmail_bot", "audit_log")
+            : new NoopAuditLogger();
 
     static final AuthHandler authHandler =
             Config.isAuthEnabled ?
@@ -83,7 +111,6 @@ public class Main {
             updateChecker.isUpdateAvailable();
         });
 
-
         TemplateEngine templateEngine;
 
         if (Config.isDevMode) {
@@ -101,6 +128,22 @@ public class Main {
                     if (!Config.isAuthEnabled) {
                         ctx.redirect("/");
                     }
+                    var user = AuthHandler.getUser(ctx);
+                    auditLogger.pushEvent(
+                            new AuditEvent(
+                                    null,
+                                    "logout",
+                                    Instant.now(),
+                                    "User logged out",
+                                    new AuditEventSource(
+                                            user.getId(),
+                                            user.getUsername(),
+                                            ctx.ip(),
+                                            "us",
+                                            ctx.userAgent(),
+                                            AuthHandler.getUserRole(ctx),
+                                            "modmail-viewer-"+ModmailViewer.COMMIT_ID_DESCRIBE)));
+
                 }, RoleUtils.atLeastSupporter())
                 .get("/", LogController.serveLogsPage, RoleUtils.atLeastSupporter())
 //                .routes(() -> {
@@ -113,6 +156,17 @@ public class Main {
 //                })
                 .get("/logs", LogController.serveLogsPage, RoleUtils.atLeastSupporter())
                 .get("/logs/{id}", LogController.serveLogPage, RoleUtils.atLeastSupporter())
+                //todo maybe after?
+                .before("/logs/{id}", ctx -> {
+                    if (Config.isDetailedAuditingEnabled) {
+                        auditLogger.pushAuditEventWithContext(ctx, "log.accessed", String.format("accessed log id %s", ctx.pathParam("id")));
+                    }
+                })
+                .before("/api/*", ctx -> {
+                    if (Config.isApiAuditingEnabled) {
+                        auditLogger.pushAuditEventWithContext(ctx, "api", String.format("%s %s", ctx.method(), ctx.path()));
+                    }
+                })
                 .start(Config.httpPort);
 
         if (Config.isAuthEnabled) {
