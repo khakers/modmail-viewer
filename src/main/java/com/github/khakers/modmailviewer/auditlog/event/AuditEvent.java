@@ -1,5 +1,6 @@
 package com.github.khakers.modmailviewer.auditlog.event;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.mongojack.ObjectId;
@@ -12,6 +13,7 @@ public record AuditEvent(
         @ObjectId
         org.bson.types.ObjectId id,
         String action,
+        @JsonFormat(shape = JsonFormat.Shape.NUMBER)
         Instant timestamp,
         String description,
         AuditEventSource actor

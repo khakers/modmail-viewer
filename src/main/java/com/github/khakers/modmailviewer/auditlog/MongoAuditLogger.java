@@ -1,5 +1,8 @@
 package com.github.khakers.modmailviewer.auditlog;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.github.khakers.modmailviewer.auditlog.event.AuditEvent;
 import com.github.khakers.modmailviewer.auditlog.event.AuditEventSource;
 import com.github.khakers.modmailviewer.auth.AuthHandler;
@@ -10,7 +13,12 @@ import com.mongodb.client.MongoCollection;
 import io.javalin.http.Context;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bson.UuidRepresentation;
 import org.bson.types.ObjectId;
+import org.mongojack.JacksonMongoCollection;
+import org.mongojack.MongoJackModuleConfiguration;
+import org.mongojack.MongoJackModuleFeature;
+import org.mongojack.internal.MongoJackModule;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -24,38 +32,32 @@ public class MongoAuditLogger implements AuditLogger {
 
     public MongoAuditLogger(MongoClient mongoClient, String connectionString, String defaultDatabase, String defaultCollection) {
 
-//        CodecRegistry pojoCodecRegistry = CodecRegistries.fromProviders(PojoCodecProvider.builder().automatic(true).build());
-//        CodecRegistry codecRegistry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
-//                pojoCodecRegistry);
-
         var connectionString1 = new ConnectionString(connectionString);
-//
-//        var settings = MongoClientSettings.builder()
-//                .applyConnectionString(connectionString1)
-//                .codecRegistry(codecRegistry)
-//                .build();
 
-//        MongoClient mongoClient = MongoClients.create(settings);
+        var mongojackFeatures = new MongoJackModuleConfiguration().with(MongoJackModuleFeature.WRITE_INSTANT_AS_BSON_DATE);
 
-//        var objectMapper = new JsonMapper()
-//                .findAndRegisterModules()
-//                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-//                .configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        var objectMapper = new JsonMapper()
+                .findAndRegisterModules()
+                //This is needed to get instant deserialization to work
+                .registerModules(new MongoJackModule(mongojackFeatures))
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false)
+                // We're saving these as indexes
+                .configure(SerializationFeature.WRITE_ENUMS_USING_INDEX, true);
 
 
         var mongoDatabase = mongoClient.getDatabase(connectionString1.getDatabase() == null ? defaultDatabase : connectionString1.getDatabase());
 
-        this.auditCollection = mongoDatabase.getCollection(connectionString1.getCollection() == null ? defaultCollection : connectionString1.getCollection(), AuditEvent.class);
 
-//        this.auditCollection = JacksonMongoCollection
-//                .builder()
-//                .withObjectMapper(objectMapper)
-//                .build(
-//                        mongoDatabase,
-//                        connectionString1.getCollection() == null ? "audit_log" : connectionString1.getCollection(),
-//                        AuditEvent.class,
-//                        UuidRepresentation.STANDARD
-//                );
+        this.auditCollection = JacksonMongoCollection
+                .builder()
+                .withObjectMapper(objectMapper)
+                .build(
+                        mongoDatabase,
+                        connectionString1.getCollection() == null ? "audit_log" : connectionString1.getCollection(),
+                        AuditEvent.class,
+                        UuidRepresentation.STANDARD
+                );
 
 
     }
