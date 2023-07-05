@@ -2,6 +2,7 @@ package com.github.khakers.modmailviewer.auditlog.event;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.khakers.modmailviewer.auth.Role;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 
 /**
  * @param userId The Discord ID of the user who performed the action
@@ -13,11 +14,13 @@ import com.github.khakers.modmailviewer.auth.Role;
  * @param source The source of the action (e.g. web, discord, etc.)
  */
 public record AuditEventSource(
+        @BsonProperty("user_id")
         @JsonProperty("user_id")
         long userId,
         String username,
         String ip,
         String country,
+        @BsonProperty("user_agent")
         @JsonProperty("user_agent")
         String userAgent,
         Role role,
