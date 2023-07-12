@@ -11,7 +11,8 @@ A drop in alternative frontend for your [modmail-dev/modmail bot](https://github
 Built from scratch using Javalin, JTE, Bootstrap 5, and Unpoly.
 
 
-[Demo Site running the latest commit from Master](https://demo.modmail-viewer.khakers.dev/logs/1bef379de4ac)
+~~[Demo Site running the latest commit from Master](https://demo.modmail-viewer.khakers.dev/logs/1bef379de4ac)~~
+The demo site is currently in the process of being migrated off railway to my own infra
 
 <details>
 <summary>Screenshots</summary>
