@@ -24,6 +24,7 @@ import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.jetbrains.annotations.Nullable;
 import org.mongojack.JacksonMongoCollection;
+import org.mongojack.internal.MongoJackModule;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -47,6 +48,7 @@ public class ModMailLogDB {
 
         this.objectMapper = new JsonMapper()
                 .findAndRegisterModules()
+                .registerModules(new MongoJackModule())
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         CodecRegistry pojoCodecRegistry = CodecRegistries.fromProviders(PojoCodecProvider.builder().automatic(true).build());
