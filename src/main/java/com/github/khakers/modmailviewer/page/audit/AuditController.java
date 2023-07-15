@@ -7,7 +7,7 @@ public class AuditController {
 
     public static Handler serveAuditPage = ctx -> {
         var id = ctx.pathParam("id");
-        var event = Main.auditLogger.getAuditEvent(id);
+        var event = Main.AuditLogClient.getAuditEvent(id);
         if (event.isEmpty()) {
             ctx.status(404);
             return;

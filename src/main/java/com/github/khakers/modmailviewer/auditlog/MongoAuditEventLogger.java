@@ -28,13 +28,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class MongoAuditLogger implements AuditLogger {
+public class MongoAuditEventLogger implements OutboundAuditEventLogger {
 
     private static final Logger logger = LogManager.getLogger();
 
     private final MongoCollection<AuditEvent> auditCollection;
 
-    public MongoAuditLogger(MongoClient mongoClient, String connectionString, String defaultDatabase, String defaultCollection) {
+    public MongoAuditEventLogger(MongoClient mongoClient, String connectionString, String defaultDatabase, String defaultCollection) {
 
         var connectionString1 = new ConnectionString(connectionString);
 
@@ -70,7 +70,6 @@ public class MongoAuditLogger implements AuditLogger {
         return this.auditCollection.find().into(new ArrayList<>());
     }
 
-    @Override
     public Optional<AuditEvent> getAuditEvent(String id) {
         logger.debug("Getting audit event with id: {}", id);
         return Optional.ofNullable(this.auditCollection.find(Filters.eq("_id", new ObjectId(id))).first());
