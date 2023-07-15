@@ -46,6 +46,8 @@ public class Config {
     public static final boolean isSNIEnabled = isSecure && !isDevMode && isNotNullAndFalse(System.getenv(ENV_PREPEND + "_SNI"), false);
 
     public static final boolean isSTSEnabled = isNotNullAndFalse(System.getenv(ENV_PREPEND + "_HSTS"), false);
+
+    public static final boolean isAuditLoggingEnabled = isNotNullAndFalse(System.getenv(ENV_PREPEND + "_HSTS"));
     public static final boolean isDetailedAuditingEnabled = true;
     public static final boolean isApiAuditingEnabled = true;
 

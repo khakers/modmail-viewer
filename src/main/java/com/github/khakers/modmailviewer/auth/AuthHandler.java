@@ -205,7 +205,7 @@ public class AuthHandler {
                     }
 
 //                    Main.auditLogger.pushAuditEventWithContext(ctx, );
-                    Main.auditLogger.pushEvent(
+                    Main.OUTBOUND_AUDIT_EVENT_LOGGER.pushEvent(
                             new AuditEvent(
                                     new ObjectId(),
                                     "viewer.login",

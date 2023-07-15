@@ -10,8 +10,10 @@ import com.github.khakers.modmailviewer.data.ModMailLogEntry;
 import com.github.khakers.modmailviewer.data.ModmailConfig;
 import com.github.khakers.modmailviewer.data.internal.TicketStatus;
 import com.mongodb.ConnectionString;
-import com.mongodb.MongoClientSettings;
-import com.mongodb.client.*;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Indexes;
 import com.mongodb.client.model.Sorts;
@@ -19,9 +21,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 import org.bson.UuidRepresentation;
-import org.bson.codecs.configuration.CodecRegistries;
-import org.bson.codecs.configuration.CodecRegistry;
-import org.bson.codecs.pojo.PojoCodecProvider;
 import org.jetbrains.annotations.Nullable;
 import org.mongojack.JacksonMongoCollection;
 import org.mongojack.internal.MongoJackModule;
@@ -44,30 +43,22 @@ public class ModMailLogDB {
     private ModmailConfig cachedConfig = null;
     private Instant cacheTime;
 
-    public ModMailLogDB(String connectionString) {
+    public ModMailLogDB(MongoClient mongoClient, String connectionString) {
 
         this.objectMapper = new JsonMapper()
                 .findAndRegisterModules()
                 .registerModules(new MongoJackModule())
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-        CodecRegistry pojoCodecRegistry = CodecRegistries.fromProviders(PojoCodecProvider.builder().automatic(true).build());
-        CodecRegistry codecRegistry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
-                pojoCodecRegistry);
+        var connectionString1 = new ConnectionString(connectionString);
 
-        var settings = MongoClientSettings.builder()
-                .applyConnectionString(new ConnectionString(connectionString))
-                .codecRegistry(codecRegistry)
-                .build();
 
-        MongoClient mongoClient = MongoClients.create(settings);
-        this.database = mongoClient.getDatabase("modmail_bot");
+        this.database = mongoClient.getDatabase(connectionString1.getDatabase() == null ? "modmail_bot" : connectionString1.getDatabase());
         database.listCollectionNames().forEach(logger::debug);
         this.logCollection = JacksonMongoCollection.builder().withObjectMapper(objectMapper).build(database,"logs", ModMailLogEntry.class, UuidRepresentation.STANDARD);
         this.configCollection = database.getCollection("config");
 
         var result = logCollection.createIndex(Indexes.descending("messages.timestamp"));
-//        var textIndex = logCollection.createIndex(Indexes.text("messages.content"));
         logger.debug(result);
 
     }

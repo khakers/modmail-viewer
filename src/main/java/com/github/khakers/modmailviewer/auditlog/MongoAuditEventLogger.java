@@ -58,7 +58,7 @@ public class MongoAuditEventLogger implements OutboundAuditEventLogger {
                 .withObjectMapper(objectMapper)
                 .build(
                         mongoDatabase,
-                        connectionString1.getCollection() == null ? "audit_log" : connectionString1.getCollection(),
+                        "audit_log",
                         AuditEvent.class,
                         UuidRepresentation.STANDARD
                 );
