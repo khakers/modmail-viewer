@@ -9,6 +9,11 @@ import java.util.concurrent.ConcurrentMap;
 
 public final class Localizer {
     private static final ConcurrentMap<Locale, Localizer> byLocale = new ConcurrentHashMap<>();
+    private final ResourceBundle bundle;
+
+    private Localizer(ResourceBundle bundle) {
+        this.bundle = bundle;
+    }
 
     public static Localizer getInstance(@NotNull String languageTag) {
         Locale locale = new Locale(languageTag);
@@ -21,14 +26,13 @@ public final class Localizer {
             return new Localizer(bundle);
         });
     }
-    private final ResourceBundle bundle;
-    private Localizer(ResourceBundle bundle) {
-        this.bundle = bundle;
-    }
-
 
     public String localize(String key) {
-        return bundle.getString(key);
+        try {
+            return bundle.getString(key);
+        } catch (Exception e) {
+            return key;
+        }
     }
 
 }
