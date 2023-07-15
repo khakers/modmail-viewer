@@ -14,13 +14,13 @@
                 <h2>${localize("ADMIN_AUDIT_SEARCH_HEADER")}</h2>
                 <button class="btn btn-primary">${localize("AUDIT_SEARCH_CLEAR")}</button>
             </div>
-
             <form class="row g-3 needs-validation justify-content-md-center" id="searchForm" action="/admin" method="get" novalidate up-submit up-target="#auditEventTable">
                 <div class="col">
                     <label for="timezone">${localize("AUDIT_SEARCH_FORM_TIMEZONE")}</label>
+                    !{var tzDefault = page.tz.getId().equals("Z") ? "UTC": page.tz.getId();}
                     <select name="tz" id="timezone" class="form-control">
                         @for(var entry : TimeZone.getAvailableIDs())
-                            <option value="${entry}" selected="${entry.equals(page.tz.getId())}">${entry}</option>
+                            <option value="${entry}" selected="${entry.equals(tzDefault)}">${entry}</option>
                         @endfor
                     </select>
                 </div>
