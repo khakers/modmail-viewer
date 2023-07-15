@@ -5,6 +5,9 @@ import io.javalin.http.Context;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.List;
+import java.util.Optional;
+
 public class NoopAuditLogger implements AuditLogger {
 
     private static final Logger logger = LogManager.getLogger();
@@ -21,5 +24,15 @@ public class NoopAuditLogger implements AuditLogger {
     @Override
     public void pushAuditEventWithContext(Context ctx, String event, String description) throws Exception {
         return;
+    }
+
+    @Override
+    public List<AuditEvent> getAuditEvents() {
+        return List.of();
+    }
+
+    @Override
+    public Optional<AuditEvent> getAuditEvent(String id) {
+        return Optional.empty();
     }
 }

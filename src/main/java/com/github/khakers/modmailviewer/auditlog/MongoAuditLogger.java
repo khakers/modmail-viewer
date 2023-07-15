@@ -10,10 +10,12 @@ import com.github.khakers.modmailviewer.util.DiscordUtils;
 import com.mongodb.ConnectionString;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Filters;
 import io.javalin.http.Context;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.UuidRepresentation;
+import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.mongojack.JacksonMongoCollection;
 import org.mongojack.MongoJackModuleConfiguration;
@@ -23,6 +25,8 @@ import org.mongojack.internal.MongoJackModule;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class MongoAuditLogger implements AuditLogger {
 
@@ -67,6 +71,42 @@ public class MongoAuditLogger implements AuditLogger {
     }
 
     @Override
+    public Optional<AuditEvent> getAuditEvent(String id) {
+        logger.debug("Getting audit event with id: {}", id);
+        return Optional.ofNullable(this.auditCollection.find(Filters.eq("_id", new ObjectId(id))).first());
+    }
+
+    public List<AuditEvent> searchAuditEvents(Instant rangeStart, Instant rangeEnd, List<Long> userIds, List<String> actions) {
+        var timeFilter = Filters.and(
+                Filters.gte("timestamp", rangeStart),
+                Filters.lte("timestamp", rangeEnd)
+        );
+
+        Bson userFilter;
+
+        if (userIds.isEmpty()) {
+            userFilter = Filters.empty();
+        } else {
+            userFilter = Filters.or(userIds.stream()
+                    .map(userId -> Filters.eq("actor.user_id", userId))
+                    .collect(Collectors.toSet()));
+        }
+
+        Bson actionFilter;
+        if (actions.isEmpty()) {
+            actionFilter = Filters.empty();
+        } else {
+            actionFilter = Filters.or(actions.stream()
+                    .map(action -> Filters.eq("action", action))
+                    .collect(Collectors.toSet()));
+
+        }
+
+        return this.auditCollection.find(Filters.and(timeFilter, userFilter, actionFilter))
+                .into(new ArrayList<>());
+    }
+
+    @Override
     public void pushEvent(AuditEvent event) {
         logger.debug("Pushing audit event: {}", event);
         this.auditCollection.insertOne(event);
@@ -95,4 +135,5 @@ public class MongoAuditLogger implements AuditLogger {
 
         this.pushEvent(auditEvent);
     }
+
 }
