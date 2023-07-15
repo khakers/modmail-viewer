@@ -1,10 +1,9 @@
 package com.github.khakers.modmailviewer;
 
+import com.github.khakers.modmailviewer.page.admin.AdminController;
 import com.github.khakers.modmailviewer.auditlog.AuditLogger;
 import com.github.khakers.modmailviewer.auditlog.MongoAuditLogger;
 import com.github.khakers.modmailviewer.auditlog.NoopAuditLogger;
-import com.github.khakers.modmailviewer.auditlog.event.AuditEvent;
-import com.github.khakers.modmailviewer.auditlog.event.AuditEventSource;
 import com.github.khakers.modmailviewer.auth.AuthHandler;
 import com.github.khakers.modmailviewer.auth.Role;
 import com.github.khakers.modmailviewer.log.LogController;
@@ -14,6 +13,7 @@ import com.github.khakers.modmailviewer.markdown.spoiler.SpoilerExtension;
 import com.github.khakers.modmailviewer.markdown.timestamp.TimestampExtension;
 import com.github.khakers.modmailviewer.markdown.underline.UnderlineExtension;
 import com.github.khakers.modmailviewer.markdown.usermention.UserMentionExtension;
+import com.github.khakers.modmailviewer.page.audit.AuditController;
 import com.github.khakers.modmailviewer.util.RoleUtils;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
@@ -31,11 +31,13 @@ import gg.jte.resolve.DirectoryCodeResolver;
 import io.javalin.Javalin;
 import io.javalin.community.ssl.SSLPlugin;
 import io.javalin.config.JavalinConfig;
+import io.javalin.http.HttpStatus;
 import io.javalin.http.NotFoundResponse;
 import io.javalin.http.staticfiles.Location;
 import io.javalin.json.JavalinJackson;
 import io.javalin.plugin.bundled.GlobalHeaderConfig;
 import io.javalin.rendering.template.JavalinJte;
+import io.javalin.validation.JavalinValidation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.codecs.configuration.CodecRegistries;
@@ -43,7 +45,9 @@ import org.bson.codecs.pojo.PojoCodecProvider;
 
 import java.nio.file.Path;
 import java.time.Duration;
-import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -90,9 +94,13 @@ public class Main {
 
     public static final ModMailLogDB db = new ModMailLogDB(Config.MONGODB_URI);
 
+    // We will always need an audit logger for searching, even if pushing to an audit logger is disabled
+    public static MongoAuditLogger AuditLogClient = new MongoAuditLogger(mongoClient, Config.MONGODB_URI, "modmail_bot", "audit_log");
+
     public static final AuditLogger auditLogger = Config.isAuthEnabled
-            ? new MongoAuditLogger(mongoClient, Config.MONGODB_URI, "modmail_bot", "audit_log")
+            ? AuditLogClient
             : new NoopAuditLogger();
+
 
     static final AuthHandler authHandler =
             Config.isAuthEnabled ?
@@ -119,6 +127,8 @@ public class Main {
             templateEngine = TemplateEngine.createPrecompiled(ContentType.Html);
         }
 
+        registerValidators();
+
         JavalinJte.init(templateEngine);
         var app = Javalin.create(Main::configure)
                 .get("/hello", ctx -> ctx.status(200).result("hello"), RoleUtils.anyone())
@@ -128,22 +138,6 @@ public class Main {
                     if (!Config.isAuthEnabled) {
                         ctx.redirect("/");
                     }
-                    var user = AuthHandler.getUser(ctx);
-                    auditLogger.pushEvent(
-                            new AuditEvent(
-                                    null,
-                                    "logout",
-                                    Instant.now(),
-                                    "User logged out",
-                                    new AuditEventSource(
-                                            user.getId(),
-                                            user.getUsername(),
-                                            ctx.ip(),
-                                            "us",
-                                            ctx.userAgent(),
-                                            AuthHandler.getUserRole(ctx),
-                                            "modmail-viewer-"+ModmailViewer.COMMIT_ID_DESCRIBE)));
-
                 }, RoleUtils.atLeastSupporter())
                 .get("/", LogController.serveLogsPage, RoleUtils.atLeastSupporter())
 //                .routes(() -> {
@@ -157,14 +151,24 @@ public class Main {
                 .get("/logs", LogController.serveLogsPage, RoleUtils.atLeastSupporter())
                 .get("/logs/{id}", LogController.serveLogPage, RoleUtils.atLeastSupporter())
                 //todo maybe after?
-                .before("/logs/{id}", ctx -> {
+                .after("/logs/{id}", ctx -> {
+                    if (ctx.statusCode() == HttpStatus.FORBIDDEN.getCode()) {
+
+                    }
+
                     if (Config.isDetailedAuditingEnabled) {
                         auditLogger.pushAuditEventWithContext(ctx, "log.accessed", String.format("accessed log id %s", ctx.pathParam("id")));
                     }
                 })
-                .before("/api/*", ctx -> {
+                .get("/admin", AdminController.serveAdminPage, RoleUtils.atLeastAdministrator())
+                .get("/audit/{id}", AuditController.serveAuditPage, RoleUtils.atLeastAdministrator())
+                .after("/api/*", ctx -> {
                     if (Config.isApiAuditingEnabled) {
-                        auditLogger.pushAuditEventWithContext(ctx, "api", String.format("%s %s", ctx.method(), ctx.path()));
+                        if (ctx.statusCode() == HttpStatus.FORBIDDEN.getCode()) {
+                            auditLogger.pushAuditEventWithContext(ctx, "viewer.api", String.format("DENIED %s %s", ctx.method(), ctx.path()));
+                        } else {
+                            auditLogger.pushAuditEventWithContext(ctx, "viewer.api", String.format("%s %s", ctx.method(), ctx.path()));
+                        }
                     }
                 })
                 .start(Config.httpPort);
@@ -249,5 +253,12 @@ public class Main {
         }
 
         return globalHeaderConfig;
+    }
+
+    private static void registerValidators() {
+        // Javalin uses these in param validators to convert the string to the correct type
+        JavalinValidation.register(LocalTime.class, LocalTime::parse);
+        JavalinValidation.register(LocalDate.class, LocalDate::parse);
+        JavalinValidation.register(ZoneId.class, ZoneId::of);
     }
 }

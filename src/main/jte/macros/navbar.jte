@@ -1,6 +1,9 @@
 @import com.github.khakers.modmailviewer.Config
 @import com.github.khakers.modmailviewer.Page
 
+@import static com.github.khakers.modmailviewer.jte.JteContext.*
+
+
 @param Page page
 
 !{var user = page.getCurrentUser();}
@@ -31,6 +34,10 @@
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
                     <a class="nav-link" aria-current="page" href="/" up-follow up-target=".content" up-history='true'>Home</a>
+                </li>
+<%--                todo should only appear for ADMIn users--%>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="/admin" up-follow up-target=".content" up-history='true'>${localize("NAV_PAGE_ADMIN")}</a>
                 </li>
             </ul>
             <div class="row gx-3 ms-1 align-items-start me-2">
@@ -90,7 +97,9 @@
                         <span class="navbar-text me-3 text-emphasis">
                     Signed in as <span>${user.get().getUsername()}</span><span>#${user.get().getDiscriminator()}</span>
                 </span>
-                        <a class="btn btn-danger" href="/logout">signout</a>
+                        <form name="logoutForm" action="/logout" method="post" >
+                            <input type="submit" class="btn btn-outline-danger" value="Logout"/>
+                        </form>
                     @endif
                 </div>
             </div>
