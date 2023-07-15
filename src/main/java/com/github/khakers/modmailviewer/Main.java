@@ -133,6 +133,7 @@ public class Main {
         var app = Javalin.create(Main::configure)
                 .get("/hello", ctx -> ctx.status(200).result("hello"), RoleUtils.anyone())
                 .post("/logout", ctx -> {
+                    auditLogger.pushAuditEventWithContext(ctx, "viewer.logout", "User logged out");
                     ctx.removeCookie("jwt");
                     ctx.result("logout successful");
                     if (!Config.isAuthEnabled) {
