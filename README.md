@@ -12,7 +12,7 @@ Built from scratch using Javalin, JTE, Bootstrap 5, and Unpoly.
 
 
 ~~[Demo Site running the latest commit from Master](https://demo.modmail-viewer.khakers.dev/logs/1bef379de4ac)~~
-The demo site is currently in the process of being migrated off railway to my own infra
+The demo site is currently in the process of being migrated off railway to my own infra and will be available at a different URL in the future
 
 <details>
 <summary>Screenshots</summary>
@@ -31,7 +31,7 @@ Use GitHub discussions for feature requests or to ask questions. Please prefer n
 ## Features
 
 * Discord OAuth2 authentication **based on your modmail roles**. See [the wiki page on permissions.](https://github.com/khakers/modmail-viewer/wiki/Permissions) 
-* Browsable paginated logs sorted by most recent message and filtered by status.
+* Browsable paginated logs sorted by most recent message and filterable by status.
 * Mobile friendly design.
 * Full message Discord Markdown formatting (Including spoilers, custom emojis, and timestamps).
 * Customizable Branding
@@ -40,16 +40,10 @@ Use GitHub discussions for feature requests or to ask questions. Please prefer n
 * HTTPS support 
 * NSFW warnings
 * Image spoiler support
+* Ticket dashboard 🔜
+* Audit Logging 🔜
 
-
-## Future Ideas
-
-* Stats dashboard (WIP, see feature/dashboard-2 branch)
-* Internationalization (Work is currently being done to support localization of text strings)
-  * If you want to help with internationalization and are interested in providing translations, please contact me and/or open an issue/discussion on GitHub.
-* Basic API
-* Snippet editor (will likely require a bot plugin)
-* Persistent Notes editor 
+### [Modmail-viewer & logviewer comparison](https://github.com/khakers/modmail-viewer/wiki/modmail-viewer-vs-logviewer)
 
 ## Self-hosting
 
@@ -59,7 +53,7 @@ automatic https OR provide the required keys/certs to the application yourself i
 ### Docker
 
 Running the application with Docker is the fastest and best supported way to run _modmail-viewer_. Additionally, you
-can easily run it using any 3rd party service that supports running docker containers.
+can easily run it using any service that supports running docker containers.
 
 #### Docker Run
 
