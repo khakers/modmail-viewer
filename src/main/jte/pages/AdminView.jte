@@ -11,8 +11,8 @@
     <div class="container p-5">
         <div class="border rounded p-2">
             <div>
-                <h2>${localize("ADMIN_AUDIT_SEARCH_HEADER")}</h2>
-                <button class="btn btn-primary">${localize("AUDIT_SEARCH_CLEAR")}</button>
+                <h2>${localize("AUDIT_SEARCH_HEADER")}</h2>
+                <button class="btn btn-primary">${localize("AUDIT_SEARCH_RESET")}</button>
             </div>
             <form class="row g-3 needs-validation justify-content-md-center" id="searchForm" action="/admin" method="get" novalidate up-submit up-target="#auditEventTable">
                 <div class="col">
@@ -65,10 +65,10 @@
                 <thead>
                 <tr>
                     <th scope="col">${localize("AUDIT_PARAM_TIME")}</th>
-                    <th scope="col">${localize("ADMIN_AUDIT_PARAM_EVENT_ID")}</th>
+                    <th scope="col">${localize("AUDIT_PARAM_EVENT_ID")}</th>
                     <th scope="col">${localize("AUDIT_PARAM_USER")}</th>
                     <th scope="col">${localize("AUDIT_PARAM_ROLE")}</th>
-                    <th scope="col">${localize("ADMIN_AUDIT_PARAM_SOURCE")}</th>
+                    <th scope="col">${localize("AUDIT_PARAM_SOURCE")}</th>
                     <th scope="col">${localize("AUDIT_PARAM_ACTION")}</th>
                     <th scope="col">${localize("AUDIT_PARAM_DESCRIPTION")}</th>
                 </tr>
@@ -92,8 +92,8 @@
                 </tbody>
             </table>
             @if(page.auditEvents.isEmpty())
-                <div class="alert alert-warning" role="alert">
-                    ${localize("ADMIN_AUDIT_SEARCH_EMPTY")}
+                <div class="alert alert-warning text-center" role="alert">
+                    ${localize("AUDIT_SEARCH_EMPTY")}
                 </div>
             @endif
         </div>
