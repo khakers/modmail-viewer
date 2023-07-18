@@ -92,7 +92,7 @@ public class Main {
                                                     .build())))
             .build());
 
-    public static final ModMailLogDB db = new ModMailLogDB(Config.MONGODB_URI);
+    public static final ModMailLogDB db = new ModMailLogDB(mongoClient, Config.MONGODB_URI);
 
     // We will always need an audit logger for searching, even if pushing to an audit logger is disabled
     public static MongoAuditEventLogger AuditLogClient = new MongoAuditEventLogger(mongoClient, Config.MONGODB_URI, "modmail_bot", "audit_log");
