@@ -12,10 +12,10 @@
         <div class="border rounded p-2">
             <div>
                 <h2>${localize("AUDIT_SEARCH_HEADER")}</h2>
-                <button class="btn btn-primary">${localize("AUDIT_SEARCH_RESET")}</button>
+                <button class="btn btn-primary" id="auditSearchResetButton">${localize("AUDIT_SEARCH_RESET")}</button>
             </div>
-            <form class="row g-3 needs-validation justify-content-md-center" id="searchForm" action="/admin" method="get" novalidate up-submit up-target="#auditEventTable">
-                <div class="col">
+            <form class="row g-3 needs-validation " id="auditSearchForm" action="/admin" method="get" novalidate up-submit up-target="#auditEventTable">
+                <div class="col-lg-3 col-12">
                     <label for="timezone">${localize("AUDIT_SEARCH_FORM_TIMEZONE")}</label>
                     !{var tzDefault = page.tz.getId().equals("Z") ? "UTC": page.tz.getId();}
                     <select name="tz" id="timezone" class="form-control">
@@ -24,7 +24,7 @@
                         @endfor
                     </select>
                 </div>
-                <div class="col">
+                <div class="col-lg-3 col-12">
                     <label>
                         ${localize("AUDIT_SEARCH_FORM_START_DATE")}
                         <div class="input-group">
@@ -33,7 +33,7 @@
                         </div>
                     </label>
                 </div>
-                <div class="col">
+                <div class="col-lg-3 col-12">
                     <label for="endDate">
                         ${localize("AUDIT_SEARCH_FORM_END_DATE")}
                         <div class="input-group">
@@ -43,12 +43,12 @@
                     </label>
                 </div>
 
-                <div class="col">
+                <div class="col-12 col-lg-6">
                     <label>${localize("AUDIT_SEARCH_FORM_USERS")}</label>
                     <input type="text" class="form-control" name="users" id="searchUsers" placeholder="comma seperated list of users" pattern="(([\d]{16,20})[,\s]*)*">
 
                 </div>
-                <div class="col">
+                <div class="col-12 col-lg-6">
                     <label>
                         ${localize("AUDIT_SEARCH_FORM_ACTIONS")}
                         <input type="text" class="form-control" name="actions" id="searchActions" placeholder="Show all actions" value="" pattern="([A-Z_]+[,\s]*)*">

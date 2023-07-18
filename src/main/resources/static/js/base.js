@@ -76,6 +76,10 @@ up.on('up:request:loaded', (event) => {
     }
 });
 
+up.on('click', '#auditSearchResetButton', (event) => {
+    document.getElementById("auditSearchForm").reset();
+});
+
 
 function isDiscordPage(url) {
     return !!url.match(/^https:\/\/discord\.com\/oauth2\/authorize\S*/gm);
