@@ -92,12 +92,10 @@
                     @endif
                     @if(entry.get().isOpen())
                         <span>Created by</span>
-                        <span class="user-select-all" data-bs-toggle="tooltip"
+                        <span class="user-select-all d-inline-flex" data-bs-toggle="tooltip"
                               data-bs-title="${entry.get().getCreator().id()}">
                             <span class="fw-semibold">${entry.get().getCreator().name()}</span>
-                            @if(!DiscordUtils.isMigratedUserName(entry.get().getCreator()))
-                                <span class="text-muted">#${entry.get().getCreator().discriminator()}</span>
-                            @endif
+                                <span class="text-muted">${DiscordUtils.getDiscriminatorString(entry.get().getCreator())}</span>
                             </span>
 
                         <span><span class="text-muted" data-timestamp="${entry.get().getCreationTime().toString()}"
@@ -105,12 +103,10 @@
                                     data-timestamp-title-type="detailed"></span></span>
                     @else
                         <span>Created by</span>
-                        <span class="user-select-all" data-bs-toggle="tooltip"
+                        <span class="user-select-all d-inline-flex" data-bs-toggle="tooltip"
                               data-bs-title="${entry.get().getCreator().id()}">
                             <span class="fw-semibold">${entry.get().getCreator().name()}</span>
-                            @if(!DiscordUtils.isMigratedUserName(entry.get().getCreator()))
-                                <span class="text-muted">#${entry.get().getCreator().discriminator()}</span>
-                            @endif
+                                <span class="text-muted">${DiscordUtils.getDiscriminatorString(entry.get().getCreator())}</span>
                             </span>
                         <span>was closed <span class="text-muted"
                                                data-timestamp="${entry.get().getClosedTime().get().toString()}"
@@ -118,12 +114,10 @@
                                                data-timestamp-title-type="detailed"></span></span>
                         @if(entry.get().getCloser().isPresent())
                             <span>by</span>
-                            <span class="user-select-all" data-bs-toggle="tooltip"
+                            <span class="user-select-all d-inline-flex" data-bs-toggle="tooltip"
                                   data-bs-title="${entry.get().getCloser().get().id()}">
                                 <span class="fw-semibold">${entry.get().getCloser().get().name()}</span>
-                                @if(!DiscordUtils.isMigratedUserName(entry.get().getCreator()))
-                                    <span class="text-muted">#${entry.get().getCloser().get().discriminator()}</span>
-                                @endif
+                                    <span class="text-muted">${DiscordUtils.getDiscriminatorString(entry.get().getCloser().get())}</span>
                                 </span>
                         @endif
 
@@ -136,12 +130,10 @@
                                                       data-timestamp="${entry.get().getMessages().get(entry.get().getMessages().size()-1).getCreationTime().toString()}"
                                                       data-timestamp-type="relative" data-bs-toggle="tooltip"
                                                       data-timestamp-title-type="detailed"></span> by
-                            <span class="user-select-all" data-bs-toggle="tooltip"
+                            <span class="user-select-all d-inline-flex" data-bs-toggle="tooltip"
                                   data-bs-title="${entry.get().getMessages().get(entry.get().getMessages().size()-1).getAuthor().id()}">
                                 <span class="fw-semibold">${entry.get().getMessages().get(entry.get().getMessages().size()-1).getAuthor().name()}</span>
-                            @if(!DiscordUtils.isMigratedUserName(entry.get().getCreator()))
-                                <span class="text-muted">#${entry.get().getMessages().get(entry.get().getMessages().size()-1).getAuthor().discriminator()}</span>
-                            @endif
+                                <span class="text-muted">${DiscordUtils.getDiscriminatorString(entry.get().getMessages().get(entry.get().getMessages().size()-1).getAuthor())}</span>
                             </span>
                         </span>
                     @endif
