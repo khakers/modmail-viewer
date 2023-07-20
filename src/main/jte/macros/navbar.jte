@@ -95,7 +95,7 @@
                 <div class="col-12 col-lg d-flex mx-2 color text-primary-emphasis">
                     @if(user.isPresent() && user.get().isRealUser())
                         <span class="navbar-text me-3 text-emphasis">
-                    Signed in as <span>${user.get().getUsername()}</span><span>#${user.get().getDiscriminator()}</span>
+                    Signed in as <span>${user.getUsername()}</span><span>${DiscordUtils.getDiscriminatorString(user)}</span>
                 </span>
                         <form name="logoutForm" action="/logout" method="post" >
                             <input type="submit" class="btn btn-outline-danger" value="Logout"/>

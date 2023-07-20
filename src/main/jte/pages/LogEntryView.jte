@@ -91,7 +91,7 @@
                                     <div class="col">
                                         <h3>
                                     <span data-bs-toggle="tooltip"
-                                          title="${message.get().getAuthor().name()+ (DiscordUtils.isMigratedUserName(message.get().getAuthor()) ? "" :("#"+message.get().getAuthor().discriminator()))}">${message.get().getAuthor().name()}</span>
+                                          title="${message.get().getAuthor().name()+DiscordUtils.getDiscriminatorString(message.get().getAuthor())}">${message.get().getAuthor().name()}</span>
                                             @if(message.get().getAuthor().mod())
                                                 <span class="badge text-bg-primary align-middle fst-normal user-badge">
                                             <i class="bi bi-shield-shaded"></i>
@@ -163,7 +163,7 @@
                                 <div class="col">
                                     <h3>
                                         <span data-bs-toggle="tooltip"
-                                              title="${modmailLog.getCloser().get().name() + (DiscordUtils.isMigratedUserName(modmailLog.getCloser().get()) ? "" :("#"+modmailLog.getCloser().get().discriminator()))}">${modmailLog.getCloser().get().name()}</span>
+                                              title="${modmailLog.getCloser().get().name()+DiscordUtils.getDiscriminatorString(modmailLog.getCloser().get())}">${modmailLog.getCloser().get().name()}</span>
                                         <span class="fw-normal fs-5">${localize("LOG_CLOSED_THREAD_TEXT")}</span>
                                         @if(modmailLog.getCloser().get().mod())
                                             <span class="badge text-bg-primary align-middle fst-normal user-badge">

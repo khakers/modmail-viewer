@@ -2,6 +2,20 @@
 /*    color: rgb(163, 166, 170);*/
 /*}*/
 
+html, body {
+    height: 100%;
+}
+body {
+    display: flex;
+    flex-direction: column;
+}
+.content {
+    flex: 1 0 auto;
+}
+.footer {
+    flex-shrink: 0;
+}
+
 blockquote {
     border-left: 5px solid rgba(123, 123, 123, 0.8);
     padding: 0 10px;
@@ -184,38 +198,12 @@ div.spoilerImage input:checked, div.spoilerImage input:checked ~ label {
     min-height: 100vh;
 }
 
-@media screen and (min-width: 992px) {
-    .content {
-        padding-top: 56px;
-        padding-bottom: 2.5rem;
-    }
+.content {
+    padding-top: 59px;
 }
 
-@media screen and (max-width: 992px) {
-    .content {
-        padding-top: 56px;
-        padding-bottom: 6rem;
-    }
-}
-
-@media screen and (max-width: 576px) {
-    .content {
-        padding-top: 56px;
-        padding-bottom: 10rem;
-    }
-}
-
-footer {
-    display: block;
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-}
-
-.nav-footer {
-    --bs-nav-link-color: var(--bs-navbar-color);
-    --bs-nav-link-hover-color: var(--bs-navbar-hover-color);
-    --bs-nav-link-disabled-color: var(--bs-navbar-disabled-color);
+.footer a {
+    --bs-icon-link-transform: translate3d(0, -.125rem, 0);
 }
 
 #nsfw-backdrop {

@@ -59,6 +59,8 @@ public class Config {
             : null;
 
     public static final long DISCORD_GUILD_ID = Long.parseLong(Assert.requireNonEmpty(System.getenv(ENV_PREPEND + "_DISCORD_GUILD_ID"), "No Discord guild ID provided. Provide one with the option \""+ENV_PREPEND+"_DISCORD_GUILD_ID\""));
+
+    public static final long BOT_ID = Long.parseLong(notEmptyOrElse(System.getenv(ENV_PREPEND + "_BOT_ID"), "0"));
     public static final String JWT_SECRET_KEY;
 
     public static final String BRANDING = notEmptyOrElse(System.getenv(ENV_PREPEND + "_BRANDING"), "Modmail-Viewer");

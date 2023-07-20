@@ -1,8 +1,7 @@
 version: "3.7"
 services:
   bot:
-    build:
-      context: https://github.com/kyb3r/modmail.git
+    image: ghcr.io/modmail-dev/modmail:master
     restart: always
     env_file:
       - .env

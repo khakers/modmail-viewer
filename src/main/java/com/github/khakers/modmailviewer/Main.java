@@ -64,7 +64,6 @@ public class Main {
                     UserMentionExtension.create(),
                     ChannelMentionExtension.create()
             ))
-            .set(Parser.HEADING_PARSER, false)
             //Required to enable underlines to function
             //Otherwise the '_' delimiter conflicts
             .set(Parser.UNDERSCORE_DELIMITER_PROCESSOR, false)
