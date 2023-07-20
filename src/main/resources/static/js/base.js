@@ -16,11 +16,19 @@ up.compiler("#nsfwModal", element => {
     });
     bsModal.show();
 });
-
+function waitForLoad(element) {
+    return new Promise(((resolve, reject) => {
+        if (element.complete) {
+            return resolve();
+        }
+        element.onload = () => resolve();
+        element.onerror = () => reject(element);
+    }));
+}
 up.compiler(".discordAvatar", (element) => {
-    if (element.naturalHeight === 0) {
-        element.src = `https://cdn.discordapp.com/embed/avatars/${element.dataset.avatarId}.png`
-    }
+    waitForLoad(element).then(() => {}, () => {
+        element.src = `https://cdn.discordapp.com/embed/avatars/${element.dataset.avatarId}.png`;
+    });
 });
 
 up.on('up:fragment:inserted', (event) => {
