@@ -18,14 +18,10 @@
 </head>
 
 <body>
-<div class="page-container">
     @template.macros.navbar(page = page)
-    <main>
-        <div class="content" up-main data-nsfw="${page.isNSFW()}">
+        <main class="content" up-main data-nsfw="${page.isNSFW()}">
             ${content}
-        </div>
-    </main>
+        </main>
     @template.macros.footer(page = page)
-</div>
 </body>
 </html>
