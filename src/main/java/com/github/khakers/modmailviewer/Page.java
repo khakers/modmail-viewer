@@ -2,6 +2,7 @@ package com.github.khakers.modmailviewer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.khakers.modmailviewer.auth.AuthHandler;
+import com.github.khakers.modmailviewer.auth.Role;
 import com.github.khakers.modmailviewer.auth.UserToken;
 import com.github.khakers.modmailviewer.jte.JteContext;
 import io.javalin.http.Context;
@@ -34,6 +35,13 @@ public abstract class Page {
 
     public Optional<UserToken> getCurrentUser() {
         return Optional.ofNullable(this.currentUser);
+    }
+
+    public Role getCurrentUserRole() {
+        if (this.currentUser != null) {
+            return AuthHandler.getUserRole(this.currentUser);
+        }
+        return Role.ANYONE;
     }
 
     public String getLang() {

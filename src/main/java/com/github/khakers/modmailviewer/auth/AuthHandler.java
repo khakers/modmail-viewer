@@ -60,7 +60,15 @@ public class AuthHandler {
         AuthHandler.modMailLogDB = modMailLogDB;
     }
 
-    public static Role getUserRole(Context ctx) throws Exception {
+    public static Role getUserRole(UserToken token) {
+        try {
+            return modMailLogDB.getUserOrGuildRole(token, token.discordRoles);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Role getUserRole(Context ctx) {
         var jwtCookie = ctx.cookie("jwt");
         if (jwtCookie != null) {
             try {
