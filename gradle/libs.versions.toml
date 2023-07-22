@@ -8,7 +8,9 @@ docker-java-application = "9.3.1"
 gradle-license = "0.9.2"
 gradle-git-properties = "2.4.1"
 
-javalin = "5.5.0"
+javalin = "5.6.1"
+# Javalin-Rendering has not pushed a 5.6.1 version
+javalin-rendering= "5.6.0"
 jte = "2.3.1"
 flexmark = "0.64.2"
 log4j = "2.19.0"
@@ -29,7 +31,7 @@ unpoly = "3.0.0"
 
 [libraries]
 javalin = { module = "io.javalin:javalin", version.ref = "javalin" }
-javalin-rendering = { module = "io.javalin:javalin-rendering", version.ref = "javalin" }
+javalin-rendering = { module = "io.javalin:javalin-rendering", version.ref = "javalin-rendering" }
 javalin-ssl-plugin = { module = "io.javalin.community.ssl:ssl-plugin", version.ref = "javalin" }
 
 jte = { module = "gg.jte:jte", version.ref = "jte" }
