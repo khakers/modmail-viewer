@@ -1,6 +1,9 @@
 @import com.github.khakers.modmailviewer.Config
 @import com.github.khakers.modmailviewer.Page
+@import com.github.khakers.modmailviewer.auth.AuthHandler
+@import com.github.khakers.modmailviewer.auth.Role
 @import com.github.khakers.modmailviewer.util.DiscordUtils
+@import com.github.khakers.modmailviewer.util.RoleUtils
 
 
 @import static com.github.khakers.modmailviewer.jte.JteContext.*
@@ -9,6 +12,7 @@
 @param Page page
 
 !{var user = page.getCurrentUser();}
+!{var authRole = page.getCurrentUserRole();}
 
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
     <symbol id="check2" viewBox="0 0 16 16">
@@ -37,11 +41,12 @@
                 <li class="nav-item">
                     <a class="nav-link" aria-current="page" href="/" up-follow up-target=".content" up-history='true'>Home</a>
                 </li>
-                <%--                todo should only appear for ADMIn users--%>
-                <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="/admin" up-follow up-target=".content"
-                       up-history='true'>${localize("NAV_PAGE_ADMIN")}</a>
-                </li>
+                @if(user.isPresent() && user.get().isRealUser() && RoleUtils.isAtLeastRole(authRole, Role.ADMINISTRATOR))
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/admin" up-follow up-target=".content"
+                           up-history='true'>${localize("NAV_PAGE_ADMIN")}</a>
+                    </li>
+                @endif
             </ul>
             <div class="row gx-3 ms-1 align-items-start me-2">
                 <ul class="nav-item col-lg-1 col-12 dropdown my-0 ps-0" id="themeSelector">
