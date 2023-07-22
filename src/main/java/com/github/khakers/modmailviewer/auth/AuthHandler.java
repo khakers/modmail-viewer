@@ -66,7 +66,7 @@ public class AuthHandler {
             try {
                 var user = JwtAuth.decodeAndVerifyJWT(jwtCookie, objectMapper);
                 logger.trace("user = {}", user);
-                return modMailLogDB.getUserOrGuildRole(user, user.roles);
+                return modMailLogDB.getUserOrGuildRole(user, user.discordRoles);
             } catch (Exception e) {
                 logger.error(e);
                 return Role.ANYONE;

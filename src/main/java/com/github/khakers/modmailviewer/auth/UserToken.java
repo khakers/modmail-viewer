@@ -14,7 +14,7 @@ public class UserToken {
     String discriminator;
     String avatar;
 
-    long[] roles = new long[]{};
+    long[] discordRoles = new long[]{};
 
     @JsonIgnore
     boolean isRealUser = true;
@@ -31,12 +31,12 @@ public class UserToken {
     public UserToken() {
 
     }
-    public UserToken(long id, String username, String discriminator, String avatar, long[] roles, boolean isRealUser) {
+    public UserToken(long id, String username, String discriminator, String avatar, long[] discordRoles, boolean isRealUser) {
         this.id = id;
         this.username = username;
         this.discriminator = discriminator;
         this.avatar = avatar;
-        this.roles = roles;
+        this.discordRoles = discordRoles;
         this.isRealUser = isRealUser;
     }
 
@@ -56,8 +56,8 @@ public class UserToken {
         return Optional.ofNullable(avatar);
     }
 
-    public long[] getRoles() {
-        return roles;
+    public long[] getDiscordRoles() {
+        return discordRoles;
     }
 
     public boolean isRealUser() {
@@ -77,13 +77,13 @@ public class UserToken {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserToken userToken = (UserToken) o;
-        return id == userToken.id && isRealUser == userToken.isRealUser && Objects.equals(username, userToken.username) && Objects.equals(discriminator, userToken.discriminator) && Objects.equals(avatar, userToken.avatar) && Arrays.equals(roles, userToken.roles);
+        return id == userToken.id && isRealUser == userToken.isRealUser && Objects.equals(username, userToken.username) && Objects.equals(discriminator, userToken.discriminator) && Objects.equals(avatar, userToken.avatar) && Arrays.equals(discordRoles, userToken.discordRoles);
     }
 
     @Override
     public int hashCode() {
         int result = Objects.hash(id, username, discriminator, avatar, isRealUser);
-        result = 31 * result + Arrays.hashCode(roles);
+        result = 31 * result + Arrays.hashCode(discordRoles);
         return result;
     }
 
@@ -94,7 +94,7 @@ public class UserToken {
                 ", username='" + username + '\'' +
                 ", discriminator='" + discriminator + '\'' +
                 ", avatar='" + avatar + '\'' +
-                ", roles=" + Arrays.toString(roles) +
+                ", roles=" + Arrays.toString(discordRoles) +
                 ", isRealUser=" + isRealUser +
                 '}';
     }

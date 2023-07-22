@@ -26,7 +26,7 @@ class UserTokenTest {
     @Test
     public void testDecode() throws JsonProcessingException {
         var decoded = objectMapper.readValue(test, UserToken.class);
-        Assertions.assertArrayEquals(new long[]{1083617364853141500L}, decoded.roles);
+        Assertions.assertArrayEquals(new long[]{1083617364853141500L}, decoded.discordRoles);
         Assertions.assertEquals(decoded.id, 403050000000000500L);
         Assertions.assertEquals(decoded.discriminator, "1234");
     }
