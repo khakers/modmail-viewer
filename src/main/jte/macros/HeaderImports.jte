@@ -1,7 +1,7 @@
 @import com.github.khakers.modmailviewer.Config
 <link rel="stylesheet" href="/webjars/unpoly/3.0.0/unpoly.min.css"/>
 
-<link href="/webjars/bootstrap/5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="/webjars/bootstrap/5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="/webjars/unpoly/3.0.0/unpoly-bootstrap5.min.css">
 <link rel="stylesheet" href="/webjars/bootstrap-icons/1.10.3/font/bootstrap-icons.css">
 <link rel="stylesheet" title="dark" href="/webjars/highlightjs__cdn-assets/11.7.0/styles/a11y-dark.min.css">
@@ -17,7 +17,7 @@
 <script src="/timeformat.js" defer></script>
 <script src="/util.js" defer></script>
 <script src="/js/TicketFilterHandler.js" defer></script>
-<script src="/webjars/bootstrap/5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" defer></script>
+<script src="/webjars/bootstrap/5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
 <script src="/webjars/highlightjs__cdn-assets/11.7.0/highlight.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@twemoji/api@14.1.0/dist/twemoji.min.js"
         integrity="sha256-XYd0657/E6vXWd2/YltfmmLHI1HFxm5P9qC5eg/e19Q=" crossorigin="anonymous" defer></script>
