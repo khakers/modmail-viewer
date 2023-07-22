@@ -51,7 +51,7 @@
                 @endif
                 <%-- Merged message --%>
                 @if(!message.isFirst() && message.get().canMergeMessages(modmailLog.getMessages().get(message.getIndex()-1)))
-                    <li class="list-group-item merge-above ${classes}" id="${message.get().getId()}">
+                    <li class="list-group-item merge-above message ${classes}" id="${message.get().getId()}">
                         <div class="row">
                             <div class="col-2 col-md-1 text-center">
                                     <span class="d-none d-xl-inline fs-6 fs-light text-muted user-select-none"
@@ -60,6 +60,9 @@
                                           data-bs-toggle="tooltip"></span>
                             </div>
                             <div class="col">
+                                <div class="float-end message-actions -50 start-0 translate-middle-y">
+                                    @template.macros.MessageActionDropdown(message = message.get(), modmailLog = modmailLog)
+                                </div>
                                 @if(message.get().isEdited())
                                     <span class="fw-light float-end text-secondary">(${localize("MESSAGE_EDITED_FLAG")})  <i
                                                 class="bi bi-pencil-fill ms-1"></i></span>
@@ -79,12 +82,14 @@
                     </li>
                 <%-- Unmergable message --%>
                 @else
-                    <li class="list-group-item ${classes}" id="${message.get().getId()}">
+                    <li class="list-group-item message ${classes}" id="${message.get().getId()}">
                         <div class="row ">
                             <div class="col-2 col-md-1 text-center">
+                                <div class="ration ratio-1x2">
                                 <img width="50" src="${message.get().getAuthor().avatarUrl()}"
                                      data-avatar-id="${DiscordUtils.getAvatarId(message.get().getAuthor())}"
                                      class="rounded-circle discordAvatar" alt="user avatar">
+                                </div>
                             </div>
                             <div class="col">
                                 <div class="row ">
@@ -123,9 +128,9 @@
                                             ></span>
                                         </h3>
                                     </div>
-                                    <%--                            <div class="col d-flex justify-content-end">--%>
-                                    <%--                                <button type="button" class="btn btn-light" href="https://discord.com/channels/655478055497760778/715242843609759852/1032710569070956667"><i class="bi bi-box-arrow-up-right"></i></button>--%>
-                                    <%--                            </div>--%>
+                                    <div class="col justify-content-end message-actions">
+                                        @template.macros.MessageActionDropdown(message = message.get(), modmailLog = modmailLog)
+                                    </div>
                                 </div>
                                 <div class="row">
                                     <div class="col">

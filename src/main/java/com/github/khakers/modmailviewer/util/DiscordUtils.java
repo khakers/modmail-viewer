@@ -1,9 +1,16 @@
 package com.github.khakers.modmailviewer.util;
 
 import com.github.khakers.modmailviewer.auth.UserToken;
+import com.github.khakers.modmailviewer.data.Message;
+import com.github.khakers.modmailviewer.data.MessageType;
+import com.github.khakers.modmailviewer.data.ModMailLogEntry;
 import com.github.khakers.modmailviewer.data.User;
 
+import java.util.Optional;
+
 public class DiscordUtils {
+    private static final String DISCORD_MESSAGE_URI_FORMAT = "https://discord.com/channels/%s/%s/%s";
+
     /**
      * Returns true if the user is a migrated user (i.e. has no discriminator)
      *
@@ -74,5 +81,25 @@ public class DiscordUtils {
      */
     public static String getAvatarUrl(User user) {
         return "https://cdn.discordapp.com/embed/avatars/" + getAvatarId(user) + ".png";
+    }
+
+    /**
+     * Gets the Discord URI for a message
+     * if the message is a thread message, and the log entry does not have a DM channel ID, it will return empty
+     *
+     * @param message         a message object
+     * @param modMailLogEntry the log entry the message is contained within
+     * @return The URI for the message, empty if the message is a thread message and the log entry does not have a DM channel ID
+     */
+    public static Optional<String> getMessageURI(Message message, ModMailLogEntry modMailLogEntry) {
+
+        if (!message.getType().equals(MessageType.thread)) {
+            return Optional.of(String.format(DISCORD_MESSAGE_URI_FORMAT, modMailLogEntry.getGuildId(), modMailLogEntry.getChannelId(), message.getId()));
+        } else {
+            if (modMailLogEntry.getDmChannelId().isPresent())
+                return Optional.ofNullable(String.format(DISCORD_MESSAGE_URI_FORMAT, "@me", modMailLogEntry.getDmChannelId().get(), message.getId()));
+            else
+                return Optional.empty();
+        }
     }
 }

@@ -248,3 +248,16 @@ div.spoilerImage input:checked, div.spoilerImage input:checked ~ label {
 up-modal-box {
     background-color: var(--bs-body-bg);
 }
+
+.message:hover {
+    background-color: var(--bs-tertiary-bg);
+}
+
+.message-actions {
+    display: none;
+
+}
+
+.message:hover .message-actions {
+    display: flex;
+}

@@ -16,6 +16,7 @@ up.compiler("#nsfwModal", element => {
     });
     bsModal.show();
 });
+
 function waitForLoad(element) {
     return new Promise(((resolve, reject) => {
         if (element.complete) {
@@ -25,8 +26,10 @@ function waitForLoad(element) {
         element.onerror = () => reject(element);
     }));
 }
+
 up.compiler(".discordAvatar", (element) => {
-    waitForLoad(element).then(() => {}, () => {
+    waitForLoad(element).then(() => {
+    }, () => {
         element.src = `https://cdn.discordapp.com/embed/avatars/${element.dataset.avatarId}.png`;
     });
 });
@@ -86,6 +89,18 @@ up.on('up:request:loaded', (event) => {
 
 up.on('click', '#auditSearchResetButton', (event) => {
     document.getElementById("auditSearchForm").reset();
+});
+
+up.on('click', '.message-action-button', (event, element) => {
+    const data = element.dataset;
+    if (data.copyType === "uri-fragment") {
+        const url = new URL(document.documentURI);
+        url.hash = element.dataset.copyString
+        navigator.clipboard.writeText(url.toString())
+    }
+    else {
+        navigator.clipboard.writeText(element.dataset.copyString)
+    }
 });
 
 

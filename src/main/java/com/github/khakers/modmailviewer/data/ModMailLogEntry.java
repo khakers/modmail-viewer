@@ -61,6 +61,9 @@ public final class ModMailLogEntry {
     private final String title;
 
 
+    private final long dmChannelId;
+
+
     @JsonCreator
     public ModMailLogEntry(
             @JsonProperty("_id")
@@ -97,8 +100,9 @@ public final class ModMailLogEntry {
             boolean nsfw,
             @JsonProperty("title")
             @Nullable
-            String title
-    ) {
+            String title,
+            @JsonProperty("dm_channel_id")
+            long dmChannelId) {
         this._id = key;
         this.key = key;
         this.open = open;
@@ -114,8 +118,14 @@ public final class ModMailLogEntry {
         this.messages = messages;
         this.nsfw = nsfw;
         this.title = title;
+        this.dmChannelId = dmChannelId;
     }
 
+
+    public Optional<Long> getDmChannelId() {
+        if (dmChannelId == 0) return Optional.empty();
+        return Optional.of(dmChannelId);
+    }
 
     public String getKey() {
         return key;
@@ -196,19 +206,22 @@ public final class ModMailLogEntry {
                 ", messages=" + messages +
                 ", nsfw=" + nsfw +
                 ", title='" + title + '\'' +
+                ", dmChannelId=" + dmChannelId +
                 '}';
     }
+
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ModMailLogEntry that = (ModMailLogEntry) o;
-        return open == that.open && botId == that.botId && channelId == that.channelId && guildId == that.guildId && nsfw == that.nsfw && Objects.equals(_id, that._id) && Objects.equals(key, that.key) && Objects.equals(creationTime, that.creationTime) && Objects.equals(closedTime, that.closedTime) && Objects.equals(recipient, that.recipient) && Objects.equals(creator, that.creator) && Objects.equals(closer, that.closer) && Objects.equals(closeMessage, that.closeMessage) && Objects.equals(messages, that.messages) && Objects.equals(title, that.title);
+        return open == that.open && botId == that.botId && channelId == that.channelId && guildId == that.guildId && nsfw == that.nsfw && dmChannelId == that.dmChannelId && Objects.equals(_id, that._id) && Objects.equals(key, that.key) && Objects.equals(creationTime, that.creationTime) && Objects.equals(closedTime, that.closedTime) && Objects.equals(recipient, that.recipient) && Objects.equals(creator, that.creator) && Objects.equals(closer, that.closer) && Objects.equals(closeMessage, that.closeMessage) && Objects.equals(messages, that.messages) && Objects.equals(title, that.title);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(_id, key, open, creationTime, closedTime, botId, channelId, guildId, recipient, creator, closer, closeMessage, messages, nsfw, title);
+        return Objects.hash(_id, key, open, creationTime, closedTime, botId, channelId, guildId, recipient, creator, closer, closeMessage, messages, nsfw, title, dmChannelId);
     }
+
 }
