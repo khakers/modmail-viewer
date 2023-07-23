@@ -248,7 +248,7 @@ public class Main {
         if (Config.CUSTOM_CSP != null && Config.CUSTOM_CSP.isBlank()) {
             globalHeaderConfig.contentSecurityPolicy(Config.CUSTOM_CSP);
         } else {
-            globalHeaderConfig.contentSecurityPolicy(String.format("default-src 'self'; img-src *; media-src media.discordapp.com; style-src-attr 'unsafe-hashes' 'self' 'sha256-biLFinpqYMtWHmXfkA1BPeCY0/fNt46SAZ+BBk5YUog='; script-src-elem 'self' https://cdn.jsdelivr.net/npm/@twemoji/api@14.1.0/dist/twemoji.min.js %s;", Objects.requireNonNullElse(Config.CSP_SCRIPT_SRC_ELEM_EXTRA, "")));
+            globalHeaderConfig.contentSecurityPolicy(String.format("default-src 'self';  img-src * 'self' data:; media-src media.discordapp.com; style-src-attr 'unsafe-hashes' 'self' 'sha256-biLFinpqYMtWHmXfkA1BPeCY0/fNt46SAZ+BBk5YUog='; script-src-elem 'self' https://cdn.jsdelivr.net/npm/@twemoji/api@14.1.0/dist/twemoji.min.js %s;", Objects.requireNonNullElse(Config.CSP_SCRIPT_SRC_ELEM_EXTRA, "")));
 
         }
 
