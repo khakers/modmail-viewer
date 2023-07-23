@@ -60,7 +60,7 @@
                                           data-bs-toggle="tooltip"></span>
                             </div>
                             <div class="col">
-                                <div class="float-end message-actions -50 start-0 translate-middle-y">
+                                <div class="position-absolute message-actions -50 end-0 translate-middle-y me-3 z-1">
                                     @template.macros.MessageActionDropdown(message = message.get(), modmailLog = modmailLog)
                                 </div>
                                 @if(message.get().isEdited())
@@ -127,14 +127,13 @@
                                                   data-timestamp-title-type="detailed"
                                             ></span>
                                         </h3>
-                                    </div>
-                                    <div class="col justify-content-end message-actions">
-                                        @template.macros.MessageActionDropdown(message = message.get(), modmailLog = modmailLog)
+                                        <div class="position-absolute message-actions end-0 top-0 mt-2 me-3 z-1">
+                                            @template.macros.MessageActionDropdown(message = message.get(), modmailLog = modmailLog)
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col">
-                                        <%--                                    <p class="mb-0"></p>--%>
                                         <div class="text-wrap text-break messageContent">
                                             $unsafe{renderer.render(parser.parse(message.get().getContent()))}
                                         </div>
