@@ -87,6 +87,14 @@ up.on('up:request:loaded', (event) => {
     }
 });
 
+up.on('click', '#ClearSearchButton', (event) => {
+    const url = window.location.href;
+    const params = up.Params.fromURL(url);
+    params.delete('search');
+
+    up.navigate({params: params, url: window.location.pathname});
+});
+
 up.on('click', '#auditSearchResetButton', (event) => {
     document.getElementById("auditSearchForm").reset();
 });

@@ -3,6 +3,8 @@
 @import com.github.khakers.modmailviewer.util.Pagination
 @import com.github.khakers.modmailviewer.util.QueryParamUtil
 @import com.github.khakers.modmailviewer.util.TextFragmentUtils
+@import static com.github.khakers.modmailviewer.jte.JteContext.*
+
 
 
 
@@ -19,55 +21,58 @@
 
 @template.layout.Page(page = page, content = @`
     <div class="container pt-5">
-        <div class="border ${logEntries.isEmpty() ? "rounded" : "rounded-top"} p-2">
-            <div class="row justify-content-center justify-content-lg-end">
-                <div class="col-xl-4 col-sm-12">
-                    <ul class="nav nav-pills ">
-                        <li class="nav-item">
-                            <a class="nav-link @if(ticketStatusFilter == TicketStatus.ALL || ticketStatusFilter == null)active@endif"
-                               up-follow up-target=".content"
-                               up-transition="cross-fade"
-                               up-alias="/"
-                               href="${QueryParamUtil.updateQueryParams(ctx, "status", "all")}"
-                            >${modMailLogDB.getTotalTickets(TicketStatus.ALL, search)} All</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link @if(ticketStatusFilter == TicketStatus.OPEN)active@endif"
-                               up-follow up-target=".content"
-                               up-transition="cross-fade"
-                               href="${QueryParamUtil.updateQueryParams(ctx, "status", "open")}"><i
-                                        class="bi bi-record-circle"></i> ${modMailLogDB.getTotalTickets(TicketStatus.OPEN, search)}
-                                Open</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link @if(ticketStatusFilter == TicketStatus.CLOSED)active@endif"
-                               up-target=".content" up-follow
-                               up-transition="cross-fade"
-                               href="${QueryParamUtil.updateQueryParams(ctx, "status", "closed")}"><i
-                                        class="bi bi-check-lg"></i> ${modMailLogDB.getTotalTickets(TicketStatus.CLOSED, search)}
-                                Closed</a>
-                        </li>
-                    </ul>
+        <form class="border ${logEntries.isEmpty() ? "rounded" : "rounded-top"} p-2" id="logSearchForm" action="/"
+              method="get" up-submit up-transition="cross-fade" up-target="#logEntryList" up-disable up-history="true">
+            <div class="row justify-content-center text-center text-lg-start g-2 align-items-center">
+                <div class="col-xl-auto col-sm-12">
+                    <div class="btn-group" up-autosubmit up-watch-delay="200" up-form-group>
+                        <input type="radio" class="btn-check" name="status" id="all" value="all" autocomplete="off"
+                               checked="${ticketStatusFilter.equals(TicketStatus.ALL)}">
+                        <label class="btn btn-outline-primary"
+                               for="all">${localize("LOG_SEARCH_FORM_STATUS_ALL", modMailLogDB.getTotalTickets(TicketStatus.ALL, search))}</label>
+
+                        <input type="radio" class="btn-check" name="status" id="open" value="open" autocomplete="off"
+                               checked="${ticketStatusFilter.equals(TicketStatus.OPEN)}">
+                        <label class="btn btn-outline-primary" for="open"><i
+                                    class="bi bi-record-circle"></i> ${localize("LOG_SEARCH_FORM_STATUS_OPEN", modMailLogDB.getTotalTickets(TicketStatus.OPEN, search))}
+                        </label>
+
+                        <input type="radio" class="btn-check" name="status" id="closed" value="closed"
+                               autocomplete="off" checked="${ticketStatusFilter.equals(TicketStatus.CLOSED)}">
+                        <label class="btn btn-outline-primary" for="closed"><i
+                                    class="bi bi-check-lg"></i> ${localize("LOG_SEARCH_FORM_STATUS_CLOSED", modMailLogDB.getTotalTickets(TicketStatus.CLOSED, search))}
+                        </label>
+                    </div>
+                </div>
+                <div class="col-auto mx-1" up-form-group>
+                    <label for="itemsPerPage">${localize("LOG_SEARCH_FORM_ITEMS_PER_PAGE_LABEL")}</label>
+                    <select class="form-select form-select-sm" name="itemsPerPage" id="itemsPerPage" aria-label=""
+                            up-autosubmit up-watch-delay="200">
+                        <option value="5" selected="${page.itemsPerPage==5}">5</option>
+                        <option value="8" selected="${page.itemsPerPage==8}">8 ${localize("OPTION_DEFAULT")}</option>
+                        <option value="15" selected="${page.itemsPerPage==15}">15</option>
+                        <option value="25" selected="${page.itemsPerPage==25}">25</option>
+                        <option value="50" selected="${page.itemsPerPage==50}">50</option>
+                    </select>
                 </div>
                 <div class="col-xl-8 col-sm-12 pt-2 py-xl-0">
-                    <div id="SearchBox" class="input-group px-xl-0 px-sm-2">
+                    <div id="SearchBox" class="input-group px-xl-0 px-sm-2" up-form-group>
                         <button class="btn btn-outline-danger" type="button" id="ClearSearchButton"><i
-                                    class="bi bi-x-lg"></i> Reset
+                                    class="bi bi-x-lg"></i> ${localize("LOG_SEARCH_FORM_SEARCH_RESET")}
                         </button>
-                        <input id="SearchBoxInput" type="search" class="form-control"
-                               placeholder="Search Modmail logs..."
+                        <input id="SearchBoxInput" name="search" type="search" class="form-control"
+                               placeholder="${localize("LOG_SEARCH_FORM_SEARCH_BOX_PLACEHOLDER")}"
                                aria-label="Search Text" aria-describedby="SearchButton" value="${search}">
-                        <button class="btn btn-outline-primary" type="button" id="SearchButton"><i
+                        <button class="btn btn-outline-primary" type="submit" id="SearchButton"><i
                                     class="bi bi-search"></i> Search
                         </button>
                     </div>
                 </div>
             </div>
-        </div>
+        </form>
         @if(logEntries.isEmpty())
             <div class="pt-5">
-                <p class="text-center">Looks like you don't have any
-                    modmail threads matching these filters</p>
+                <p class="text-center">${localize("LOG_SEARCH_NO_ENTRIES_FOUND")}</p>
                 <p class="text-center text-muted">¯\_(ツ)_/¯</p>
             </div>
         @endif
@@ -81,14 +86,14 @@
                     </h2>
                     @if(entry.get().isOpen())
                         <span class="badge rounded-pill text-bg-success fs-6"><i
-                                    class="bi bi-record-circle"></i> Open</span>
+                                    class="bi bi-record-circle"></i> ${localize("LOG_STATUS_OPEN")}</span>
                     @else
                         <span class="badge rounded-pill text-bg-danger fs-6"><i
-                                    class="bi bi-check-circle"></i> Closed</span>
+                                    class="bi bi-check-circle"></i> ${localize("LOG_STATUS_CLOSED")}</span>
                     @endif
                     @if(entry.get().isNsfw())
                         <span class="badge rounded-pill text-bg-warning fs-6"><i
-                                    class="bi bi-exclamation-triangle"></i> NSFW</span>
+                                    class="bi bi-exclamation-triangle"></i> ${localize("LOG_NSFW")}</span>
                     @endif
                     @if(entry.get().isOpen())
                         <span>Created by</span>
@@ -98,9 +103,10 @@
                                 <span class="text-muted">${DiscordUtils.getDiscriminatorString(entry.get().getCreator())}</span>
                             </span>
 
-                        <span><span class="text-muted" data-timestamp="${entry.get().getCreationTime().toString()}"
+                        <span><time class="text-muted" datetime="${entry.get().getCreationTime().toString()}"
+                                    data-timestamp="${entry.get().getCreationTime().toString()}"
                                     data-timestamp-type="relative" data-bs-toggle="tooltip"
-                                    data-timestamp-title-type="detailed"></span></span>
+                                    data-timestamp-title-type="detailed"></time></span>
                     @else
                         <span>Created by</span>
                         <span class="user-select-all d-inline-flex" data-bs-toggle="tooltip"
@@ -108,10 +114,11 @@
                             <span class="fw-semibold">${entry.get().getCreator().name()}</span>
                                 <span class="text-muted">${DiscordUtils.getDiscriminatorString(entry.get().getCreator())}</span>
                             </span>
-                        <span>was closed <span class="text-muted"
+                        <span>was closed <time class="text-muted"
+                                               datetime="${entry.get().getClosedTime().get().toString()}"
                                                data-timestamp="${entry.get().getClosedTime().get().toString()}"
                                                data-timestamp-type="relative" data-bs-toggle="tooltip"
-                                               data-timestamp-title-type="detailed"></span></span>
+                                               data-timestamp-title-type="detailed"></time></span>
                         @if(entry.get().getCloser().isPresent())
                             <span>by</span>
                             <span class="user-select-all d-inline-flex" data-bs-toggle="tooltip"
@@ -126,10 +133,11 @@
                     <span>${entry.get().getMessages().size()} messages</span>
                     @if(!entry.get().getMessages().isEmpty())
                         ·
-                        <span>Last message sent <span class="text-muted"
+                        <span>Last message sent <time class="text-muted"
+                                                      datetime="${entry.get().getMessages().get(entry.get().getMessages().size()-1).getCreationTime().toString()}"
                                                       data-timestamp="${entry.get().getMessages().get(entry.get().getMessages().size()-1).getCreationTime().toString()}"
                                                       data-timestamp-type="relative" data-bs-toggle="tooltip"
-                                                      data-timestamp-title-type="detailed"></span> by
+                                                      data-timestamp-title-type="detailed"></time> by
                             <span class="user-select-all d-inline-flex" data-bs-toggle="tooltip"
                                   data-bs-title="${entry.get().getMessages().get(entry.get().getMessages().size()-1).getAuthor().id()}">
                                 <span class="fw-semibold">${entry.get().getMessages().get(entry.get().getMessages().size()-1).getAuthor().name()}</span>
@@ -153,7 +161,7 @@
         !{nextClass="disabled";}
     @endif
     @if(pageCount > 1)
-        <div class="container col d-flex justify-content-center p-4">
+        <div class="container col d-flex justify-content-center p-4 pb-0">
             <nav aria-label="pagination">
                 <ul class="pagination">
                     <%--                        onclick="update('pageIndex', '${Math.max(pageIndex-1, 1)}')"--%>

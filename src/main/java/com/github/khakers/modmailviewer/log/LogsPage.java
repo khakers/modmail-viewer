@@ -23,6 +23,8 @@ public class LogsPage extends Page {
     public final boolean showNSFW;
     public final String searchString;
 
+    public final int itemsPerPage;
+
     public LogsPage(Context ctx) {
         super(ctx);
 
@@ -35,22 +37,27 @@ public class LogsPage extends Page {
         String statusFilter = ctx.queryParamAsClass("status", String.class)
                 .check(s -> s.equalsIgnoreCase(String.valueOf(TicketStatus.OPEN))
                         || s.equalsIgnoreCase(String.valueOf(TicketStatus.CLOSED))
-                        || s.equalsIgnoreCase(String.valueOf(TicketStatus.ALL)), "")
+                        || s.equalsIgnoreCase(String.valueOf(TicketStatus.ALL)), "Invalid status filter value")
                 .getOrDefault("ALL");
 
         showNSFW = ctx.queryParamAsClass("nsfw", Boolean.class)
                 .getOrDefault(Boolean.TRUE);
 
         searchString = ctx.queryParamAsClass("search", String.class)
-                .check(s -> s.length() > 0 && s.length() < 120
+                .check(s -> s.length() < 120
                         , "search text cannot be greater than 50 characters")
                 .getOrDefault("");
 
+        this.itemsPerPage = ctx.queryParamAsClass("itemsPerPage", Integer.class)
+                .check(integer -> integer >= 1, "itemsPerPage must be at least 1")
+                .check(integer -> integer <= 50, "itemsPerPage cannot be greater than 50")
+                .getOrDefault(8);
+
         ticketStatusFilter = TicketStatus.valueOf(statusFilter.toUpperCase());
-        pageCount = db.getPaginationCount(ticketStatusFilter, searchString);
+        pageCount = db.getPaginationCount(itemsPerPage, ticketStatusFilter, searchString);
         page1 = Math.min(pageCount, page1);
         currentPage = page1;
-        logEntries = db.searchPaginatedMostRecentEntriesByMessageActivity(currentPage, ticketStatusFilter, searchString);
+        logEntries = db.searchPaginatedMostRecentEntriesByMessageActivity(currentPage, itemsPerPage, ticketStatusFilter, searchString);
     }
 
     @Override

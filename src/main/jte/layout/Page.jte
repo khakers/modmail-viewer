@@ -19,7 +19,7 @@
 
 <body>
     @template.macros.navbar(page = page)
-        <main class="content" up-main data-nsfw="${page.isNSFW()}">
+        <main class="content mb-5" up-main data-nsfw="${page.isNSFW()}">
             ${content}
         </main>
     @template.macros.footer(page = page)

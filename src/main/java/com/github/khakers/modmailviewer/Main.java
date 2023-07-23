@@ -1,5 +1,6 @@
 package com.github.khakers.modmailviewer;
 
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.github.khakers.modmailviewer.page.admin.AdminController;
 import com.github.khakers.modmailviewer.auditlog.OutboundAuditEventLogger;
 import com.github.khakers.modmailviewer.auditlog.MongoAuditEventLogger;
@@ -196,7 +197,7 @@ public class Main {
 
     private static void configure(JavalinConfig config) {
         config.showJavalinBanner = false;
-        config.jsonMapper(new JavalinJackson());
+        config.jsonMapper(new JavalinJackson().updateMapper(objectMapper -> objectMapper.registerModule(new Jdk8Module())));
         config.plugins.enableGlobalHeaders(Main::configureHeaders);
         if (Config.isHttpsOnly) {
             logger.info("HTTPS only is ENABLED");
@@ -243,7 +244,7 @@ public class Main {
         globalHeaderConfig.crossOriginOpenerPolicy(GlobalHeaderConfig.CrossOriginOpenerPolicy.SAME_ORIGIN);
         globalHeaderConfig.crossOriginResourcePolicy(GlobalHeaderConfig.CrossOriginResourcePolicy.SAME_ORIGIN);
         if (Config.isSTSEnabled) {
-            globalHeaderConfig.strictTransportSecurity(Duration.ofDays(356), true);
+            globalHeaderConfig.strictTransportSecurity(Duration.ofDays(356), false);
         }
         if (Config.CUSTOM_CSP != null && !Config.CUSTOM_CSP.isBlank()) {
             globalHeaderConfig.contentSecurityPolicy(Config.CUSTOM_CSP);

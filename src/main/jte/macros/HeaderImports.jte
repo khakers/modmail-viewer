@@ -16,7 +16,6 @@
 
 <script src="/timeformat.js" defer></script>
 <script src="/util.js" defer></script>
-<script src="/js/TicketFilterHandler.js" defer></script>
 <script src="/webjars/bootstrap/5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
 <script src="/webjars/highlightjs__cdn-assets/11.7.0/highlight.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@twemoji/api@14.1.0/dist/twemoji.min.js"
