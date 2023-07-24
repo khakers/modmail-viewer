@@ -30,7 +30,7 @@ public class UpdateChecker {
 
     private final AtomicReference<Instant> updateFoundTime = new AtomicReference<>(null);
 
-    private final Version CURRENT_VERSION = new Version("0.6.0");
+    private final Version CURRENT_VERSION = new Version(ModmailViewer.VERSION);
 
     public UpdateChecker() {
 
