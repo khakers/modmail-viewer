@@ -1,5 +1,8 @@
 "use strict";
 
+// We'd rather just replace the body since the only thing that changes outside of it is already marked as hungry
+up.history.config.restoreTargets = ['main'];
+
 // Fill out bootstrap tooltips
 up.compiler('[data-bs-toggle="tooltip"]', function (element) {
     new bootstrap.Tooltip(element);
@@ -111,8 +114,7 @@ up.on('click', '.message-action-button', (event, element) => {
         const url = new URL(document.documentURI);
         url.hash = element.dataset.copyString
         navigator.clipboard.writeText(url.toString())
-    }
-    else {
+    } else {
         navigator.clipboard.writeText(element.dataset.copyString)
     }
 });

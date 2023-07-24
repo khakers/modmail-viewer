@@ -261,3 +261,7 @@ up-modal-box {
 .message:hover .message-actions {
     display: flex;
 }
+
+#updateToast .toast-header .bi::before {
+    vertical-align: .125em;
+}
