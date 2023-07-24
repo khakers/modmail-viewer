@@ -28,10 +28,16 @@ function waitForLoad(element) {
 }
 
 up.compiler(".discordAvatar", (element) => {
-    waitForLoad(element).then(() => {
-    }, () => {
+    if (element.naturalHeight === 0) {
         element.src = `https://cdn.discordapp.com/embed/avatars/${element.dataset.avatarId}.png`;
-    });
+        return;
+    }
+    waitForLoad(element).then(
+        () => {
+            // Good load, no action needed
+        }, () => {
+            element.src = `https://cdn.discordapp.com/embed/avatars/${element.dataset.avatarId}.png`;
+        });
 });
 
 up.on('up:fragment:inserted', (event) => {
