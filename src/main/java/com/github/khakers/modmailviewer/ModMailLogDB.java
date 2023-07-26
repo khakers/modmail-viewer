@@ -9,6 +9,7 @@ import com.github.khakers.modmailviewer.auth.UserToken;
 import com.github.khakers.modmailviewer.data.ModMailLogEntry;
 import com.github.khakers.modmailviewer.data.ModmailConfig;
 import com.github.khakers.modmailviewer.data.internal.TicketStatus;
+import com.github.khakers.modmailviewer.util.SingleItemCache;
 import com.mongodb.ConnectionString;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
@@ -25,8 +26,6 @@ import org.jetbrains.annotations.Nullable;
 import org.mongojack.JacksonMongoCollection;
 import org.mongojack.internal.MongoJackModule;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public class ModMailLogDB {
@@ -34,14 +33,11 @@ public class ModMailLogDB {
     public static final int DEFAULT_ITEMS_PER_PAGE = 8;
     private static final Logger logger = LogManager.getLogger();
     private final MongoDatabase database;
-
     private final MongoCollection<Document> configCollection;
     private final JacksonMongoCollection<ModMailLogEntry> logCollection;
-
     private final ObjectMapper objectMapper;
 
-    private ModmailConfig cachedConfig = null;
-    private Instant cacheTime;
+    private final SingleItemCache<ModmailConfig> configCache = new SingleItemCache<>(300000L, this::fetchConfig);
 
     public ModMailLogDB(MongoClient mongoClient, String connectionString) {
 
@@ -247,35 +243,7 @@ public class ModMailLogDB {
     }
 
     public ModmailConfig getConfig() throws Exception {
-        // Check to see if the config is cached
-        if (cacheTime != null && Instant.now().isBefore(cacheTime.plus(5, ChronoUnit.MINUTES))) {
-            logger.debug("grabbed cached config from {}", cacheTime.toString());
-            cacheTime = Instant.now();
-            return cachedConfig;
-        }
-        Document conf = null;
-        if (Config.BOT_ID == 0) {
-            conf = configCollection.find().first();
-        } else {
-            conf = configCollection.find(Filters.eq("bot_id", Config.BOT_ID)).first();
-        }
-
-        if (conf != null) {
-            try {
-                logger.trace(conf.toJson());
-                var config = objectMapper.readValue(conf.toJson(), ModmailConfig.class);
-                // set cache
-                cachedConfig = config;
-                cacheTime = Instant.now();
-                return config;
-            } catch (JsonProcessingException e) {
-                logger.error(e);
-                throw new RuntimeException(e);
-            }
-        } else {
-            throw new Exception("Config could not be loaded from mongodb");
-        }
-
+        return configCache.getItem();
     }
 
     public Role getUserOrGuildRole(UserToken user, long[] roles) throws Exception {
@@ -328,5 +296,33 @@ public class ModMailLogDB {
 
     public JacksonMongoCollection<ModMailLogEntry> getLogCollection() {
         return logCollection;
+    }
+
+    /**
+     * This fetches the config from the database with no caching
+     * DO NOT CALL DIRECTLY
+     *
+     * @return the config from the database
+     */
+    private ModmailConfig fetchConfig() throws Exception {
+        Document conf = null;
+        if (Config.BOT_ID == 0) {
+            conf = configCollection.find().first();
+        } else {
+            conf = configCollection.find(Filters.eq("bot_id", Config.BOT_ID)).first();
+        }
+
+        if (conf != null) {
+            try {
+                logger.trace(conf.toJson());
+                var config = objectMapper.readValue(conf.toJson(), ModmailConfig.class);
+                return config;
+            } catch (JsonProcessingException e) {
+                logger.error(e);
+                throw new RuntimeException(e);
+            }
+        } else {
+            throw new Exception("Config could not be loaded from mongodb");
+        }
     }
 }
