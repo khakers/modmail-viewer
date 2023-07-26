@@ -111,13 +111,10 @@ public class Main {
                             db)
                     : null;
 
+    public static final UpdateChecker updateChecker = new UpdateChecker();
 
     public static void main(String[] args) {
 
-        var updateThread = new Thread(() -> {
-            var updateChecker = new UpdateChecker();
-            updateChecker.isUpdateAvailable();
-        });
 
         TemplateEngine templateEngine;
 
