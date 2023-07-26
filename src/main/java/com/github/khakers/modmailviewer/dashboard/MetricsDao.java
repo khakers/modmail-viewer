@@ -48,27 +48,30 @@ public class MetricsDao {
 
     public int getUnansweredTicketCount() {
         var foo = Main.db.getLogAggregateCollection().aggregate(
-                List.of(
-                        Aggregates.match(Filters.eq("open", true)),
-                        Aggregates.match(
-                                Filters.or(
-                                        Filters.not(Filters.size("messages",0)),
-                                        Filters.not(
-                                                Filters.elemMatch(
-                                                        "messages",
-                                                        Filters.and(
-                                                                Filters.eq("type", "thread_message"),
-                                                                Filters.eq("author.mod", true),
-                                                                Filters.not(
-                                                                        Filters.eq("author.id", "$$recipient.id")
-                                                                )
-                                                        )
-                                                )
-                                        ))
+              List.of(
+                    Aggregates.match(Filters.eq("open", true)),
+                    Aggregates.match(
+                          Filters.or(
+                                Filters.not(Filters.size("messages", 0)),
+                                Filters.not(
+                                      Filters.elemMatch(
+                                            "messages",
+                                            Filters.and(
+                                                  Filters.eq("type", "thread_message"),
+                                                  Filters.eq("author.mod", true),
+                                                  Filters.not(
+                                                        Filters.eq("author.id", "$$recipient.id")
+                                                  )
+                                            )
+                                      )
+                                ))
 
-                        ),
-                        Aggregates.count()
-                ));
+                    ),
+                    Aggregates.count()
+              ));
+        if (foo.first() == null) {
+            return 0;
+        }
         return foo.first().getInteger("count", 0);
     }
 
@@ -83,44 +86,44 @@ public class MetricsDao {
     public Duration getAverageFirstReplyTime(int period) {
 
         var foo = Main.db.getLogCollection().aggregate(
-                List.of(
-                        // Needs to be log where the number of messages that are not system messages and not by the recipient
-                        Aggregates.match(
-                                Filters.gte(
-                                        "created_at",
-                                        DateFormatters.DATABASE_TIMESTAMP_FORMAT.format(
-                                                LocalDate.now(ZoneId.of("UTC")).atStartOfDay().minusDays(period))
-                                )),
-                        Aggregates.match(Filters.not(Filters.size("messages", 0))),
-                        Aggregates.match(
-                                Filters.elemMatch(
-                                        "messages",
-                                        Filters.and(
-                                                Filters.eq("type", "thread_message"),
-                                                Filters.eq("author.mod", true),
-                                                Filters.not(
-                                                        Filters.eq("author.id", "$$recipient.id")
-                                                )
-                                        )
+              List.of(
+                    // Needs to be log where the number of messages that are not system messages and not by the recipient
+                    Aggregates.match(
+                          Filters.gte(
+                                "created_at",
+                                DateFormatters.DATABASE_TIMESTAMP_FORMAT.format(
+                                      LocalDate.now(ZoneId.of("UTC")).atStartOfDay().minusDays(period))
+                          )),
+                    Aggregates.match(Filters.not(Filters.size("messages", 0))),
+                    Aggregates.match(
+                          Filters.elemMatch(
+                                "messages",
+                                Filters.and(
+                                      Filters.eq("type", "thread_message"),
+                                      Filters.eq("author.mod", true),
+                                      Filters.not(
+                                            Filters.eq("author.id", "$$recipient.id")
+                                      )
                                 )
-                        )
-                )
+                          )
+                    )
+              )
         );
         var values = new ArrayList<Integer>();
         foo.forEach(logEntry -> {
             logger.trace(logEntry);
             logEntry.getMessages().stream()
-                    .filter(message -> message.getType().equals(MessageType.thread))
-                    .filter(message -> !message.getAuthor().equals(logEntry.getRecipient()))
-                    .findFirst()
-                    .ifPresentOrElse(message -> {
-                                var duration = Duration.between(logEntry.getCreationTime(), message.getCreationTime());
-                                logger.trace("Duration between log creation and first matching message was {}", duration);
-                                values.add((int) duration.toSeconds());
-                            },
-                            () -> {
-                                logger.error("Tried to calculate the reply time delta for message id {}, but a result was returned by the query that was filtered out by the application. LogEntry: {}", logEntry.get_id(), logEntry.toString());
-                            });
+                  .filter(message -> message.getType().equals(MessageType.thread))
+                  .filter(message -> !message.getAuthor().equals(logEntry.getRecipient()))
+                  .findFirst()
+                  .ifPresentOrElse(message -> {
+                            var duration = Duration.between(logEntry.getCreationTime(), message.getCreationTime());
+                            logger.trace("Duration between log creation and first matching message was {}", duration);
+                            values.add((int) duration.toSeconds());
+                        },
+                        () -> {
+                            logger.error("Tried to calculate the reply time delta for message id {}, but a result was returned by the query that was filtered out by the application. LogEntry: {}", logEntry.get_id(), logEntry.toString());
+                        });
 
         });
         return Duration.ofSeconds((long) values.stream().mapToInt(value -> value).average().orElse(0.0));
@@ -147,18 +150,18 @@ public class MetricsDao {
         // (technically I believe you can convert strings to date objects, but I suspect it has poor performance and might not even work because this isn't quite iso8601 format for some reason)
         // This query filters for closed tickets, grabs a random sample of 250, and then gets a document of just the  closed at and opened at values of those documents
         var query = Main.db.getLogAggregateCollection().aggregate(
-                List.of(
-                        Aggregates.match(Filters.eq("open", false)),
-                        Aggregates.match(
-                                Filters.gte(
-                                        "created_at",
-                                        DateFormatters.DATABASE_TIMESTAMP_FORMAT.format(
-                                                LocalDate.now(ZoneId.of("UTC")).atStartOfDay().minusDays(period))
-                                )),
-                        Aggregates.sample(250),
-                        Aggregates.project(new Document("closed_at", "$closed_at")
-                                .append("created_at", "$created_at"))
-                )
+              List.of(
+                    Aggregates.match(Filters.eq("open", false)),
+                    Aggregates.match(
+                          Filters.gte(
+                                "created_at",
+                                DateFormatters.DATABASE_TIMESTAMP_FORMAT.format(
+                                      LocalDate.now(ZoneId.of("UTC")).atStartOfDay().minusDays(period))
+                          )),
+                    Aggregates.sample(250),
+                    Aggregates.project(new Document("closed_at", "$closed_at")
+                          .append("created_at", "$created_at"))
+              )
         );
         var values = new ArrayList<Integer>();
         query.forEach(document -> {
