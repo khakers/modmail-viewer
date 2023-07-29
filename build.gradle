@@ -62,6 +62,7 @@ dependencies {
     implementation libs.scribe.api
     implementation libs.scribe.okhttp
 
+    implementation libs.owasp.encoder
 
     implementation platform(libs.okhttp.bom)
     implementation libs.okhttp
