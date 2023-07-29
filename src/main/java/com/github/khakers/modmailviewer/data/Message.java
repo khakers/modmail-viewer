@@ -2,6 +2,7 @@ package com.github.khakers.modmailviewer.data;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.khakers.modmailviewer.util.DateFormatters;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
@@ -11,7 +12,8 @@ import java.util.Objects;
 
 public final class Message implements Comparable<Message> {
     private final String id;
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSSSSS[XXX]", timezone = "UTC", locale = "en")
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateFormatters.PYTHON_STR_ISO_OFFSET_DATE_TIME_STRING, timezone = "UTC", locale = "en")
     private final Instant creationTime;
     private final String content;
     private final List<Attachment> attachments;
@@ -47,7 +49,6 @@ public final class Message implements Comparable<Message> {
     public Message(
             @JsonProperty("message_id") String id,
             @JsonProperty("timestamp")
-            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSSSSS[XXX]", timezone = "UTC", locale = "en")
             Instant creationTime,
             @JsonProperty("content") String content,
             @JsonProperty("attachments") List<Attachment> attachments,

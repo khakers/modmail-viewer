@@ -1,14 +1,19 @@
 package com.github.khakers.modmailviewer;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.khakers.modmailviewer.auth.Role;
 import com.github.khakers.modmailviewer.auth.UserToken;
 import com.github.khakers.modmailviewer.data.ModMailLogEntry;
 import com.github.khakers.modmailviewer.data.ModmailConfig;
 import com.github.khakers.modmailviewer.data.internal.TicketStatus;
+import com.github.khakers.modmailviewer.util.DateFormatters;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.*;
@@ -24,6 +29,7 @@ import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.jetbrains.annotations.Nullable;
 import org.mongojack.JacksonMongoCollection;
+import org.mongojack.internal.MongoJackModule;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -45,9 +51,14 @@ public class ModMailLogDB {
 
     public ModMailLogDB(String connectionString) {
 
-        this.objectMapper = new JsonMapper()
-                .findAndRegisterModules()
-                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        this.objectMapper = JsonMapper.builder()
+              .addModule(new JavaTimeModule())
+              .addModule(new Jdk8Module())
+              .addModule(new MongoJackModule())
+              .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+              .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true)
+              .withConfigOverride(Instant.class, cfg -> cfg.setFormat(JsonFormat.Value.forPattern(DateFormatters.PYTHON_STR_ISO_OFFSET_DATE_TIME_STRING)))
+              .build();
 
         CodecRegistry pojoCodecRegistry = CodecRegistries.fromProviders(PojoCodecProvider.builder().automatic(true).build());
         CodecRegistry codecRegistry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
@@ -215,7 +226,12 @@ public class ModMailLogDB {
                 .filter(Objects.nonNull(searchkey) && !searchkey.isBlank() ? Filters.and(ticketFilter, Filters.text(searchkey)) : ticketFilter)
                 .skip((page - 1) * itemsPerPage)
                 .limit(itemsPerPage);
-        foundLogs.forEach(entries::add);
+        try {
+            foundLogs.forEach(entries::add);
+        } catch (Exception e) {
+            logger.error("an exception occurred while trying to parse");
+            throw e;
+        }
 
         logger.trace("Entries: {}", entries);
         return entries;
