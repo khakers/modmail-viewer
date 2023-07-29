@@ -1,6 +1,7 @@
 package com.github.khakers.modmailviewer.data;
 
 import com.fasterxml.jackson.annotation.*;
+import com.github.khakers.modmailviewer.util.DateFormatters;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
@@ -18,12 +19,12 @@ public final class ModMailLogEntry {
     @JsonProperty("open")
     private final boolean open;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSSSSS[XXX]", timezone = "UTC")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateFormatters.PYTHON_STR_ISO_OFFSET_DATE_TIME_STRING, timezone = "UTC")
     @JsonProperty("created_at")
     private final Instant creationTime;
 
     @Nullable
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSSSSS[XXX]", timezone = "UTC")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateFormatters.PYTHON_STR_ISO_OFFSET_DATE_TIME_STRING, timezone = "UTC")
     @JsonProperty("closed_at")
     private final Instant closedTime;
 
