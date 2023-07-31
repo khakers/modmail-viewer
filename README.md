@@ -5,14 +5,11 @@
 
 
 [![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/9oZTzt?referralCode=Bs9kVa)
+(not recommended)
 
-A drop in alternative frontend for your [modmail-dev/modmail bot](https://github.com/modmail-dev/modmail) instance with built-in Discord authentication, advanced features and better mobile support.
+A drop in alternative frontend for your [modmail-dev/modmail bot](https://github.com/modmail-dev/modmail) instance with built-in Discord authentication, advanced features and better mobile support. Replaces logivewer with more features
 
 Built from scratch using Javalin, JTE, Bootstrap 5, and Unpoly.
-
-
-~~[Demo Site running the latest commit from Master](https://demo.modmail-viewer.khakers.dev/logs/1bef379de4ac)~~
-The demo site is currently in the process of being migrated off railway to my own infra and will be available at a different URL in the future
 
 <details>
 <summary>Screenshots</summary>
@@ -30,10 +27,11 @@ Use GitHub discussions for feature requests or to ask questions. Please prefer n
 
 ## Features
 
+* All features in logviewer + more
 * Discord OAuth2 authentication **based on your modmail roles**. See [the wiki page on permissions.](https://github.com/khakers/modmail-viewer/wiki/Permissions) 
 * Browsable paginated logs sorted by most recent message and filterable by status.
 * Mobile friendly design.
-* Full message Discord Markdown formatting (Including spoilers, custom emojis, and timestamps).
+* Full Discord Markdown formatting (Including spoilers, custom emojis, and timestamps).
 * Customizable Branding
 * Dark/Light Themes
 * Log text search
@@ -42,6 +40,8 @@ Use GitHub discussions for feature requests or to ask questions. Please prefer n
 * Image spoiler support
 * Ticket dashboard 🔜
 * Audit Logging 🔜
+* Inline attachment support 🔜
+* Retrievable message links 🔜
 
 ### [Modmail-viewer & logviewer comparison](https://github.com/khakers/modmail-viewer/wiki/modmail-viewer-vs-logviewer)
 
