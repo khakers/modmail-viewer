@@ -350,7 +350,7 @@ public class Main {
                         "default-src 'self';  " +
                         "img-src * 'self' data:; " +
                         "object-src 'none'; " +
-                        "media-src media.discordapp.com; " +
+                        "media-src media.discordapp.com cdn.discordapp.com; " +
                         "style-src-attr 'unsafe-hashes' 'self' 'sha256-biLFinpqYMtWHmXfkA1BPeCY0/fNt46SAZ+BBk5YUog='; " +
                         "script-src-elem 'self' https://cdn.jsdelivr.net/npm/@twemoji/api@14.1.0/dist/twemoji.min.js %s;",
                   cspConfig.extraScriptSources().orElse("")));
