@@ -73,9 +73,11 @@
                                     $unsafe{renderer.render(parser.parse(message.get().getContent()))}
                                 </div>
                                 @if(!message.get().getAttachments().isEmpty())
-                                    <div class="media-attachments mb-2">
+                                    <div class="media-attachments mb-2 row">
                                         @for(var attachment: message.get().getAttachments().stream().filter(AttachmentFormatUtils::isMediaAttachment).toList())
-                                            @template.macros.MediaAttachment(attachment = attachment, message = message.get(), nsfw = modmailLog.isNsfw())
+                                            <div class="col-md-auto col-12">
+                                                @template.macros.MediaAttachment(attachment = attachment, message = message.get(), nsfw = modmailLog.isNsfw())
+                                            </div>
                                         @endfor
                                     </div>
                                     <div class="non-media-attachments mb-2">
@@ -148,9 +150,11 @@
                                             <span class="fw-light">(${localize("MESSAGE_EDITED_FLAG")})</span>
                                         @endif
                                         @if(!message.get().getAttachments().isEmpty())
-                                            <div class="media-attachments mb-2">
+                                            <div class="media-attachments mb-2 row">
                                                 @for(var attachment: message.get().getAttachments().stream().filter(AttachmentFormatUtils::isMediaAttachment).toList())
-                                                    @template.macros.MediaAttachment(attachment = attachment, message = message.get(), nsfw = modmailLog.isNsfw())
+                                                    <div class="col-md-auto col-12">
+                                                        @template.macros.MediaAttachment(attachment = attachment, message = message.get(), nsfw = modmailLog.isNsfw())
+                                                    </div>
                                                 @endfor
                                             </div>
                                             <div class="non-media-attachments mb-2">

@@ -77,10 +77,10 @@ img.emoji {
     vertical-align: -0.1em;
 }
 
-.image {
-    max-width: 256px;
-    max-height: 256px;
-}
+/*.image {*/
+/*    max-width: 256px;*/
+/*    max-height: 256px;*/
+/*}*/
 
 
 div.spoilerImage {
@@ -266,12 +266,17 @@ up-modal-box {
     vertical-align: .125em;
 }
 
-/*.media-attachments {*/
-/*    width: 18rem;*/
-/*}*/
+.media-attachments {
+    max-width: 48rem;
+}
 .non-media-attachments {
     max-width: 48rem;
 }
+
+.media-attachments video, .media-attachments image {
+    max-height: 350px;
+}
+
 .attachment-card+.attachment-card {
     margin-top: .5rem;
 }
@@ -280,6 +285,10 @@ up-modal-box {
     width: 100%;
     height: 100%;
     object-fit: contain;
+}
+
+.attachment-card audio {
+    width: 100%;
 }
 
 .chart {
