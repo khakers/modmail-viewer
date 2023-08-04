@@ -32,6 +32,8 @@ unpoly = "3.3.0"
 chartjs = "4.2.1"
 chartjs-plugin-autocolors = "0.2.2"
 humanize-duration = "3.28.0"
+glightbox = "3.2.0"
+plyr = "3.7.8"
 
 [libraries]
 javalin = { module = "io.javalin:javalin", version.ref = "javalin" }
@@ -78,7 +80,8 @@ webjar-unpoly = { module = "org.webjars.npm:unpoly", version.ref = "unpoly" }
 webjar-chartjs = { module = "org.webjars.npm:chart.js", version.ref = "chartjs" }
 webjar-chartjs-plugin-autocolors = { module = "org.webjars.npm:chartjs-plugin-autocolors", version.ref = "chartjs-plugin-autocolors" }
 webjar-humanize-duration = { module = "org.webjars.npm:humanize-duration", version.ref = "humanize-duration" }
-
+webjar-glightbox = { module = "org.webjars.npm:glightbox", version.ref = "glightbox" }
+webjar-plyr = { module = "org.webjars.npm:plyr", version.ref = "plyr" }
 
 [plugins]
 jte-gradle = { id = "gg.jte.gradle", version.ref = "jte" }

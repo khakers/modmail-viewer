@@ -31,6 +31,11 @@
 
 <script src="/js/dashboard.js" defer></script>
 
+<link rel="stylesheet" href="/webjars/glightbox/3.2.0/dist/css/glightbox.min.css">
+<link rel="stylesheet" href="/webjars/glightbox/3.2.0/dist/css/plyr.min.css">
+<script src="/webjars/plyr/3.7.8/dist/plyr.min.js" defer></script>
+<link rel="stylesheet" href="/webjars/plyr/3.7.8/dist/plyr.css">
+<script type="module" src="/js/BaseModules.js"></script>
 
 @if(com.github.khakers.modmailviewer.configuration.Config.appConfig.analytics().isPresent())-
     $unsafe{com.github.khakers.modmailviewer.configuration.Config.appConfig.analytics().get()}

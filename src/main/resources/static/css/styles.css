@@ -90,10 +90,17 @@ div.spoilerImage {
     padding: 0;
 }
 
-div.spoilerImage img, div.spoilerImage video {
+div.spoilerImage a img, div.spoilerImage a video {
     vertical-align: bottom;
     filter: blur(30px);
     transition: 0.3s;
+}
+
+/*
+    So lightboxes don't get opened on images that are still hidden by spoilers (or nsfw)
+ */
+div.spoilerImage input:not(:checked) ~ a {
+    pointer-events: none;
 }
 
 .spoilerImageButton {
@@ -130,7 +137,7 @@ div.spoilerImage input {
     height: 0;
 }
 
-div.spoilerImage input:checked ~ img, div.spoilerImage input:checked ~ video {
+div.spoilerImage input:checked ~ a img, div.spoilerImage input:checked ~ a video {
     filter: none;
 }
 

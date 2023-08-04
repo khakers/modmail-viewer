@@ -347,11 +347,13 @@ public class Main {
             globalHeaderConfig.contentSecurityPolicy(cspConfig.override().get());
         } else {
             globalHeaderConfig.contentSecurityPolicy(String.format(
-                        "default-src 'self';  " +
+                        "default-src 'self'; " +
                         "img-src * 'self' data:; " +
                         "object-src 'none'; " +
                         "media-src media.discordapp.com cdn.discordapp.com; " +
-                        "style-src-attr 'unsafe-hashes' 'self' 'sha256-biLFinpqYMtWHmXfkA1BPeCY0/fNt46SAZ+BBk5YUog='; " +
+                        "style-src-attr 'unsafe-hashes' 'self' 'sha256-biLFinpqYMtWHmXfkA1BPeCY0/fNt46SAZ+BBk5YUog=' 'sha256-ubXkvHkNI/o3njlOwWcW1Nrt3/3G2eJn8mN1u9LCnXo='; " +
+                        "style-src 'self' 'sha256-Jt4TB/uiervjq+0TSAyeKjWbMJlLUrE4uXVVOyC/xQA='; "+
+                        "frame-src 'self' https://cdn.discordapp.com https://media.discordapp.com; " +
                         "script-src-elem 'self' https://cdn.jsdelivr.net/npm/@twemoji/api@14.1.0/dist/twemoji.min.js %s;",
                   cspConfig.extraScriptSources().orElse("")));
         }

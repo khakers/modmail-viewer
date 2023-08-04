@@ -49,6 +49,8 @@ dependencies {
     implementation libs.webjar.chartjs
     implementation libs.webjar.chartjs.plugin.autocolors
     implementation libs.webjar.humanize.duration
+    implementation(libs.webjar.glightbox)
+    implementation(libs.webjar.plyr)
 
     implementation libs.mongodb.driver
     implementation libs.mongojack
