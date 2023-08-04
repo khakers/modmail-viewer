@@ -5,6 +5,7 @@
 @param Attachment attachment
 @param Message message
 @param boolean nsfw
+@param int galleryIndex = 0
 
 <%--'data-type="video"' must be properly set, otherwise, some videos will download instead of opening the lightbox --%>
 
@@ -12,14 +13,14 @@
     <div class="image spoilerImage">
         <input id="${attachment.id()}" type="checkbox">
         @if(AttachmentFormatUtils.isImage(attachment))
-            <a href="${attachment.url()}" class="glightbox">
+            <a href="${attachment.url()}" class="glightbox" data-gallery="${"gallery"+galleryIndex}">
                 <img class="image img-fluid rounded-2"
                      src="${attachment.url()}"
                      alt="Image ${attachment.filename()} uploaded by ${message.getAuthor().name()}"
                      loading="lazy">
             </a>
         @else
-            <a href="${attachment.url()}" class="glightbox" data-type="video">
+            <a href="${attachment.url()}" class="glightbox" data-type="video" data-gallery="${"gallery"+galleryIndex}">
                 <video class="image img-fluid rounded-2"
                        src="${attachment.url()}"
                        preload="metadata"
@@ -34,14 +35,14 @@
     <div class="image spoilerImage">
         <input id="${attachment.id()}" type="checkbox">
         @if(AttachmentFormatUtils.isImage(attachment))
-            <a href="${attachment.url()}" class="glightbox">
+            <a href="${attachment.url()}" class="glightbox" data-gallery="${"gallery"+galleryIndex}">
                 <img class="image img-fluid rounded-2"
                      src="${attachment.url()}"
                      alt="Image ${attachment.filename()} uploaded by ${message.getAuthor().name()}"
                      loading="lazy">
             </a>
         @else
-            <a href="${attachment.url()}" class="glightbox" data-type="video">
+            <a href="${attachment.url()}" class="glightbox" data-type="video" data-gallery="${"gallery"+galleryIndex}">
                 <video class="image img-fluid rounded-2"
                        src="${attachment.url()}"
                        preload="metadata"
@@ -56,14 +57,14 @@
 @else
     <div class="image">
         @if(AttachmentFormatUtils.isImage(attachment))
-            <a href="${attachment.url()}" class="glightbox">
+            <a href="${attachment.url()}" class="glightbox" data-gallery="${"gallery"+galleryIndex}">
                 <img class="image img-fluid rounded-2"
                      src="${attachment.url()}"
                      alt="Image ${attachment.filename()} uploaded by ${message.getAuthor().name()}"
                      loading="lazy">
             </a>
         @else
-            <a href="${attachment.url()}" class="glightbox" data-type="video">
+            <a href="${attachment.url()}" class="glightbox" data-type="video" data-gallery="${"gallery"+galleryIndex}">
                 <%--                <span>potato</span>--%>
                 <video class="image img-fluid rounded-2" controls src="${attachment.url()}" preload="metadata"></video>
             </a>

@@ -76,7 +76,7 @@
                                     <div class="media-attachments mb-2 row" data-gallery="${"gallery"+message.getIndex()}">
                                         @for(var attachment: message.get().getAttachments().stream().filter(AttachmentFormatUtils::isMediaAttachment).toList())
                                             <div class="col-md-auto col-12">
-                                                @template.macros.MediaAttachment(attachment = attachment, message = message.get(), nsfw = modmailLog.isNsfw())
+                                                @template.macros.MediaAttachment(attachment = attachment, message = message.get(), nsfw = modmailLog.isNsfw(), galleryIndex = message.getIndex())
                                             </div>
                                         @endfor
                                     </div>
@@ -153,7 +153,7 @@
                                             <div class="media-attachments mb-2 row" data-gallery="${"gallery"+message.getIndex()}">
                                                 @for(var attachment: message.get().getAttachments().stream().filter(AttachmentFormatUtils::isMediaAttachment).toList())
                                                     <div class="col-md-auto col-12">
-                                                        @template.macros.MediaAttachment(attachment = attachment, message = message.get(), nsfw = modmailLog.isNsfw())
+                                                        @template.macros.MediaAttachment(attachment = attachment, message = message.get(), nsfw = modmailLog.isNsfw(), galleryIndex = message.getIndex())
                                                     </div>
                                                 @endfor
                                             </div>
