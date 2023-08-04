@@ -15,3 +15,8 @@ const lightbox = GLightbox({
         }
     }
 });
+
+
+up.on("up:fragment:inserted", () => {
+    lightbox.reload();
+});
