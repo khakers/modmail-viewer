@@ -32,7 +32,7 @@ public class DateFormatters {
           .withChronology(IsoChronology.INSTANCE)
           .withZone(ZoneId.of("UTC"));
 
-    public static final String PYTHON_STR_ISO_OFFSET_DATE_TIME_STRING = "yyyy-MM-dd HH:mm[:ss[.n]][XXX]";
+    public static final String PYTHON_STR_ISO_OFFSET_DATE_TIME_STRING = "uuuu-MM-dd HH:mm[:ss[.n]][XXX]";
     public static final DateTimeFormatter SIMPLE_TIME_FORMAT = new DateTimeFormatterBuilder()
           .appendPattern("HH:mm a")
           .toFormatter()
