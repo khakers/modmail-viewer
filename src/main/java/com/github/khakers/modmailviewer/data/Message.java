@@ -13,7 +13,6 @@ import java.util.Objects;
 public final class Message implements Comparable<Message> {
     private final String id;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateFormatters.PYTHON_STR_ISO_OFFSET_DATE_TIME_STRING, timezone = "UTC", locale = "en")
     private final Instant creationTime;
     private final String content;
     private final List<Attachment> attachments;
@@ -49,6 +48,7 @@ public final class Message implements Comparable<Message> {
     public Message(
             @JsonProperty("message_id") String id,
             @JsonProperty("timestamp")
+            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateFormatters.PYTHON_STR_ISO_OFFSET_DATE_TIME_STRING, timezone = "UTC")
             Instant creationTime,
             @JsonProperty("content") String content,
             @JsonProperty("attachments") List<Attachment> attachments,
