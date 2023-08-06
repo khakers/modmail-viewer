@@ -161,10 +161,9 @@
         !{nextClass="disabled";}
     @endif
     @if(pageCount > 1)
-        <div class="container col d-flex justify-content-center p-4 pb-0">
+        <div class="container col d-flex justify-content-center p-4 pb-0" up-hungry>
             <nav aria-label="pagination">
                 <ul class="pagination">
-                    <%--                        onclick="update('pageIndex', '${Math.max(pageIndex-1, 1)}')"--%>
                     <li class="page-item">
                         <a class="page-link ${previousClass}" up-follow="#logEntryList"
                            href="${QueryParamUtil.updateQueryParams(ctx, "page", String.valueOf(Math.max(pageIndex-1, 1)))}">Previous</a>
