@@ -3,6 +3,22 @@
 // We'd rather just replace the body since the only thing that changes outside of it is already marked as hungry
 up.history.config.restoreTargets = ['main'];
 
+
+function createAlert(title, text, type, timeout = 7500) {
+    const alertPlaceholder = document.getElementById("alertPlaceholder");
+    let alert = up.element.createFromHTML(`
+    <div class="alert alert-${type} alert-dismissible fade show mx-4 mt-2 shadow-lg" role="alert">
+        <strong>${title}</strong> ${text}.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    `);
+    alertPlaceholder.append(alert);
+    const bsAlert = new bootstrap.Alert(alert);
+    setTimeout(() => {
+        bsAlert.close();
+    }, timeout);
+}
+
 // Fill out bootstrap tooltips
 up.compiler('[data-bs-toggle="tooltip"]', function (element) {
     new bootstrap.Tooltip(element);
@@ -110,12 +126,16 @@ up.on('click', '#auditSearchResetButton', (event) => {
 
 up.on('click', '.message-action-button', (event, element) => {
     const data = element.dataset;
-    if (data.copyType === "uri-fragment") {
-        const url = new URL(document.documentURI);
-        url.hash = element.dataset.copyString
-        navigator.clipboard.writeText(url.toString())
+    if (window.isSecureContext) {
+        if (data.copyType === "uri-fragment") {
+            const url = new URL(document.documentURI);
+            url.hash = element.dataset.copyString
+            navigator.clipboard.writeText(url.toString())
+        } else {
+            navigator.clipboard.writeText(element.dataset.copyString)
+        }
     } else {
-        navigator.clipboard.writeText(element.dataset.copyString)
+        createAlert("Clipboard Error", "Your browser does not support copying to the clipboard. You must be using an https connection for this to work.", "warning");
     }
 });
 
