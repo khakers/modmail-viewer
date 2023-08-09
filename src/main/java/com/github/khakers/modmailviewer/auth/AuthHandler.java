@@ -125,7 +125,7 @@ public class AuthHandler {
             handler.handle(ctx);
             logger.debug("User id{} @ {} was authorized and had request handled", user.getId(), ctx.ip());
         } else if (userRole != Role.ANYONE || user.isRealUser()) {
-            logger.debug("User id{} @ {} with role {} was not authorized to view {}", user.getId(), ctx.ip(), userRole, Owaspctx.url());
+            logger.debug("User id{} @ {} with role {} was not authorized to view {}", user.getId(), ctx.ip(), userRole, ctx.endpointHandlerPath());
             throw new UnauthorizedResponse();
         } else {
             logger.debug("Redirected {} to auth URL from {}", ctx.ip(), ctx.url());
