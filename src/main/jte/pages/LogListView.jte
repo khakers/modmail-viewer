@@ -23,7 +23,7 @@
     <div class="container pt-5">
         <form class="border ${logEntries.isEmpty() ? "rounded" : "rounded-top"} p-2" id="logSearchForm" action="/"
               method="get" up-submit up-transition="cross-fade" up-target="#logEntryList" up-disable up-history="true">
-            <div class="row justify-content-center text-center text-lg-start g-2 align-items-center">
+            <div class="row justify-content-center text-center text-xl-start g-2 align-items-center">
                 <div class="col-xl-auto col-sm-12">
                     <div class="btn-group" up-autosubmit up-watch-delay="200" up-form-group>
                         <input type="radio" class="btn-check" name="status" id="all" value="all" autocomplete="off"
@@ -55,7 +55,7 @@
                         <option value="50" selected="${page.itemsPerPage==50}">50</option>
                     </select>
                 </div>
-                <div class="col-xl-8 col-sm-12 pt-2 py-xl-0">
+                <div class="col-xl-auto col-sm-12 pt-2 py-xl-0 d-flex flex-grow-1">
                     <div id="SearchBox" class="input-group px-xl-0 px-sm-2" up-form-group>
                         <button class="btn btn-outline-danger" type="button" id="ClearSearchButton"><i
                                     class="bi bi-x-lg"></i> ${localize("LOG_SEARCH_FORM_SEARCH_RESET")}
