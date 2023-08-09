@@ -124,9 +124,9 @@ public class AuthHandler {
         if (routeRoles.contains(userRole)) {
             handler.handle(ctx);
             logger.debug("User id{} @ {} was authorized and had request handled", user.getId(), ctx.ip());
-        } else if (userRole != Role.ANYONE) {
-            logger.debug("User id{} @ {} was not authorized was given a 403", user.getId(), ctx.ip());
-            ctx.status(403).result();
+        } else if (userRole != Role.ANYONE || user.isRealUser()) {
+            logger.debug("User id{} @ {} with role {} was not authorized to view {}", user.getId(), ctx.ip(), userRole, Owaspctx.url());
+            throw new UnauthorizedResponse();
         } else {
             logger.debug("Redirected {} to auth URL from {}", ctx.ip(), ctx.url());
             ctx.header("X-Auth-Redirect", "1");
