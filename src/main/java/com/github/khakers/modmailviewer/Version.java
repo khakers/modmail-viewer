@@ -17,8 +17,8 @@ public class Version implements Comparable<Version> {
     @Nullable
     String metaData;
 
-    public Version(@NotNull String prerelease) {
-        var matcher = SEMVER_PATTERN.matcher(prerelease);
+    public Version(@NotNull String versionString) {
+        var matcher = SEMVER_PATTERN.matcher(versionString);
         matcher.find();
         this.major = Integer.parseInt(matcher.group("major"));
         this.minor = Integer.parseInt(matcher.group("minor"));

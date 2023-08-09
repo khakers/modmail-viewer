@@ -30,9 +30,17 @@ public class UpdateChecker {
 
     private final AtomicReference<Instant> updateFoundTime = new AtomicReference<>(null);
 
-    private final Version CURRENT_VERSION = new Version(ModmailViewer.VERSION);
+    private final Version CURRENT_VERSION;
 
     public UpdateChecker() {
+
+        if (ModmailViewer.VERSION.isEmpty()) {
+            CURRENT_VERSION = new Version("0.0.0");
+            executorService = null;
+            return;
+        }
+
+        CURRENT_VERSION = new Version(ModmailViewer.VERSION);
 
         this.executorService = java.util.concurrent.Executors.newSingleThreadScheduledExecutor();
 
@@ -78,10 +86,10 @@ public class UpdateChecker {
 
     private Optional<Version> fetchLatestVersion() {
         Request request = new Request.Builder()
-                .url(String.format("https://api.github.com/repos/%s/%s/releases", REPO_OWNER, REPO_NAME))
-                .header("accept", "application/vnd.github+json")
-                .get()
-                .build();
+              .url(String.format("https://api.github.com/repos/%s/%s/releases", REPO_OWNER, REPO_NAME))
+              .header("accept", "application/vnd.github+json")
+              .get()
+              .build();
         logger.trace("request: {}", request.toString());
 
 
@@ -95,9 +103,9 @@ public class UpdateChecker {
             var releases = mapper.readTree(body);
 
             var gitTag = releases
-                    .get(0)
-                    .get("tag_name")
-                    .asText();
+                  .get(0)
+                  .get("tag_name")
+                  .asText();
 
             logger.debug("found version {} from github API.", gitTag);
 
