@@ -17,9 +17,15 @@ public class Version implements Comparable<Version> {
     @Nullable
     String metaData;
 
-    public Version(@NotNull String versionString) {
+    public Version(@NotNull String versionString) throws IllegalArgumentException {
+        if (versionString.isBlank()) {
+            throw new IllegalArgumentException("Version string cannot be blank");
+        }
         var matcher = SEMVER_PATTERN.matcher(versionString);
-        matcher.find();
+        var result = matcher.find();
+        if (!result) {
+            throw new IllegalArgumentException("Invalid version string: " + versionString);
+        }
         this.major = Integer.parseInt(matcher.group("major"));
         this.minor = Integer.parseInt(matcher.group("minor"));
         this.patch = Integer.parseInt(matcher.group("patch"));
