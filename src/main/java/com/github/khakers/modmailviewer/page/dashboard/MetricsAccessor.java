@@ -1,4 +1,4 @@
-package com.github.khakers.modmailviewer.dashboard;
+package com.github.khakers.modmailviewer.page.dashboard;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.khakers.modmailviewer.Main;
@@ -20,7 +20,7 @@ import java.util.Map;
 
 import static com.github.khakers.modmailviewer.util.DateFormatters.DATABASE_TIMESTAMP_FORMAT;
 
-public class MetricsDao {
+public class MetricsAccessor {
 
     private static final Logger logger = LogManager.getLogger();
 

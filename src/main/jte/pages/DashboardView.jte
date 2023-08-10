@@ -1,9 +1,10 @@
 @import com.github.khakers.modmailviewer.Main
 @import com.github.khakers.modmailviewer.data.internal.TicketStatus
+@import com.github.khakers.modmailviewer.page.dashboard.DashboardPage
 @import static com.github.khakers.modmailviewer.jte.JteContext.*
 
 
-@param com.github.khakers.modmailviewer.dashboard.DashboardPage page
+@param DashboardPage page
 
 
 @template.layout.Page(page = page, content = @`
@@ -71,7 +72,7 @@
                 <div class="card">
                     <h6 class="card-header"><i class="bi bi-envelope-exclamation"></i> Unanswered Tickets</h6>
                     <div class="card-body">
-                        <h6 class="card-title fs-1">${Main.metricsDao.getUnansweredTicketCount()}</h6>
+                        <h6 class="card-title fs-1">${Main.metricsAccessor.getUnansweredTicketCount()}</h6>
                     </div>
                 </div>
             </div>
@@ -82,7 +83,7 @@
                     <div class="card-body">
                         <h6 class="card-title fs-1">
                             <relative-duration
-                                    duration="${Main.metricsDao.getAverageFirstReplyTime(page.period).toMillis()}"></relative-duration>
+                                    duration="${Main.metricsAccessor.getAverageFirstReplyTime(page.period).toMillis()}"></relative-duration>
                         </h6>
                     </div>
                 </div>
@@ -94,7 +95,7 @@
                     <div class="card-body">
                         <h6 class="card-title fs-1">
                             <relative-duration
-                                    duration="${Main.metricsDao.getAverageResolutionTime(page.period).toMillis()}"></relative-duration>
+                                    duration="${Main.metricsAccessor.getAverageResolutionTime(page.period).toMillis()}"></relative-duration>
                         </h6>
                     </div>
                 </div>
@@ -108,7 +109,7 @@
                         <h6 class="card-subtitle mb-2 text-body-secondary">All time</h6>
                     </div>
                     <canvas class="chart" id="ticketClosersChart" width="400" height="400"
-                            data-chart-data="${Main.metricsDao.getTicketClosersJson()}"></canvas>
+                            data-chart-data="${Main.metricsAccessor.getTicketClosersJson()}"></canvas>
                 </div>
             </div>
             <div class="col">
@@ -117,7 +118,7 @@
                         <h5 class="card-title">Tickets closed per day</h5>
                     </div>
                     <canvas class="chart" id="ticketActionsPerDayChart" width="400"
-                            data-chart-data="${Main.metricsDao.getTicketsPerDayJson(page.period)}"></canvas>
+                            data-chart-data="${Main.metricsAccessor.getTicketsPerDayJson(page.period)}"></canvas>
                 </div>
             </div>
         </div>

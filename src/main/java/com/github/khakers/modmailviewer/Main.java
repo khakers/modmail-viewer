@@ -7,8 +7,8 @@ import com.github.khakers.modmailviewer.auditlog.MongoAuditEventLogger;
 import com.github.khakers.modmailviewer.auditlog.NoopAuditEventLogger;
 import com.github.khakers.modmailviewer.auth.AuthHandler;
 import com.github.khakers.modmailviewer.auth.Role;
-import com.github.khakers.modmailviewer.dashboard.DashboardController;
-import com.github.khakers.modmailviewer.dashboard.MetricsDao;
+import com.github.khakers.modmailviewer.page.dashboard.DashboardController;
+import com.github.khakers.modmailviewer.page.dashboard.MetricsAccessor;
 import com.github.khakers.modmailviewer.log.LogController;
 import com.github.khakers.modmailviewer.markdown.channelmention.ChannelMentionExtension;
 import com.github.khakers.modmailviewer.markdown.customemoji.CustomEmojiExtension;
@@ -115,7 +115,7 @@ public class Main {
 
     public static final UpdateChecker updateChecker = new UpdateChecker();
 
-    public static MetricsDao metricsDao;
+    public static MetricsAccessor metricsAccessor;
 
     public static void main(String[] args) {
 
@@ -129,7 +129,7 @@ public class Main {
         }
 
         registerValidators();
-        metricsDao = new MetricsDao();
+        metricsAccessor = new MetricsAccessor();
 
         JavalinJte.init(templateEngine);
         var app = Javalin.create(Main::configure)

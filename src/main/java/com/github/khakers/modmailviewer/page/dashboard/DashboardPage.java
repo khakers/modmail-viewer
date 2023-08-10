@@ -1,4 +1,4 @@
-package com.github.khakers.modmailviewer.dashboard;
+package com.github.khakers.modmailviewer.page.dashboard;
 
 import com.github.khakers.modmailviewer.Page;
 import io.javalin.http.Context;
@@ -9,13 +9,10 @@ public class DashboardPage extends Page {
 
     public final int period;
 
-    public DashboardPage(Context ctx) {
+    public DashboardPage(Context ctx, int period) {
         super(ctx);
 
-        period = ctx.queryParamAsClass("period", Integer.class)
-                .check(integer -> integer >= 1, "period must be at least 1")
-                .getOrDefault(30);
-
+        this.period = period;
     }
 
     @Override
