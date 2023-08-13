@@ -18,6 +18,7 @@ import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import com.github.scribejava.httpclient.okhttp.OkHttpHttpClient;
 import io.javalin.http.*;
+import io.javalin.http.util.NaiveRateLimit;
 import io.javalin.security.RouteRole;
 import okhttp3.OkHttpClient;
 import org.apache.logging.log4j.LogManager;
@@ -34,6 +35,7 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 public class AuthHandler {
     //todo logout handler
@@ -177,6 +179,9 @@ public class AuthHandler {
     }
 
     public void handleCallback(Context ctx) throws IOException, ExecutionException, InterruptedException {
+        // TODO This rate limiter naively accepts x-forwarded-for headers, either document security implications or replace it with a better implementation
+        NaiveRateLimit.requestPerTimeUnit(ctx, 2, TimeUnit.MINUTES);
+
         var code = ctx.queryParam("code");
         var state = ctx.queryParam("state");
         if (state == null) {
