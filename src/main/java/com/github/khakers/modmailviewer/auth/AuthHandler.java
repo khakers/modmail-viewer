@@ -147,7 +147,7 @@ public class AuthHandler {
         var key = new BigInteger(130, secureRandom).toString(32);
         var state = new ClientState(ctx.fullUrl());
         ouathState.put(key, state);
-        ctx.cookie(new Cookie("state", key, "/", 240, Config.isCookiesSecure, 1, true));
+        ctx.cookie(new Cookie("state", key, "/", -1, Config.isCookiesSecure, 1, true, "", "", SameSite.LAX));
         return key;
     }
 
