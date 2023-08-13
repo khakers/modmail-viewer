@@ -16,7 +16,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static com.github.khakers.modmailviewer.util.DateFormatters.DATABASE_TIMESTAMP_FORMAT;
 
@@ -40,7 +39,8 @@ public class MetricsAccessor {
 
     public String getTicketClosersJson() {
         try {
-            Map<String, Integer> results = db.getTicketsClosedByUserOrdered();
+            var results = db.getTicketsClosedPerUser();
+            logger.debug(results);
             String[] labels = new String[results.size()];
             Integer[] data = new Integer[results.size()];
             results.keySet().toArray(labels);

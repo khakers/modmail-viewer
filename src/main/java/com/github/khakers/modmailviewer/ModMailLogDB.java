@@ -10,10 +10,10 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.khakers.modmailviewer.auth.Role;
 import com.github.khakers.modmailviewer.auth.UserToken;
-import com.github.khakers.modmailviewer.page.dashboard.ChartData;
 import com.github.khakers.modmailviewer.data.ModMailLogEntry;
 import com.github.khakers.modmailviewer.data.ModmailConfig;
 import com.github.khakers.modmailviewer.data.internal.TicketStatus;
+import com.github.khakers.modmailviewer.page.dashboard.ChartData;
 import com.github.khakers.modmailviewer.util.DateFormatters;
 import com.github.khakers.modmailviewer.util.SingleItemCache;
 import com.mongodb.ConnectionString;
@@ -34,7 +34,6 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class ModMailLogDB {
 
@@ -402,34 +401,26 @@ public class ModMailLogDB {
     }
 
     /**
-     * Calculate the amount of tickets each moderator has closed
-     * Due to limitations introduced by modmailbot quirks, We determine if a user is a mod based on if their discord id is listed in the config as at least a mod
+     * Calculate the amount of tickets each user has closed
+     * Due to limitations introduced by modmailbot quirks, the users in the returned map may be moderators
      *
-     * @return An unmodifiable map with key value pairs of the Users name and the amount of tickets they have closed
+     * @return A descending order unmodifiable map with key value pairs of the Users name and the amount of tickets they have closed
      */
-    public Map<String, Integer> getTicketsClosedByUser() throws Exception {
-        var map = new HashMap<String, Integer>();
-        var perms = getConfig().getFlatUserPerms();
-        //todo optimize this code
-        logCollection.find(Filters.eq("open", false)).forEach(logEntry -> {
-            // It appears that the user closing the ticket is *always* a mod
-            // This sucks but
-            var closer = logEntry.getCloser().get();
-            var mod = perms.containsKey(Long.parseLong(closer.id()));
-            String key = mod ? closer.name() + "#" + closer.discriminator() : "user";
+    public Map<String, Integer> getTicketsClosedPerUser() throws Exception {
+        var map = new LinkedHashMap<String, Integer>(11, 1);
+        var foo = logAggregateCollection.aggregate(List.of(
+              Aggregates.match(Filters.eq("open", false)),
+              Aggregates.group("$closer.id",
+                    Accumulators.sum("count", 1),
+                    Accumulators.first("name", "$closer.name")),
+              Aggregates.limit(10),
+              Aggregates.sort(Sorts.descending("count"))));
 
-            map.merge(key, 1, Integer::sum);
+        foo.forEach(document -> {
+            logger.trace(document.toJson());
+            map.put(document.getString("name"), document.getInteger("count"));
         });
         return Collections.unmodifiableMap(map);
-    }
-
-    public Map<String, Integer> getTicketsClosedByUserOrdered() throws Exception {
-        var map = getTicketsClosedByUser();
-
-        return map.entrySet().stream()
-                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
     }
 
     public List<ModMailLogEntry> getLogsWithRecentActivity(int limit) {
