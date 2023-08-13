@@ -1,7 +1,7 @@
 package com.github.khakers.modmailviewer.page.dashboard;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.github.khakers.modmailviewer.Main;
+import com.github.khakers.modmailviewer.ModMailLogDB;
 import com.github.khakers.modmailviewer.data.MessageType;
 import com.github.khakers.modmailviewer.util.DateFormatters;
 import com.mongodb.client.model.Aggregates;
@@ -24,9 +24,15 @@ public class MetricsAccessor {
 
     private static final Logger logger = LogManager.getLogger();
 
+    private final ModMailLogDB db;
+
+    public MetricsAccessor(ModMailLogDB db) {
+        this.db = db;
+    }
+
     public String getTicketsPerDayJson(int period) {
         try {
-            return Main.db.getObjectMapper().writeValueAsString(Main.db.getTicketsActionsPerDay(period));
+            return db.getObjectMapper().writeValueAsString(db.getTicketsActionsPerDay(period));
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -34,12 +40,12 @@ public class MetricsAccessor {
 
     public String getTicketClosersJson() {
         try {
-            Map<String, Integer> results = Main.db.getTicketsClosedByUserOrdered();
+            Map<String, Integer> results = db.getTicketsClosedByUserOrdered();
             String[] labels = new String[results.size()];
             Integer[] data = new Integer[results.size()];
             results.keySet().toArray(labels);
             results.values().toArray(data);
-            return Main.db.getObjectMapper().writeValueAsString(new ChartData<>(data, labels));
+            return db.getObjectMapper().writeValueAsString(new ChartData<>(data, labels));
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -47,7 +53,7 @@ public class MetricsAccessor {
     }
 
     public int getUnansweredTicketCount() {
-        var foo = Main.db.getLogAggregateCollection().aggregate(
+        var foo = db.getLogAggregateCollection().aggregate(
               List.of(
                     Aggregates.match(Filters.eq("open", true)),
                     Aggregates.match(
@@ -85,7 +91,7 @@ public class MetricsAccessor {
 
     public Duration getAverageFirstReplyTime(int period) {
 
-        var foo = Main.db.getLogCollection().aggregate(
+        var foo = db.getLogCollection().aggregate(
               List.of(
                     // Needs to be log where the number of messages that are not system messages and not by the recipient
                     Aggregates.match(
@@ -130,13 +136,11 @@ public class MetricsAccessor {
     }
 
     public Duration getAverageResolutionTime(int period) {
-        long sum = 0;
-        var avg = getResolutionTimes(period).stream().mapToInt(value -> value).average().orElse(0.0);
-//        var resolutionTimes = getResolutionTimes().stream().mapToInt(value -> value).average().orElse(0.0);
-//        for (Integer integer : resolutionTimes) {
-//            sum += integer;
-//        }
-//        var avg = sum / resolutionTimes.size();
+        var avg = getResolutionTimes(period)
+              .stream()
+              .mapToInt(value -> value)
+              .average()
+              .orElse(0.0);
 
         return Duration.ofSeconds((long) avg);
     }
@@ -149,7 +153,7 @@ public class MetricsAccessor {
         // mongodb time queries because modmail stores everything as a string, thus making everything harder for no reason
         // (technically I believe you can convert strings to date objects, but I suspect it has poor performance and might not even work because this isn't quite iso8601 format for some reason)
         // This query filters for closed tickets, grabs a random sample of 250, and then gets a document of just the  closed at and opened at values of those documents
-        var query = Main.db.getLogAggregateCollection().aggregate(
+        var query = db.getLogAggregateCollection().aggregate(
               List.of(
                     Aggregates.match(Filters.eq("open", false)),
                     Aggregates.match(

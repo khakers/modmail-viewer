@@ -129,7 +129,7 @@ public class Main {
         }
 
         registerValidators();
-        metricsAccessor = new MetricsAccessor();
+        metricsAccessor = new MetricsAccessor(db);
 
         JavalinJte.init(templateEngine);
         var app = Javalin.create(Main::configure)
