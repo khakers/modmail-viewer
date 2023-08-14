@@ -22,6 +22,7 @@ import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoDatabase;
 import com.vladsch.flexmark.ext.autolink.AutolinkExtension;
 import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
 import com.vladsch.flexmark.html.HtmlRenderer;
@@ -82,19 +83,22 @@ public class Main {
     private static final Logger logger = LogManager.getLogger();
     private static final String envPrepend = "MODMAIL_VIEWER";
 
-    private static final MongoClient mongoClient = MongoClients.create(MongoClientSettings.builder()
-            .applyConnectionString(new ConnectionString(Config.MONGODB_URI))
-                    .codecRegistry(
-                            CodecRegistries.fromRegistries(
-                                    MongoClientSettings
-                                            .getDefaultCodecRegistry(),
-                                    CodecRegistries
-                                            .fromProviders(PojoCodecProvider.builder()
-                                                    .automatic(true)
-                                                    .build())))
-            .build());
+    private static final ConnectionString connectionString = new ConnectionString(Config.MONGODB_URI);
 
-    public static final ModMailLogDB db = new ModMailLogDB(mongoClient, Config.MONGODB_URI);
+    private static final MongoClient mongoClient = MongoClients.create(MongoClientSettings.builder()
+          .applyConnectionString(connectionString)
+          .codecRegistry(
+                CodecRegistries.fromRegistries(
+                      MongoClientSettings
+                            .getDefaultCodecRegistry(),
+                      CodecRegistries
+                            .fromProviders(PojoCodecProvider.builder()
+                                  .automatic(true)
+                                  .build())))
+          .build());
+
+    private static final MongoDatabase MODMAIL_DATABASE = mongoClient.getDatabase(connectionString.getDatabase() == null ? "modmail_bot" : connectionString.getDatabase());
+    public static final ModMailLogDB MOD_MAIL_LOG_CLIENT = new ModMailLogDB(MODMAIL_DATABASE);
 
     // We will always need an audit logger for searching, even if pushing to an audit logger is disabled
     public static MongoAuditEventLogger AuditLogClient = new MongoAuditEventLogger(mongoClient, Config.MONGODB_URI, "modmail_bot", "audit_log");
@@ -103,22 +107,20 @@ public class Main {
             ? AuditLogClient
             : new NoopAuditEventLogger();
 
-
     static final AuthHandler authHandler =
             Config.isAuthEnabled ?
                     new AuthHandler(Config.WEB_URL + "/callback",
                             Config.DISCORD_CLIENT_ID,
                             Config.DISCORD_CLIENT_SECRET,
                             Config.JWT_SECRET_KEY,
-                            db)
+                          MOD_MAIL_LOG_CLIENT)
                     : null;
 
     public static final UpdateChecker updateChecker = new UpdateChecker();
 
-    public static MetricsAccessor metricsAccessor;
+    public static MetricsAccessor metricsAccessor = new MetricsAccessor(MODMAIL_DATABASE);
 
     public static void main(String[] args) {
-
 
         TemplateEngine templateEngine;
 
@@ -129,7 +131,6 @@ public class Main {
         }
 
         registerValidators();
-        metricsAccessor = new MetricsAccessor(db);
 
         JavalinJte.init(templateEngine);
         var app = Javalin.create(Main::configure)
@@ -180,7 +181,7 @@ public class Main {
         if (Config.isAuthEnabled) {
             // Register api only if authentication is enabled
             app.get("/api/logs/{id}", ctx -> {
-                        var entry = db.getModMailLogEntry(ctx.pathParam("id"));
+                        var entry = MOD_MAIL_LOG_CLIENT.getModMailLogEntry(ctx.pathParam("id"));
                         entry.ifPresentOrElse(
                                 ctx::json,
                                 () -> {
@@ -188,7 +189,7 @@ public class Main {
                                 });
 
                     }, RoleUtils.atLeastAdministrator())
-                    .get("/api/config", ctx -> ctx.json(db.getConfig()), RoleUtils.atLeastAdministrator());
+                    .get("/api/config", ctx -> ctx.json(MOD_MAIL_LOG_CLIENT.getConfig()), RoleUtils.atLeastAdministrator());
 
             app.get("/callback", authHandler::handleCallback, Role.ANYONE);
         }

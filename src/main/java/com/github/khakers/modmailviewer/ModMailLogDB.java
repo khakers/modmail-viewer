@@ -16,9 +16,7 @@ import com.github.khakers.modmailviewer.data.internal.TicketStatus;
 import com.github.khakers.modmailviewer.page.dashboard.ChartData;
 import com.github.khakers.modmailviewer.util.DateFormatters;
 import com.github.khakers.modmailviewer.util.SingleItemCache;
-import com.mongodb.ConnectionString;
 import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.*;
@@ -46,7 +44,7 @@ public class ModMailLogDB {
     private final ObjectMapper objectMapper;
     private final SingleItemCache<ModmailConfig> configCache = new SingleItemCache<>(300000L, this::fetchConfig);
 
-    public ModMailLogDB(MongoClient mongoClient, String connectionString) {
+    public ModMailLogDB(MongoDatabase modmailDatabase) {
 
         this.objectMapper = JsonMapper.builder()
               .addModule(new JavaTimeModule())
@@ -57,10 +55,9 @@ public class ModMailLogDB {
               .withConfigOverride(Instant.class, cfg -> cfg.setFormat(JsonFormat.Value.forPattern(DateFormatters.PYTHON_STR_ISO_OFFSET_DATE_TIME_STRING)))
               .build();
 
-        var connectionString1 = new ConnectionString(connectionString);
 
-        this.database = mongoClient.getDatabase(connectionString1.getDatabase() == null ? "modmail_bot" : connectionString1.getDatabase());
-        database.listCollectionNames().forEach(logger::debug);
+        this.database = modmailDatabase;
+
         this.logCollection = JacksonMongoCollection.builder().withObjectMapper(objectMapper).build(database, "logs", ModMailLogEntry.class, UuidRepresentation.STANDARD);
         this.logAggregateCollection = database.getCollection("logs");
         this.configCollection = database.getCollection("config");
@@ -234,95 +231,6 @@ public class ModMailLogDB {
         return entries;
     }
 
-    public ChartData<Integer[], String> getTicketsActionsPerDay(int period) {
-        var date = LocalDate.now(ZoneId.of("UTC"));
-        var days = new LocalDate[period];
-        var daysString = new String[period];
-        for (int i = 0; i < period; i++) {
-            days[i] = date.minusDays(period - i);
-            daysString[i] = DateFormatters.DATABASE_TIMESTAMP_FORMAT.format(days[i].atStartOfDay());
-        }
-        logger.trace(Arrays.toString(days));
-        logger.trace(Arrays.stream(daysString).toList());
-
-        logger.debug("looking for days between {} and {}", daysString[0], DateFormatters.DATABASE_TIMESTAMP_FORMAT.format(days[period - 1].plusDays(1).atStartOfDay()));
-
-        var results = logAggregateCollection.aggregate(List.of(
-                        Aggregates.facet(
-                                new Facet("OPEN",
-                                        Aggregates.match(
-                                                Filters.and(
-                                                        Filters.gte("created_at", daysString[0]),
-                                                        Filters.lt("created_at", DateFormatters.DATABASE_TIMESTAMP_FORMAT.format(days[period - 1].plusDays(1).atStartOfDay())))),
-                                        Aggregates.bucket(
-                                                "$created_at",
-                                                Arrays.stream(daysString).toList(),
-                                                new BucketOptions()
-                                                        .defaultBucket("unknown")
-                                                        .output(
-                                                                Accumulators.sum("count", 1),
-                                                                Accumulators.push("created_at", "$created_at"))
-                                        )),
-                                new Facet("CLOSE",
-                                        Aggregates.match(Filters.eq("open", false)),
-                                        Aggregates.match(
-                                                Filters.and(
-                                                        Filters.gte("closed_at", daysString[0]),
-                                                        Filters.lt("closed_at", DateFormatters.DATABASE_TIMESTAMP_FORMAT.format(days[period - 1].plusDays(1).atStartOfDay())))),
-                                        Aggregates.bucket(
-                                                "$closed_at",
-                                                Arrays.stream(daysString).toList(),
-                                                new BucketOptions()
-                                                        .defaultBucket("unknown")
-                                                        .output(
-                                                                Accumulators.sum("count", 1),
-                                                                Accumulators.push("closed_at", "$closed_at"))
-                                        )
-                                ))
-//                            Aggregates.match(Filters.eq("open", false)),
-
-                )
-        );
-
-        var open = (List<Document>) results.first().get("OPEN");
-        var close = (List<Document>) results.first().get("CLOSE");
-
-        try {
-            logger.trace(objectMapper.writeValueAsString(open));
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-
-        var data = new Integer[2][period];
-        for (Integer[] datum : data) {
-            Arrays.fill(datum, 0);
-        }
-        open.forEach(document -> {
-            var time = document.getString("_id");
-            var index = 0;
-            for (int i = 0; i < daysString.length; i++) {
-                if (daysString[i].equals(time)) {
-                    index = i;
-                }
-            }
-            data[0][index] = document.getInteger("count");
-        });
-        close.forEach(document -> {
-            var time = document.getString("_id");
-            var index = 0;
-            for (int i = 0; i < daysString.length; i++) {
-                if (daysString[i].equals(time)) {
-                    index = i;
-                }
-            }
-            data[1][index] = document.getInteger("count");
-        });
-        return new ChartData<>(data, Arrays.stream(days)
-                .map(DateFormatters.MINI_DATE_FORMAT::format)
-                .toArray(String[]::new));
-
-    }
-
     public ChartData<Integer, String> getTicketsPerDay(int period, TicketStatus ticketStatus) {
         if (ticketStatus == TicketStatus.ALL) {
             throw new IllegalArgumentException("TicketStatus ALL is not supported by this method, use getTicketActionsPerDay instead.");
@@ -398,29 +306,6 @@ public class ModMailLogDB {
         return new ChartData<>(countList, Arrays.stream(days)
                 .map(DateFormatters.MINI_DATE_FORMAT::format)
                 .toArray(String[]::new));
-    }
-
-    /**
-     * Calculate the amount of tickets each user has closed
-     * Due to limitations introduced by modmailbot quirks, the users in the returned map may be moderators
-     *
-     * @return A descending order unmodifiable map with key value pairs of the Users name and the amount of tickets they have closed
-     */
-    public Map<String, Integer> getTicketsClosedPerUser() throws Exception {
-        var map = new LinkedHashMap<String, Integer>(11, 1);
-        var foo = logAggregateCollection.aggregate(List.of(
-              Aggregates.match(Filters.eq("open", false)),
-              Aggregates.group("$closer.id",
-                    Accumulators.sum("count", 1),
-                    Accumulators.first("name", "$closer.name")),
-              Aggregates.limit(10),
-              Aggregates.sort(Sorts.descending("count"))));
-
-        foo.forEach(document -> {
-            logger.trace(document.toJson());
-            map.put(document.getString("name"), document.getInteger("count"));
-        });
-        return Collections.unmodifiableMap(map);
     }
 
     public List<ModMailLogEntry> getLogsWithRecentActivity(int limit) {

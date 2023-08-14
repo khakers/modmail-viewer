@@ -46,7 +46,7 @@
                     <div class="card">
                         <h6 class="card-header"><i class="bi bi-inbox"></i> Total Tickets</h6>
                         <div class="card-body">
-                            <h6 class="card-title fs-1">${Main.db.getTotalTickets(TicketStatus.ALL)}</h6>
+                            <h6 class="card-title fs-1">${Main.MOD_MAIL_LOG_CLIENT.getTotalTickets(TicketStatus.ALL)}</h6>
                         </div>
                     </div>
                 </div>
@@ -55,7 +55,7 @@
                     <div class="card ">
                         <h6 class="card-header "><i class="bi bi-envelope-paper"></i> Open Tickets</h6>
                         <div class="card-body <%--text-bg-warning--%>">
-                            <h6 class="card-title fs-1">${Main.db.getTotalTickets(TicketStatus.OPEN)}</h6>
+                            <h6 class="card-title fs-1">${Main.MOD_MAIL_LOG_CLIENT.getTotalTickets(TicketStatus.OPEN)}</h6>
                         </div>
                     </div>
                 </div>
@@ -64,7 +64,7 @@
                     <div class="card">
                         <h6 class="card-header"><i class="bi bi-envelope-check"></i> Closed Tickets</h6>
                         <div class="card-body">
-                            <h6 class="card-title fs-1">${Main.db.getTotalTickets(TicketStatus.CLOSED)}</h6>
+                            <h6 class="card-title fs-1">${Main.MOD_MAIL_LOG_CLIENT.getTotalTickets(TicketStatus.CLOSED)}</h6>
                         </div>
                     </div>
                 </div>
