@@ -46,6 +46,9 @@ dependencies {
     implementation libs.webjar.bootstrap.icons
     implementation libs.webjar.highlightjs
     implementation libs.webjar.unpoly
+    implementation libs.webjar.chartjs
+    implementation libs.webjar.chartjs.plugin.autocolors
+    implementation libs.webjar.humanize.duration
 
     implementation libs.mongodb.driver
     implementation libs.mongojack

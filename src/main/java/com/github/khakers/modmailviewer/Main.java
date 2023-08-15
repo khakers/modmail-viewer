@@ -7,6 +7,8 @@ import com.github.khakers.modmailviewer.auditlog.MongoAuditEventLogger;
 import com.github.khakers.modmailviewer.auditlog.NoopAuditEventLogger;
 import com.github.khakers.modmailviewer.auth.AuthHandler;
 import com.github.khakers.modmailviewer.auth.Role;
+import com.github.khakers.modmailviewer.page.dashboard.DashboardController;
+import com.github.khakers.modmailviewer.page.dashboard.MetricsAccessor;
 import com.github.khakers.modmailviewer.log.LogController;
 import com.github.khakers.modmailviewer.markdown.channelmention.ChannelMentionExtension;
 import com.github.khakers.modmailviewer.markdown.customemoji.CustomEmojiExtension;
@@ -20,6 +22,7 @@ import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoDatabase;
 import com.vladsch.flexmark.ext.autolink.AutolinkExtension;
 import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
 import com.vladsch.flexmark.html.HtmlRenderer;
@@ -80,19 +83,22 @@ public class Main {
     private static final Logger logger = LogManager.getLogger();
     private static final String envPrepend = "MODMAIL_VIEWER";
 
-    private static final MongoClient mongoClient = MongoClients.create(MongoClientSettings.builder()
-            .applyConnectionString(new ConnectionString(Config.MONGODB_URI))
-                    .codecRegistry(
-                            CodecRegistries.fromRegistries(
-                                    MongoClientSettings
-                                            .getDefaultCodecRegistry(),
-                                    CodecRegistries
-                                            .fromProviders(PojoCodecProvider.builder()
-                                                    .automatic(true)
-                                                    .build())))
-            .build());
+    private static final ConnectionString connectionString = new ConnectionString(Config.MONGODB_URI);
 
-    public static final ModMailLogDB db = new ModMailLogDB(mongoClient, Config.MONGODB_URI);
+    private static final MongoClient mongoClient = MongoClients.create(MongoClientSettings.builder()
+          .applyConnectionString(connectionString)
+          .codecRegistry(
+                CodecRegistries.fromRegistries(
+                      MongoClientSettings
+                            .getDefaultCodecRegistry(),
+                      CodecRegistries
+                            .fromProviders(PojoCodecProvider.builder()
+                                  .automatic(true)
+                                  .build())))
+          .build());
+
+    private static final MongoDatabase MODMAIL_DATABASE = mongoClient.getDatabase(connectionString.getDatabase() == null ? "modmail_bot" : connectionString.getDatabase());
+    public static final ModMailLogDB MOD_MAIL_LOG_CLIENT = new ModMailLogDB(MODMAIL_DATABASE);
 
     // We will always need an audit logger for searching, even if pushing to an audit logger is disabled
     public static MongoAuditEventLogger AuditLogClient = new MongoAuditEventLogger(mongoClient, Config.MONGODB_URI, "modmail_bot", "audit_log");
@@ -101,20 +107,20 @@ public class Main {
             ? AuditLogClient
             : new NoopAuditEventLogger();
 
-
     static final AuthHandler authHandler =
             Config.isAuthEnabled ?
                     new AuthHandler(Config.WEB_URL + "/callback",
                             Config.DISCORD_CLIENT_ID,
                             Config.DISCORD_CLIENT_SECRET,
                             Config.JWT_SECRET_KEY,
-                            db)
+                          MOD_MAIL_LOG_CLIENT)
                     : null;
 
     public static final UpdateChecker updateChecker = new UpdateChecker();
 
-    public static void main(String[] args) {
+    public static MetricsAccessor metricsAccessor = new MetricsAccessor(MODMAIL_DATABASE);
 
+    public static void main(String[] args) {
 
         TemplateEngine templateEngine;
 
@@ -148,6 +154,7 @@ public class Main {
 //                })
                 .get("/logs", LogController.serveLogsPage, RoleUtils.atLeastSupporter())
                 .get("/logs/{id}", LogController.serveLogPage, RoleUtils.atLeastSupporter())
+                .get("/dashboard", DashboardController.serveDashboardPage, RoleUtils.atLeastSupporter())
                 //todo maybe after?
                 .after("/logs/{id}", ctx -> {
                     if (ctx.statusCode() == HttpStatus.FORBIDDEN.getCode()) {
@@ -174,7 +181,7 @@ public class Main {
         if (Config.isAuthEnabled) {
             // Register api only if authentication is enabled
             app.get("/api/logs/{id}", ctx -> {
-                        var entry = db.getModMailLogEntry(ctx.pathParam("id"));
+                        var entry = MOD_MAIL_LOG_CLIENT.getModMailLogEntry(ctx.pathParam("id"));
                         entry.ifPresentOrElse(
                                 ctx::json,
                                 () -> {
@@ -182,7 +189,7 @@ public class Main {
                                 });
 
                     }, RoleUtils.atLeastAdministrator())
-                    .get("/api/config", ctx -> ctx.json(db.getConfig()), RoleUtils.atLeastAdministrator());
+                    .get("/api/config", ctx -> ctx.json(MOD_MAIL_LOG_CLIENT.getConfig()), RoleUtils.atLeastAdministrator());
 
             app.get("/callback", authHandler::handleCallback, Role.ANYONE);
         }
@@ -202,9 +209,19 @@ public class Main {
         }
         if (Config.isDevMode) {
             logger.info("Loading static files from {}", System.getProperty("user.dir") + "/src/main/resources/static");
-            config.staticFiles.add(System.getProperty("user.dir") + "/src/main/resources/static", Location.EXTERNAL);
+            config.staticFiles.add(staticFileConfig -> {
+                staticFileConfig.mimeTypes.add(io.javalin.http.ContentType.TEXT_JS, "js");
+                staticFileConfig.mimeTypes.add(io.javalin.http.ContentType.TEXT_CSS, "css");
+                staticFileConfig.location = Location.EXTERNAL;
+                staticFileConfig.directory = System.getProperty("user.dir") + "/src/main/resources/static";
+            });
         } else {
-            config.staticFiles.add("/static", Location.CLASSPATH);
+            config.staticFiles.add(staticFileConfig -> {
+                staticFileConfig.mimeTypes.add(io.javalin.http.ContentType.TEXT_JS, "js");
+                staticFileConfig.mimeTypes.add(io.javalin.http.ContentType.TEXT_CSS, "css");
+                staticFileConfig.location = Location.CLASSPATH;
+                staticFileConfig.directory = "/static";
+            });
         }
         config.staticFiles.enableWebjars();
         if (Config.isDevMode) {
@@ -246,7 +263,7 @@ public class Main {
         if (Config.CUSTOM_CSP != null && !Config.CUSTOM_CSP.isBlank()) {
             globalHeaderConfig.contentSecurityPolicy(Config.CUSTOM_CSP);
         } else {
-            globalHeaderConfig.contentSecurityPolicy(String.format("default-src 'self';  img-src * 'self' data:; media-src media.discordapp.com; style-src-attr 'unsafe-hashes' 'self' 'sha256-biLFinpqYMtWHmXfkA1BPeCY0/fNt46SAZ+BBk5YUog='; script-src-elem 'self' https://cdn.jsdelivr.net/npm/@twemoji/api@14.1.0/dist/twemoji.min.js %s;", Objects.requireNonNullElse(Config.CSP_SCRIPT_SRC_ELEM_EXTRA, "")));
+            globalHeaderConfig.contentSecurityPolicy(String.format("default-src 'self';  img-src * 'self' data:; object-src 'none'; media-src media.discordapp.com; style-src-attr 'unsafe-hashes' 'self' 'sha256-biLFinpqYMtWHmXfkA1BPeCY0/fNt46SAZ+BBk5YUog='; script-src-elem 'self' https://cdn.jsdelivr.net/npm/@twemoji/api@14.1.0/dist/twemoji.min.js %s;", Objects.requireNonNullElse(Config.CSP_SCRIPT_SRC_ELEM_EXTRA, "")));
 
         }
 

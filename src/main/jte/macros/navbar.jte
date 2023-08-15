@@ -41,6 +41,9 @@
                 <li class="nav-item">
                     <a class="nav-link" aria-current="page" href="/" up-follow up-target=".content" up-history='true'>Home</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="/dashboard" up-follow up-target=".content" up-history='true'>Dashboard</a>
+                </li>
                 @if(user.isPresent() && user.get().isRealUser() && RoleUtils.isAtLeastRole(authRole, Role.ADMINISTRATOR))
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="/admin" up-follow up-target=".content"

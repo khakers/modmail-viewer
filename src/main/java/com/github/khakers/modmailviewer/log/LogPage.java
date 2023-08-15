@@ -15,7 +15,7 @@ public class LogPage extends Page {
 
     public LogPage(Context ctx) {
         super(ctx);
-        var entry = Main.db.getModMailLogEntry(ctx.pathParam("id"));
+        var entry = Main.MOD_MAIL_LOG_CLIENT.getModMailLogEntry(ctx.pathParam("id"));
         if (entry.isEmpty()) {
             throw new NotFoundResponse("No modmail log entry found");
         }

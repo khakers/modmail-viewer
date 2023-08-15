@@ -37,9 +37,15 @@ public final class ModMailLogEntry {
     @JsonProperty("guild_id")
     private final long guildId;
 
+    /**
+     * The user the ticket is about
+     */
     @JsonProperty("recipient")
     private final User recipient;
 
+    /**
+     * The user who created the ticket, may be different than the recipient if it is a proxy ticket.
+     */
     @JsonProperty("creator")
     private final User creator;
 
