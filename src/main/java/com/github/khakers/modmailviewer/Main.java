@@ -133,6 +133,7 @@ public class Main {
         registerValidators();
 
         var adminController = new AdminController(AuditLogClient);
+        var auditController = new AuditController(AuditLogClient);
 
         JavalinJte.init(templateEngine);
         var app = Javalin.create(Main::configure)
@@ -167,9 +168,8 @@ public class Main {
                         auditLogger.pushAuditEventWithContext(ctx, "log.accessed", String.format("accessed log id %s", ctx.pathParam("id")));
                     }
                 })
-                .get("/admin", AdminController.serveAdminPage, RoleUtils.atLeastAdministrator())
-                .get("/audit/{id}", AuditController.serveAuditPage, RoleUtils.atLeastAdministrator())
                 .get("/admin", adminController.serveAdminPage, RoleUtils.atLeastAdministrator())
+                .get("/audit/{id}", auditController.serveAuditPage, RoleUtils.atLeastAdministrator())
                 .after("/api/*", ctx -> {
                     if (Config.isApiAuditingEnabled) {
                         if (ctx.statusCode() == HttpStatus.FORBIDDEN.getCode()) {
