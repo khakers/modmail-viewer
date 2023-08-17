@@ -101,11 +101,11 @@ public class Main {
     public static final ModMailLogDB MOD_MAIL_LOG_CLIENT = new ModMailLogDB(MODMAIL_DATABASE);
 
     // We will always need an audit logger for searching, even if pushing to an audit logger is disabled
-    public static MongoAuditEventLogger AuditLogClient = new MongoAuditEventLogger(mongoClient, Config.MONGODB_URI, "modmail_bot", "audit_log");
+    public static AuditEventDAO AuditLogClient = new MongoAuditEventLogger(mongoClient, Config.MONGODB_URI, "modmail_bot", "audit_log");
 
     public static final OutboundAuditEventLogger auditLogger = Config.isAuthEnabled
-            ? AuditLogClient
-            : new NoopAuditEventLogger();
+            ? (OutboundAuditEventLogger) AuditLogClient
+          : new NoopAuditEventLogger();
 
     static final AuthHandler authHandler =
             Config.isAuthEnabled ?
@@ -131,6 +131,8 @@ public class Main {
         }
 
         registerValidators();
+
+        var adminController = new AdminController(AuditLogClient);
 
         JavalinJte.init(templateEngine);
         var app = Javalin.create(Main::configure)
@@ -167,6 +169,7 @@ public class Main {
                 })
                 .get("/admin", AdminController.serveAdminPage, RoleUtils.atLeastAdministrator())
                 .get("/audit/{id}", AuditController.serveAuditPage, RoleUtils.atLeastAdministrator())
+                .get("/admin", adminController.serveAdminPage, RoleUtils.atLeastAdministrator())
                 .after("/api/*", ctx -> {
                     if (Config.isApiAuditingEnabled) {
                         if (ctx.statusCode() == HttpStatus.FORBIDDEN.getCode()) {

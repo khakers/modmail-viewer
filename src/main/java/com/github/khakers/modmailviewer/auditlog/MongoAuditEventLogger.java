@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class MongoAuditEventLogger implements OutboundAuditEventLogger {
+public class MongoAuditEventLogger implements OutboundAuditEventLogger, AuditEventDAO {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -66,15 +66,18 @@ public class MongoAuditEventLogger implements OutboundAuditEventLogger {
 
     }
 
+    @Override
     public List<AuditEvent> getAuditEvents() {
         return this.auditCollection.find().into(new ArrayList<>());
     }
 
+    @Override
     public Optional<AuditEvent> getAuditEvent(String id) {
         logger.debug("Getting audit event with id: {}", id);
         return Optional.ofNullable(this.auditCollection.find(Filters.eq("_id", new ObjectId(id))).first());
     }
 
+    @Override
     public List<AuditEvent> searchAuditEvents(Instant rangeStart, Instant rangeEnd, List<Long> userIds, List<String> actions) {
         var timeFilter = Filters.and(
                 Filters.gte("timestamp", rangeStart),
