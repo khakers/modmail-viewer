@@ -4,9 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.github.khakers.modmailviewer.auditlog.event.AuditEvent;
-import com.github.khakers.modmailviewer.auditlog.event.AuditEventSource;
 import com.github.khakers.modmailviewer.auth.AuthHandler;
-import com.github.khakers.modmailviewer.util.DiscordUtils;
 import com.mongodb.ConnectionString;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
@@ -117,25 +115,12 @@ public class MongoAuditEventLogger implements OutboundAuditEventLogger, AuditEve
     @Override
     public void pushAuditEventWithContext(Context ctx, String event, String description) throws Exception {
         var user = AuthHandler.getUser(ctx);
-        ObjectId.get();
-        var auditEvent = new AuditEvent(
-                new ObjectId(),
-                event,
-                Instant.now(),
-                description,
-                new AuditEventSource(
-                        user.getId(),
-                        user.getUsername() + (DiscordUtils.isMigratedUserName(user) ? "" : "#" + user.getDiscriminator()),
-                        ctx.ip(),
-                        null,
-                        ctx.userAgent(),
-                        AuthHandler.getUserRole(ctx),
-                        "modmail-viewer"
-                )
-
-        );
-
-        this.pushEvent(auditEvent);
+        this.pushEvent(new AuditEvent.Builder(event)
+              .fromCtx(ctx)
+              .withDescription(description)
+              .withRole(AuthHandler.getUserRole(ctx))
+              .withUser(user)
+              .build());
     }
 
 }

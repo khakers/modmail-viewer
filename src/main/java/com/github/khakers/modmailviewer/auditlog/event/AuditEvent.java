@@ -3,6 +3,9 @@ package com.github.khakers.modmailviewer.auditlog.event;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.khakers.modmailviewer.auth.Role;
+import com.github.khakers.modmailviewer.auth.UserToken;
+import com.github.khakers.modmailviewer.data.User;
+import com.github.khakers.modmailviewer.util.DiscordUtils;
 import io.javalin.http.Context;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.mongojack.ObjectId;
@@ -70,6 +73,12 @@ public record AuditEvent(
             return this;
         }
 
+        /**
+         * Sets the ip and user agent from the given context
+         *
+         * @param ctx The context to set the ip and user agent from
+         * @return The builder object
+         */
         public Builder fromCtx(Context ctx) {
             this.ip = ctx.ip();
             this.userAgent = ctx.userAgent();
@@ -79,6 +88,31 @@ public record AuditEvent(
 
         public Builder withUserId(long userId) {
             this.userId = userId;
+            return this;
+        }
+
+        /**
+         * Sets the user ID and username from the given user
+         *
+         * @param user The user to set the ID and username from
+         * @return The builder object
+         */
+        public Builder withUser(UserToken user) {
+            this.userId = user.getId();
+            this.username = DiscordUtils.getDiscriminatorString(user);
+
+            return this;
+        }
+
+        /**
+         * Sets the user ID and username from the given user
+         *
+         * @param user The user to set the ID and username from
+         * @return The builder object
+         */
+        public Builder withUser(User user) {
+            this.userId = Long.parseLong(user.id());
+            this.username = DiscordUtils.getDiscriminatorString(user);
             return this;
         }
 

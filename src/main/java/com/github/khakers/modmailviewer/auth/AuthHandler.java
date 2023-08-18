@@ -7,7 +7,6 @@ import com.github.khakers.modmailviewer.ModMailLogDB;
 import com.github.khakers.modmailviewer.ModmailViewer;
 import com.github.khakers.modmailviewer.auditlog.OutboundAuditEventLogger;
 import com.github.khakers.modmailviewer.auditlog.event.AuditEvent;
-import com.github.khakers.modmailviewer.auditlog.event.AuditEventSource;
 import com.github.khakers.modmailviewer.auth.discord.GuildMember;
 import com.github.khakers.modmailviewer.util.DiscordUtils;
 import com.github.scribejava.apis.DiscordApi;
