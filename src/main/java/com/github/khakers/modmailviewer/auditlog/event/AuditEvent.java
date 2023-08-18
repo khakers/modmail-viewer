@@ -22,6 +22,7 @@ public record AuditEvent(
       AuditEventSource actor
 ) {
     public static final class Builder {
+        private org.bson.types.ObjectId id = new org.bson.types.ObjectId();
         private String action;
         private Instant timestamp = Instant.now();
         private String description;
@@ -112,7 +113,7 @@ public record AuditEvent(
         }
 
         public AuditEvent build() {
-            return new AuditEvent(null, action, timestamp, description, Objects.isNull(actor) ? new AuditEventSource(userId, username, ip, country, userAgent, role, source) : actor);
+            return new AuditEvent(id, action, timestamp, description, Objects.isNull(actor) ? new AuditEventSource(userId, username, ip, country, userAgent, role, source) : actor);
         }
     }
 }
