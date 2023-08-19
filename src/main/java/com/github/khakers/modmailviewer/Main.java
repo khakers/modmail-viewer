@@ -57,10 +57,7 @@ import org.github.gestalt.config.source.ClassPathConfigSource;
 import org.github.gestalt.config.source.EnvironmentConfigSource;
 import org.jetbrains.annotations.NotNull;
 
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -135,22 +132,14 @@ public class Main {
 
         registerValidators();
 
-        URI uri = null;
 
-        try {
-            uri = new URL(appConfig.url()).toURI(); // Validate the URL
-            if (uri.getScheme().equals("http")) {
-                logger.warn("You are running Modmail-Viewer over HTTP with an http callback URI. It is highly recommended that you use HTTPS.");
-            } else if (uri.getScheme().equals("https") && !appConfig.secureCookies()) {
-                logger.warn("You are running Modmail-Viewer over HTTPS but have disabled enabled secure cookies. There should be no reason to do this. ");
-            }
-        } catch (URISyntaxException e) {
-            logger.fatal("Invalid URL: " + appConfig.url());
-            System.exit(1);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
+        var uri = URI.create(appConfig.url()); // Validate the URL
+        if (uri.getScheme().equals("http")) {
+            logger.warn("You are running Modmail-Viewer over HTTP with an http callback URI. It is highly recommended that you use HTTPS.");
+        } else if (uri.getScheme().equals("https") && !appConfig.secureCookies()) {
+            logger.warn("You are running Modmail-Viewer over HTTPS but have disabled enabled secure cookies. There should be no reason to do this. ");
         }
-        var callbackUri = uri.resolve("/callback"); // Append the callback path to the URL
+        var callbackUri = uri.resolve("./callback"); // Append the callback path to the URL
         logger.debug("Callback URL: " + callbackUri);
 
         var connectionString = new ConnectionString(appConfig.mongodbUri());
