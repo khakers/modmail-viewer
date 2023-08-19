@@ -122,6 +122,6 @@ task('copyReport', type: Copy, dependsOn: 'licenseReport') {
 
 release {
     git {
-        requireBranch.set('master')
+        requireBranch.set('master|develop')
     }
 }
