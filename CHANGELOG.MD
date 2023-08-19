@@ -1,10 +1,7 @@
 # Changelog
 Based on [common changelog spec](https://common-changelog.org/)
 
-## [Unreleased]
-
-_If you are upgrading: please see [`UPGRADING.md`](UPGRADING.md)._
-
+## [1.0.0-alpha.1] - 2023-8-18
 
 ### Changed
 
