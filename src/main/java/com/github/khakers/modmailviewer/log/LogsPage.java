@@ -1,5 +1,6 @@
 package com.github.khakers.modmailviewer.log;
 
+import com.github.khakers.modmailviewer.Main;
 import com.github.khakers.modmailviewer.ModMailLogDB;
 import com.github.khakers.modmailviewer.Page;
 import com.github.khakers.modmailviewer.data.ModMailLogEntry;
@@ -8,7 +9,7 @@ import io.javalin.http.Context;
 
 import java.util.List;
 
-import static com.github.khakers.modmailviewer.Main.MOD_MAIL_LOG_CLIENT;
+import static com.github.khakers.modmailviewer.Main.modMailLogDB;
 
 public class LogsPage extends Page {
 
@@ -18,7 +19,7 @@ public class LogsPage extends Page {
 
     public final int currentPage;
     public final int pageCount;
-    public final ModMailLogDB modMailLogDB = MOD_MAIL_LOG_CLIENT;
+    public final ModMailLogDB modMailLogDB = Main.modMailLogDB;
     public final TicketStatus ticketStatusFilter;
     public final boolean showNSFW;
     public final String searchString;
@@ -54,10 +55,10 @@ public class LogsPage extends Page {
                 .getOrDefault(8);
 
         ticketStatusFilter = TicketStatus.valueOf(statusFilter.toUpperCase());
-        pageCount = MOD_MAIL_LOG_CLIENT.getPaginationCount(itemsPerPage, ticketStatusFilter, searchString);
+        pageCount = Main.modMailLogDB.getPaginationCount(itemsPerPage, ticketStatusFilter, searchString);
         page1 = Math.min(pageCount, page1);
         currentPage = page1;
-        logEntries = MOD_MAIL_LOG_CLIENT.searchPaginatedMostRecentEntriesByMessageActivity(currentPage, itemsPerPage, ticketStatusFilter, searchString);
+        logEntries = Main.modMailLogDB.searchPaginatedMostRecentEntriesByMessageActivity(currentPage, itemsPerPage, ticketStatusFilter, searchString);
     }
 
     @Override

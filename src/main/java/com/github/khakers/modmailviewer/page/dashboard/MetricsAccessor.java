@@ -51,7 +51,7 @@ public class MetricsAccessor {
         this.logCollection = JacksonMongoCollection
               .builder()
               .withObjectMapper(objectMapper)
-              .build(modmailDatabase, Constants.MODMAIL_LOG_COLLECTION_NAME, ModMailLogEntry.class, UuidRepresentation.STANDARD);;
+              .build(modmailDatabase, Constants.MODMAIL_LOG_COLLECTION_NAME, ModMailLogEntry.class, UuidRepresentation.STANDARD);
     }
 
     public String getTicketsPerDayJson(int period) {

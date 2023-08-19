@@ -10,6 +10,7 @@ import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Objects;
 
+@Deprecated
 public class Config {
     private static final Logger logger = LogManager.getLogger();
 
@@ -23,7 +24,7 @@ public class Config {
             ? Integer.parseInt(System.getenv(ENV_PREPEND + "_HTTPs_PORT"))
             : 443;
 
-    public static final String MONGODB_URI = Assert.requireNonEmpty(System.getenv(ENV_PREPEND + "_MONGODB_URI"), "No mongodb URI provided. provide one with the option \""+ENV_PREPEND+"_MONGODB_URI\"");
+    public static final String MONGODB_URI = System.getenv(ENV_PREPEND + "_APP_MONGODB_URI");
 
     public static final String WEB_URL; 
 
@@ -31,11 +32,11 @@ public class Config {
 
     @Nullable
     public static final String SSL_CERT = isSecure
-            ? Assert.requireNonEmpty(System.getenv(ENV_PREPEND + "_SSL_CERT"), "SSL was enabled but no certificate file path was provided. Provide one with the option \"" + ENV_PREPEND + "_SSL_CERT\"")
+            ?System.getenv(ENV_PREPEND + "_SSL_CERT")
             : null;
     @Nullable
     public static final String SSL_KEY = isSecure
-            ? Assert.requireNonEmpty(System.getenv(ENV_PREPEND + "_SSL_KEY"), "SSL was enabled but no key file path was provided. Provide one with the option \"" + ENV_PREPEND + "_DISCORD_SSL_KEY\"")
+            ? System.getenv(ENV_PREPEND + "_SSL_KEY")
             : null;
     public static final boolean isHttpsOnly = isSecure && isNotNullAndFalse(System.getenv(ENV_PREPEND + "_HTTPS_ONLY"), true);
 
@@ -52,13 +53,13 @@ public class Config {
     public static final boolean isApiAuditingEnabled = true;
 
     public static final String DISCORD_CLIENT_ID = isAuthEnabled
-            ? Assert.requireNonEmpty(System.getenv(ENV_PREPEND + "_DISCORD_OAUTH_CLIENT_ID"), "No Discord client ID provided. Provide one with the option \"" + ENV_PREPEND + "_DISCORD_OAUTH_CLIENT_ID\"")
+            ? System.getenv(ENV_PREPEND + "_DISCORD_OAUTH_CLIENT_ID")
             : null;
     public static final String DISCORD_CLIENT_SECRET = isAuthEnabled
-            ? Assert.requireNonEmpty(System.getenv(ENV_PREPEND + "_DISCORD_OAUTH_CLIENT_SECRET"), "No Discord client ID provided. Provide one with the option \"" + ENV_PREPEND + "_DISCORD_OAUTH_CLIENT_SECRET\"")
+            ? System.getenv(ENV_PREPEND + "_DISCORD_OAUTH_CLIENT_SECRET")
             : null;
 
-    public static final long DISCORD_GUILD_ID = Long.parseLong(Assert.requireNonEmpty(System.getenv(ENV_PREPEND + "_DISCORD_GUILD_ID"), "No Discord guild ID provided. Provide one with the option \""+ENV_PREPEND+"_DISCORD_GUILD_ID\""));
+    public static final long DISCORD_GUILD_ID = Long.parseLong(System.getenv(ENV_PREPEND + "_DISCORD_GUILD_ID"));
 
     public static final long BOT_ID = Long.parseLong(notEmptyOrElse(System.getenv(ENV_PREPEND + "_BOT_ID"), "0"));
     public static final String JWT_SECRET_KEY;
@@ -90,7 +91,7 @@ public class Config {
             logger.warn("Insecure cookies are enabled. This reduces security and should only be enabled when https is unavailable");
         }
 
-        var webUrl = Assert.requireNonEmpty(System.getenv(ENV_PREPEND + "_URL"), "No URL provided. provide one with the option \"" + ENV_PREPEND + "_URL\"");
+        var webUrl = System.getenv(ENV_PREPEND + "_URL");
         if (webUrl.endsWith("/")) {
             logger.warn(ENV_PREPEND + "_WEB_URL has a trailing slash. Removed it due to conflict with the callback.");
             webUrl = webUrl.substring(0, webUrl.length() - 1);
