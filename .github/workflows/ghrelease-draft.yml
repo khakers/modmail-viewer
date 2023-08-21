@@ -32,7 +32,7 @@ jobs:
         distribution: 'temurin'
         cache: gradle
     - name: Build with Gradle
-      uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25
+      uses: gradle/gradle-build-action@243af859f8ca30903d9d7f7936897ca0358ba691
       with:
         arguments: assembleDist
         
