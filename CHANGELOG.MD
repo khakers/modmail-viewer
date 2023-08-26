@@ -1,6 +1,21 @@
 # Changelog
 Based on [common changelog spec](https://common-changelog.org/)
 
+## [Unreleased]
+
+### Changed
+
+- Move badges to their own line on smaller than xl displays
+
+### Added
+
+- Add LOG_STATUS_NEW badge to list of logs.
+- Add tooltip to NSFW badge
+
+### Removed
+
+### Fixed
+
 ## [1.0.0-alpha.1] - 2023-8-18
 
 ### Changed
