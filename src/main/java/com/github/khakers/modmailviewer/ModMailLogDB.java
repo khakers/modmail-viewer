@@ -301,14 +301,16 @@ public class ModMailLogDB {
                     role = foundRole;
                 }
             }
-            // Check if a role id matches
-            for (long roleID :
-                    roles) {
-                if (entry.getValue().contains(roleID)) {
-                    var foundRole = entry.getKey();
-                    logger.trace("Matched user to role id {} with permission level {}", roleID, foundRole);
-                    if (foundRole.value > role.value) {
-                        role = foundRole;
+            if (roles != null && roles.length >= 1) {
+                // Check if a role id matches
+                for (long roleID :
+                      roles) {
+                    if (entry.getValue().contains(roleID)) {
+                        var foundRole = entry.getKey();
+                        logger.trace("Matched user to role id {} with permission level {}", roleID, foundRole);
+                        if (foundRole.value > role.value) {
+                            role = foundRole;
+                        }
                     }
                 }
             }
