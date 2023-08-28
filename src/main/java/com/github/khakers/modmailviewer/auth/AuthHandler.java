@@ -22,7 +22,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.time.Instant;
@@ -30,7 +29,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 public class AuthHandler {
@@ -167,7 +165,7 @@ public class AuthHandler {
         logger.trace("new JWT generated with value {}", jwt);
     }
 
-    public void handleCallback(Context ctx) throws IOException, ExecutionException, InterruptedException {
+    public void handleCallback(Context ctx) throws Exception {
         // TODO This rate limiter naively accepts x-forwarded-for headers, either document security implications or replace it with a better implementation
         NaiveRateLimit.requestPerTimeUnit(ctx, 2, TimeUnit.MINUTES);
 
@@ -196,6 +194,15 @@ public class AuthHandler {
                     service.signRequest(token, guildRequest);
                     Response guildResponse = service.execute(guildRequest);
                     logger.trace(guildResponse.getBody());
+                    if (!guildResponse.isSuccessful()) {
+                        logger.warn("Failed to get guild information ({}) for user {}, ", guildResponse.getCode(), user);
+                        if (guildResponse.getCode() == 404) {
+                            ctx.status(403).result("You are not a member of the guild");
+                            return;
+                        }
+                        else
+                            throw new RuntimeException("Failed to get guild information");
+                    }
                     var guild = objectMapper.readValue(guildResponse.getBody(), GuildMember.class);
 
                     // The user is not authorized for any role and thus does not need to be given a token
@@ -210,6 +217,8 @@ public class AuthHandler {
                     handleGenerateJWT(ctx, user, guild.roles());
                     ctx.redirect(clientState.getRedirectedFrom());
                 } catch (Exception e) {
+                    if (e instanceof HttpResponseException)
+                        throw e;
                     throw new RuntimeException(e);
                 }
             } else {
