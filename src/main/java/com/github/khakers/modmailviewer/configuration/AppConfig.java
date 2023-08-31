@@ -26,6 +26,8 @@ public record AppConfig(
       AuditLogConfig auditLogConfig,
       @Config(path = "csp")
       CSPConfig cspConfig,
-      long botId
+      long botId,
+      String branding,
+      Optional<String> analytics
 ) {
 }
