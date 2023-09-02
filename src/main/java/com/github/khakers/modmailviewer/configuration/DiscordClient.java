@@ -1,10 +1,11 @@
 package com.github.khakers.modmailviewer.configuration;
 
-import org.github.gestalt.config.annotations.ConfigPrefix;
+import org.github.gestalt.config.annotations.Config;
 
-@ConfigPrefix(prefix = "discord")
 public record DiscordClient(
-    String clientId,
-    String clientSecret,
-    long guildId) {
+      @Config(path = "id")
+      String clientId,
+      @Config(path = "secret")
+      String clientSecret,
+      long guildId) {
 }
