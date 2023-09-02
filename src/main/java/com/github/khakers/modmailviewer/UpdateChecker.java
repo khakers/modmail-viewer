@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -44,13 +45,7 @@ public class UpdateChecker {
 
         this.executorService = java.util.concurrent.Executors.newSingleThreadScheduledExecutor();
 
-        this.executorService.scheduleAtFixedRate(this::runUpdateLoop, 0, 1, java.util.concurrent.TimeUnit.HOURS);
-
-        this.executorService.schedule(() -> {
-            if (isUpdateAvailable()) {
-                logger.warn("An update to version {} is available!. Out of date versions are not supported.", getLatestVersion().get().asVersionString());
-            }
-        }, 5, java.util.concurrent.TimeUnit.SECONDS);
+        this.executorService.scheduleAtFixedRate(this::runUpdateLoop, 1, 60, TimeUnit.MINUTES);
 
     }
 
