@@ -7,6 +7,8 @@ import org.github.gestalt.config.annotations.ConfigPrefix;
 public record AuditLogConfig(
       @Config(path="enabled")
       boolean isAuditLoggingEnabled,
+
+      boolean logTicketAccess,
       @Config(path = "detailed")
       boolean isDetailedAuditingEnabled,
       @Config(path = "logApiUsage")

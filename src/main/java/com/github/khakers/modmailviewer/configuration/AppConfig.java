@@ -17,8 +17,10 @@ public record AppConfig(
       @Config(path = "ssl")
       Optional<SSLConfig> sslOptions,
       boolean secureCookies,
-//      @Config(defaultVal = "true", path = "auth.enabled")
-//      boolean isAuthEnabled,
+
+      // Make AuthConfig optional again, read enabled option below
+      @Config(defaultVal = "true", path = "auth.enabled")
+      boolean isAuthEnabled,
       @Config(path = "auth")
       Optional<AuthConfig> auth,
       boolean dev,
