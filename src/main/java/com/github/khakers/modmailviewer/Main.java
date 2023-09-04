@@ -7,9 +7,7 @@ import com.github.khakers.modmailviewer.auditlog.NoopAuditEventLogger;
 import com.github.khakers.modmailviewer.auditlog.OutboundAuditEventLogger;
 import com.github.khakers.modmailviewer.auth.AuthHandler;
 import com.github.khakers.modmailviewer.auth.Role;
-import com.github.khakers.modmailviewer.configuration.AppConfig;
-import com.github.khakers.modmailviewer.configuration.CSPConfig;
-import com.github.khakers.modmailviewer.configuration.SSLConfig;
+import com.github.khakers.modmailviewer.configuration.*;
 import com.github.khakers.modmailviewer.log.LogController;
 import com.github.khakers.modmailviewer.markdown.channelmention.ChannelMentionExtension;
 import com.github.khakers.modmailviewer.markdown.customemoji.CustomEmojiExtension;
@@ -25,7 +23,7 @@ import com.github.khakers.modmailviewer.util.RoleUtils;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoDatabase;
 import com.vladsch.flexmark.ext.autolink.AutolinkExtension;
 import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
 import com.vladsch.flexmark.html.HtmlRenderer;
@@ -93,7 +91,7 @@ public class Main {
           .build();
     public static final UpdateChecker updateChecker = new UpdateChecker();
     private static final Logger logger = LogManager.getLogger();
-    private static final String envPrepend = "MODMAIL_VIEWER";
+    public static final String envPrepend = "MODMAIL_VIEWER";
     public static ModMailLogDB modMailLogDB;
     public static MetricsAccessor metricsAccessor;
     static AuthHandler authHandler;
@@ -119,6 +117,8 @@ public class Main {
         var authConfig = appConfig.auth();
         var auditLogConfig = appConfig.auditLogConfig();
 //        var cspConfig = appConfig.cspConfig();
+        var authConfig = appConfig.auth().orElse(null);
+
 
 
         TemplateEngine templateEngine;
@@ -169,18 +169,20 @@ public class Main {
 
 
 
-        authHandler = authConfig.isPresent() && authConfig.get().enabled() ?
+        authHandler = appConfig.isAuthEnabled() ?
               new AuthHandler(callbackUri.toString(),
-                    authConfig.get().discordClient().clientId(),
-                    authConfig.get().discordClient().clientSecret(),
-                    authConfig.get().secretKey(),
-                    modMailLogDB,auditLogger, authConfig.get().discordClient().guildId(), appConfig.secureCookies())
+                    authConfig.discordClient().clientId(),
+                    authConfig.discordClient().clientSecret(),
+                    authConfig.secretKey(),
+                    modMailLogDB,auditLogger, authConfig.discordClient().guildId(), appConfig.secureCookies())
               : null;
 
         metricsAccessor = new MetricsAccessor(mongoClientDatabase);
 
         var adminController = new AdminController(auditLogClient);
         var auditController = new AuditController(auditLogClient);
+        var logController = beanScope.get(LogController.class);
+        var dashboardController = new DashboardController();
 
 
         var app = Javalin.create(javalinConfig -> {
@@ -195,11 +197,11 @@ public class Main {
                   auditLogger.pushAuditEventWithContext(ctx, "viewer.logout", "User logged out");
                   ctx.removeCookie("jwt");
                   ctx.result("logout successful");
-                  if (authConfig.isEmpty() || !authConfig.get().enabled()) {
+                  if (!appConfig.isAuthEnabled()) {
                       ctx.redirect("/");
                   }
               }, RoleUtils.atLeastSupporter())
-              .get("/", LogController.serveLogsPage, RoleUtils.atLeastSupporter())
+              .get("/", logController.serveLogsPage, RoleUtils.atLeastSupporter())
 //                .routes(() -> {
 //                    path("logs", () -> {
 //                        get(LogController.serveLogsPage, RoleUtils.atLeastSupporter());
@@ -208,19 +210,9 @@ public class Main {
 //                        );
 //                    });
 //                })
-              .get("/logs", LogController.serveLogsPage, RoleUtils.atLeastSupporter())
-              .get("/logs/{id}", LogController.serveLogPage, RoleUtils.atLeastSupporter())
-              .get("/dashboard", DashboardController.serveDashboardPage, RoleUtils.atLeastSupporter())
-              //todo maybe after?
-              .after("/logs/{id}", ctx -> {
-//                  if (ctx.statusCode() == HttpStatus.FORBIDDEN.getCode()) {
-//
-//                  }
-
-                  if (auditLogConfig.isDetailedAuditingEnabled()) {
-                      auditLogger.pushAuditEventWithContext(ctx, "viewer.log.accessed", String.format("accessed log id %s", ctx.pathParam("id")));
-                  }
-              })
+              .get("/logs", logController.serveLogsPage, RoleUtils.atLeastSupporter())
+              .get("/logs/{id}", logController.serveLogPage, RoleUtils.atLeastSupporter())
+              .get("/dashboard", dashboardController.serveDashboardPage, RoleUtils.atLeastSupporter())
               .get("/admin", adminController.serveAdminPage, RoleUtils.atLeastAdministrator())
               .get("/audit/{id}", auditController.serveAuditPage, RoleUtils.atLeastAdministrator())
               .after("/api/*", ctx -> {
@@ -234,7 +226,7 @@ public class Main {
               })
               .start(appConfig.httpPort());
 
-            if (authConfig.isPresent() && authConfig.get().enabled()) {
+            if (appConfig.isAuthEnabled()) {
                 // Register api only if authentication is enabled
                 app.get("/api/logs/{id}", ctx -> {
                           var entry = modMailLogDB.getModMailLogEntry(ctx.pathParam("id"));
@@ -287,7 +279,7 @@ public class Main {
             config.showJavalinBanner = true;
             config.plugins.enableDevLogging();
         }
-        if (appConfig.auth().isPresent() && appConfig.auth().get().enabled()) {
+        if (appConfig.isAuthEnabled()) {
             logger.debug("Authentication is ENABLED");
             config.accessManager(authHandler::HandleAuth);
         } else {

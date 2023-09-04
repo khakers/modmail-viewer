@@ -58,7 +58,6 @@ public class AdminController {
         }
 
         var page = new AdminPage(ctx, rangeStart, rangeEnd, users, actions, tz, this.auditLogClient.searchAuditEvents(rangeStart, rangeEnd, users, actions));
-
         page.render();
     };
 

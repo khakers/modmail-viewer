@@ -5,10 +5,11 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.github.khakers.modmailviewer.auditlog.event.AuditEvent;
 import com.github.khakers.modmailviewer.auth.AuthHandler;
-import com.mongodb.ConnectionString;
-import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.IndexOptions;
+import com.mongodb.client.model.Indexes;
 import io.javalin.http.Context;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,6 +25,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class MongoAuditEventLogger implements OutboundAuditEventLogger, AuditEventDAO {
@@ -32,9 +34,8 @@ public class MongoAuditEventLogger implements OutboundAuditEventLogger, AuditEve
 
     private final MongoCollection<AuditEvent> auditCollection;
 
-    public MongoAuditEventLogger(MongoClient mongoClient, String connectionString, String defaultDatabase, String defaultCollection) {
+    public MongoAuditEventLogger(MongoDatabase modmailMongoDatabase) {
 
-        var connectionString1 = new ConnectionString(connectionString);
 
         var mongojackFeatures = new MongoJackModuleConfiguration().with(MongoJackModuleFeature.WRITE_INSTANT_AS_BSON_DATE);
 
@@ -48,19 +49,18 @@ public class MongoAuditEventLogger implements OutboundAuditEventLogger, AuditEve
                 .configure(SerializationFeature.WRITE_ENUMS_USING_INDEX, true);
 
 
-        var mongoDatabase = mongoClient.getDatabase(connectionString1.getDatabase() == null ? defaultDatabase : connectionString1.getDatabase());
-
-
         this.auditCollection = JacksonMongoCollection
                 .builder()
                 .withObjectMapper(objectMapper)
                 .build(
-                        mongoDatabase,
+                      modmailMongoDatabase,
                         "audit_log",
                         AuditEvent.class,
                         UuidRepresentation.STANDARD
                 );
 
+        // create TTL index
+        auditCollection.createIndex(Indexes.ascending("timestamp"), new IndexOptions().expireAfter(30L, TimeUnit.DAYS));
 
     }
 

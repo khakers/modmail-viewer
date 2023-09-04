@@ -15,11 +15,9 @@ public class NoopAuditEventLogger implements OutboundAuditEventLogger {
 
     @Override
     public void pushEvent(AuditEvent event) {
-        return;
     }
 
     @Override
     public void pushAuditEventWithContext(Context ctx, String event, String description) throws Exception {
-        return;
     }
 }

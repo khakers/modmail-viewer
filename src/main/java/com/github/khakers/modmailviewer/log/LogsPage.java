@@ -9,8 +9,6 @@ import io.javalin.http.Context;
 
 import java.util.List;
 
-import static com.github.khakers.modmailviewer.Main.modMailLogDB;
-
 public class LogsPage extends Page {
 
     public final String PATH = "/logs";
