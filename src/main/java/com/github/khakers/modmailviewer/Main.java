@@ -7,7 +7,9 @@ import com.github.khakers.modmailviewer.auditlog.NoopAuditEventLogger;
 import com.github.khakers.modmailviewer.auditlog.OutboundAuditEventLogger;
 import com.github.khakers.modmailviewer.auth.AuthHandler;
 import com.github.khakers.modmailviewer.auth.Role;
-import com.github.khakers.modmailviewer.configuration.*;
+import com.github.khakers.modmailviewer.configuration.AppConfig;
+import com.github.khakers.modmailviewer.configuration.CSPConfig;
+import com.github.khakers.modmailviewer.configuration.SSLConfig;
 import com.github.khakers.modmailviewer.log.LogController;
 import com.github.khakers.modmailviewer.markdown.channelmention.ChannelMentionExtension;
 import com.github.khakers.modmailviewer.markdown.customemoji.CustomEmojiExtension;
@@ -23,7 +25,7 @@ import com.github.khakers.modmailviewer.util.RoleUtils;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.MongoClients;
 import com.vladsch.flexmark.ext.autolink.AutolinkExtension;
 import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
 import com.vladsch.flexmark.html.HtmlRenderer;
@@ -114,7 +116,6 @@ public class Main {
 
         var appConfig = gestalt.getConfig("app", AppConfig.class);
         logger.debug(appConfig.toString());
-        var authConfig = appConfig.auth();
         var auditLogConfig = appConfig.auditLogConfig();
 //        var cspConfig = appConfig.cspConfig();
         var authConfig = appConfig.auth().orElse(null);
@@ -162,8 +163,8 @@ public class Main {
         modMailLogDB = new ModMailLogDB(mongoClientDatabase, appConfig.botId());
 
         // We will always need an audit logger for searching, even if pushing to an audit logger is disabled
-        AuditEventDAO auditLogClient = new MongoAuditEventLogger(mongoClient, appConfig.mongodbUri(), "modmail_bot", "audit_log");
-        auditLogger = authConfig.isPresent() && authConfig.get().enabled()
+        AuditEventDAO auditLogClient = new MongoAuditEventLogger(mongoClientDatabase);
+        auditLogger = appConfig.isAuthEnabled() && auditLogConfig.isAuditLoggingEnabled()
               ? (OutboundAuditEventLogger) auditLogClient
               : new NoopAuditEventLogger();
 
@@ -181,7 +182,7 @@ public class Main {
 
         var adminController = new AdminController(auditLogClient);
         var auditController = new AuditController(auditLogClient);
-        var logController = beanScope.get(LogController.class);
+        var logController = new LogController(auditLogger);
         var dashboardController = new DashboardController();
 
 

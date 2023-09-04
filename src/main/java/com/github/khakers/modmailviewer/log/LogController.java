@@ -1,5 +1,7 @@
 package com.github.khakers.modmailviewer.log;
 
+import com.github.khakers.modmailviewer.auditlog.OutboundAuditEventLogger;
+import com.github.khakers.modmailviewer.configuration.Config;
 import io.javalin.http.Handler;
 
 public class LogController {
