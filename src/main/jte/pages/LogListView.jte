@@ -98,7 +98,7 @@
                                   data-bs-title="${localize("LOG_NSFW_TOOLTIP")}"><i
                                         class="bi bi-exclamation-triangle"></i> ${localize("LOG_NSFW")}</span>
                         @endif
-                        @if(entry.get().getMessages()
+                        @if(entry.get().isOpen() && entry.get().getMessages()
                         .stream()
                         .filter(message -> message.getType().equals(MessageType.thread))
                         .filter(message -> !message.getAuthor().id().equals(entry.get().getCreator().id()))
