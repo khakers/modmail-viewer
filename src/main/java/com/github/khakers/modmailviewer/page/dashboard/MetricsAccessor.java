@@ -21,10 +21,7 @@ import org.bson.UuidRepresentation;
 import org.mongojack.JacksonMongoCollection;
 import org.mongojack.internal.MongoJackModule;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.*;
 
 import static com.github.khakers.modmailviewer.util.DateFormatters.PYTHON_STR_ISO_OFFSET_DATE_TIME;
@@ -37,7 +34,7 @@ public class MetricsAccessor {
     private final MongoCollection<Document> logAggregateCollection;
 
     private final MongoCollection<ModMailLogEntry> logCollection;
-    
+
     private final ObjectMapper objectMapper = JsonMapper.builder()
           .addModule(new JavaTimeModule())
           .addModule(new Jdk8Module())
@@ -51,63 +48,76 @@ public class MetricsAccessor {
         this.logCollection = JacksonMongoCollection
               .builder()
               .withObjectMapper(objectMapper)
-              .build(modmailDatabase, Constants.MODMAIL_LOG_COLLECTION_NAME, ModMailLogEntry.class, UuidRepresentation.STANDARD);;
+              .build(modmailDatabase, Constants.MODMAIL_LOG_COLLECTION_NAME, ModMailLogEntry.class, UuidRepresentation.STANDARD);
+        ;
     }
 
     public String getTicketsPerDayJson(int period) {
         try {
-            var date = LocalDate.now(ZoneId.of("UTC"));
-            var days = new LocalDate[period];
-            var daysString = new String[period];
-            for (int i = 0; i < period; i++) {
-                days[i] = date.minusDays(period - i);
-                daysString[i] = PYTHON_STR_ISO_OFFSET_DATE_TIME.format(days[i].atStartOfDay());
-            }
-            logger.trace(Arrays.toString(days));
-            logger.trace(Arrays.stream(daysString).toList());
 
-            logger.debug("looking for days between {} and {}", daysString[0], DateFormatters.PYTHON_STR_ISO_OFFSET_DATE_TIME.format(days[period - 1].plusDays(1).atStartOfDay()));
+            // Days should go to today minus 29 days
+            // Today is a date, and we want 30 days
+
+            var date = LocalDate.now(ZoneId.of("UTC"));
+            logger.trace("Today is {}", date);
+            var days = new LocalDate[period];
+            // We're using period+1 for length because this is the data structure used for boundaries on the mongodb bucket function
+            // Thus, the last element should be the exclusive upper bound of the last bucket (bucket count is length -1)
+            var dayStringBoundaries = new String[period+1];
+            for (int i = 0; i < period; i++) {
+                days[i] = date.minusDays((period - 1) - i);
+                dayStringBoundaries[i] = PYTHON_STR_ISO_OFFSET_DATE_TIME.format(days[i].atStartOfDay());
+            }
+            dayStringBoundaries[period] = PYTHON_STR_ISO_OFFSET_DATE_TIME.format(days[period-1].atTime(LocalTime.MAX));
+
+            logger.trace("Period is {} days, which should start at {}, and end today, {}", period, date.minusDays(period-  1), date);
+            logger.trace(Arrays.toString(days));
+            var endtime = DateFormatters.PYTHON_STR_ISO_OFFSET_DATE_TIME.format(days[period - 1].atTime(LocalTime.MAX));
+            var DayStringList = List.of(dayStringBoundaries);
+            logger.trace(DayStringList);
+            logger.debug("looking for days between {} and {}", dayStringBoundaries[0], dayStringBoundaries[period]);
+            logger.trace("endtime = {}", endtime);
 
             var results = this.logAggregateCollection.aggregate(List.of(
-                            Aggregates.facet(
-                                    new Facet("OPEN",
-                                            Aggregates.match(
-                                                    Filters.and(
-                                                            Filters.gte("created_at", daysString[0]),
-                                                            Filters.lt("created_at", DateFormatters.PYTHON_STR_ISO_OFFSET_DATE_TIME.format(days[period - 1].plusDays(1).atStartOfDay())))),
-                                            Aggregates.bucket(
-                                                    "$created_at",
-                                                    Arrays.stream(daysString).toList(),
-                                                    new BucketOptions()
-                                                            .defaultBucket("unknown")
-                                                            .output(
-                                                                    Accumulators.sum("count", 1),
-                                                                    Accumulators.push("created_at", "$created_at"))
-                                            )),
-                                    new Facet("CLOSE",
-                                            Aggregates.match(Filters.eq("open", false)),
-                                            Aggregates.match(
-                                                    Filters.and(
-                                                            Filters.gte("closed_at", daysString[0]),
-                                                            Filters.lt("closed_at", DateFormatters.PYTHON_STR_ISO_OFFSET_DATE_TIME.format(days[period - 1].plusDays(1).atStartOfDay())))),
-                                            Aggregates.bucket(
-                                                    "$closed_at",
-                                                    Arrays.stream(daysString).toList(),
-                                                    new BucketOptions()
-                                                            .defaultBucket("unknown")
-                                                            .output(
-                                                                    Accumulators.sum("count", 1),
-                                                                    Accumulators.push("closed_at", "$closed_at"))
-                                            )
-                                    ))
-                    )
+                        Aggregates.facet(
+                              new Facet("OPEN",
+                                    Aggregates.match(
+                                          Filters.and(
+                                                Filters.gte("created_at", dayStringBoundaries[0]),
+                                                Filters.lt("created_at", endtime))),
+                                    Aggregates.bucket(
+                                          "$created_at",
+                                          DayStringList,
+                                          new BucketOptions()
+                                                .defaultBucket("unknown")
+                                                .output(
+                                                      Accumulators.sum("count", 1),
+                                                      Accumulators.push("created_at", "$created_at"))
+                                    )),
+                              new Facet("CLOSE",
+                                    Aggregates.match(Filters.eq("open", false)),
+                                    Aggregates.match(
+                                          Filters.and(
+                                                Filters.gte("closed_at", dayStringBoundaries[0]),
+                                                Filters.lt("closed_at", endtime))),
+                                    Aggregates.bucket(
+                                          "$closed_at",
+                                          DayStringList,
+                                          new BucketOptions()
+                                                .defaultBucket("unknown")
+                                                .output(
+                                                      Accumulators.sum("count", 1),
+                                                      Accumulators.push("closed_at", "$closed_at"))
+                                    )
+                              ))
+                  )
             );
 
             var open = (List<Document>) results.first().get("OPEN");
             var close = (List<Document>) results.first().get("CLOSE");
 
             try {
-                logger.trace(this.objectMapper.writeValueAsString(open));
+                logger.trace("logAggregateCollection result: " + this.objectMapper.writeValueAsString(results.first()));
             } catch (JsonProcessingException e) {
                 logger.throwing(e);
                 return "";
@@ -120,8 +130,8 @@ public class MetricsAccessor {
             open.forEach(document -> {
                 var time = document.getString("_id");
                 var index = 0;
-                for (int i = 0; i < daysString.length; i++) {
-                    if (daysString[i].equals(time)) {
+                for (int i = 0; i < dayStringBoundaries.length; i++) {
+                    if (dayStringBoundaries[i].equals(time)) {
                         index = i;
                     }
                 }
@@ -130,8 +140,8 @@ public class MetricsAccessor {
             close.forEach(document -> {
                 var time = document.getString("_id");
                 var index = 0;
-                for (int i = 0; i < daysString.length; i++) {
-                    if (daysString[i].equals(time)) {
+                for (int i = 0; i < dayStringBoundaries.length; i++) {
+                    if (dayStringBoundaries[i].equals(time)) {
                         index = i;
                     }
                 }
