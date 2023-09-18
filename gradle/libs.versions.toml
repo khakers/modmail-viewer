@@ -22,7 +22,7 @@ mongojack = "4.8.0"
 owasp-encoder = "1.2.^"
 
 bootstrap = "5.3.0-alpha3"
-bootstrap-icons = "1.10.3"
+bootstrap-icons = "1.11.0"
 highlightjs = "11.7.0"
 twemoji = "14.1.0"
 unpoly = "3.0.0-rc2"
