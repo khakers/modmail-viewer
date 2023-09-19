@@ -121,6 +121,7 @@ task('copyReport', type: Copy, dependsOn: 'licenseReport') {
 
 
 release {
+    failOnUnversionedFiles.set(false)
     git {
         requireBranch.set('master|develop')
     }
