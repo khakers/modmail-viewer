@@ -1,7 +1,7 @@
 # Changelog
 Based on [common changelog spec](https://common-changelog.org/)
 
-## [Unreleased]
+## [1.0.0-alpha.2] - 2023-8-18
 
 ### Changed
 
@@ -15,6 +15,9 @@ Based on [common changelog spec](https://common-changelog.org/)
 ### Removed
 
 ### Fixed
+
+- Fix dashboard ticket open/close line graph data displaying reflected across the x-axis
+- Include data from the current date on dashboard ticket open/close line graph
 
 ## [1.0.0-alpha.1] - 2023-8-18
 
