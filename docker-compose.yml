@@ -24,7 +24,7 @@ services:
       - "MODMAIL_VIEWER_URL=http://127.0.0.1"
   # Comment out if not using
   mongo:
-    image: mongo:latest
+    image: mongo:6
     restart: always
     ports:
       - "27017:27017"
