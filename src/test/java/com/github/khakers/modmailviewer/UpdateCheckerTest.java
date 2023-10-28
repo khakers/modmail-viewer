@@ -11,6 +11,6 @@ class UpdateCheckerTest {
     @ValueSource(strings = {"v0.0.1", "50.0.0"})
     void isSemVerUpdateAvailable(String version) {
         var updateChecker = new UpdateChecker();
-        assertTrue(updateChecker.isSemVerUpdateAvailable("0.0.1"));
+        assertTrue(updateChecker.isSemVerUpdateAvailable(new Version(version)));
     }
 }
