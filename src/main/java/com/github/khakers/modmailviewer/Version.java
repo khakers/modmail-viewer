@@ -46,6 +46,32 @@ class Version implements Comparable<Version> {
         return string.toString();
     }
 
+    /**
+     *  Compares this version to the given version.
+     *  Versions that are the same return false.
+     *
+     * @param version the version to compare to
+     * @return true if this version is newer than the given version
+     */
+    public boolean isNewerThan(Version version) {
+        return this.compareTo(version) > 0;
+    }
+
+    /**
+     * Compares this version to the given version.
+     * Versions that are the same return false.
+     *
+     * @param version the version to compare to
+     * @return true if this version is older than the given version
+     */
+    public boolean isOlderThan(Version version) {
+        return this.compareTo(version) < 0;
+    }
+
+    public boolean isStable() {
+        return this.prerelease == null;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -65,13 +91,16 @@ class Version implements Comparable<Version> {
               "major=" + major +
               ", minor=" + minor +
               ", patch=" + patch +
-              ", versionString='" + prerelease + '\'' +
+              ", prerelease='" + prerelease + '\'' +
+              ", versionString='" + asVersionString() + '\'' +
               ", metaData='" + metaData + '\'' +
               '}';
     }
 
     /**
-     * Does not calculate PRE-RELEASE versions
+     * Calcualtes the difference between two versions.
+     *
+     * PRERELEASE versions are compared lexicographically.
      * <p>
      * Compares this object with the specified object for order.  Returns a
      * negative integer, zero, or a positive integer as this object is less
@@ -110,26 +139,35 @@ class Version implements Comparable<Version> {
         if (this.equals(version))
             return 0;
 
-        if (version.major > this.major)
+        if (this.major > version.major)
             return 1;
-        else if (version.major < this.major) {
+        else if (this.major < version.major) {
             return -1;
         }
 
-        if (version.minor > this.minor)
+        if (this.minor > version.minor)
             return 1;
-        else if (version.minor < this.minor) {
+        else if (this.minor < version.minor) {
             return -1;
         }
 
-        if (version.patch > this.patch)
+        if (this.patch > version.patch)
             return 1;
-        else if (version.patch < this.patch) {
+        else if (this.patch < version.patch) {
             return -1;
         }
 
-        if (version.prerelease != null && this.prerelease != null) {
-            return version.prerelease.compareTo(this.prerelease);
+        // A prerelease version is always less than a stable version of the same major.minor.patch
+        if (this.isStable() && !version.isStable()) {
+            return 1;
+        } else if (!this.isStable()&& version.isStable()) {
+            return -1;
+        }
+
+
+        if (this.prerelease != null && version.prerelease != null) {
+            // return reverse comparison because prerelease versions are compared lexicographically
+            return -version.prerelease.compareTo(this.prerelease);
         }
 
         return 0;
