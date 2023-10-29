@@ -28,6 +28,15 @@ class Version implements Comparable<Version> {
 
     }
 
+    private static boolean isDigitString(String str) {
+        for (char c : str.toCharArray()) {
+            if (!Character.isDigit(c)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public String asVersionString() {
         var string = new StringBuilder();
         string
@@ -47,8 +56,8 @@ class Version implements Comparable<Version> {
     }
 
     /**
-     *  Compares this version to the given version.
-     *  Versions that are the same return false.
+     * Compares this version to the given version.
+     * Versions that are the same return false.
      *
      * @param version the version to compare to
      * @return true if this version is newer than the given version
@@ -72,6 +81,16 @@ class Version implements Comparable<Version> {
         return this.prerelease == null;
     }
 
+    /**
+     *  Compares this version to the given version.
+     *  Versions that are exactly the same return true.
+     *  Versions that are equal for the purposes of semver may return false.
+     * <p>
+     *  This method takes into account build Metadata.
+     *
+     * @param o the object to compare to
+     * @return true if the object is a version and is equal to this version
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -98,9 +117,11 @@ class Version implements Comparable<Version> {
     }
 
     /**
-     * Calcualtes the difference between two versions.
-     *
+     * Calculates the difference between two versions.
+     * <p>
      * PRERELEASE versions are compared lexicographically.
+     * Per semver, a prerelease version is always less than a stable version of the same major.minor.patch
+     *
      * <p>
      * Compares this object with the specified object for order.  Returns a
      * negative integer, zero, or a positive integer as this object is less
@@ -120,7 +141,7 @@ class Version implements Comparable<Version> {
      * x.compareTo(y)==0} implies that {@code signum(x.compareTo(z))
      * == signum(y.compareTo(z))}, for all {@code z}.
      *
-     * @param o the object to be compared.
+     * @param version the object to be compared.
      * @return a negative integer, zero, or a positive integer as this object
      * is less than, equal to, or greater than the specified object.
      * @throws NullPointerException if the specified object is null
@@ -135,6 +156,36 @@ class Version implements Comparable<Version> {
      */
     @Override
     public int compareTo(@NotNull Version version) {
+        /*
+        https://semver.org/#spec-item-11
+
+        Precedence refers to how versions are compared to each other when ordered.
+
+            Precedence MUST be calculated by separating the version into major, minor, patch and pre-release identifiers
+            in that order (Build metadata does not figure into precedence).
+
+            Precedence is determined by the first difference when comparing each of these identifiers from left to right
+            as follows: Major, minor, and patch versions are always compared numerically.
+
+            Example: 1.0.0 < 2.0.0 < 2.1.0 < 2.1.1.
+
+            When major, minor, and patch are equal, a pre-release version has lower precedence than a normal version:
+
+            Example: 1.0.0-alpha < 1.0.0.
+
+            Precedence for two pre-release versions with the same major, minor, and patch version MUST be determined by
+            comparing each dot separated identifier from left to right until a difference is found as follows:
+
+                Identifiers consisting of only digits are compared numerically.
+
+                Identifiers with letters or hyphens are compared lexically in ASCII sort order.
+
+                Numeric identifiers always have lower precedence than non-numeric identifiers.
+
+                A larger set of pre-release fields has a higher precedence than a smaller set, if all of the preceding identifiers are equal.
+
+            Example: 1.0.0-alpha < 1.0.0-alpha.1 < 1.0.0-alpha.beta < 1.0.0-beta < 1.0.0-beta.2 < 1.0.0-beta.11 < 1.0.0-rc.1 < 1.0.0.
+         */
 
         if (this.equals(version))
             return 0;
@@ -160,14 +211,54 @@ class Version implements Comparable<Version> {
         // A prerelease version is always less than a stable version of the same major.minor.patch
         if (this.isStable() && !version.isStable()) {
             return 1;
-        } else if (!this.isStable()&& version.isStable()) {
+        } else if (!this.isStable() && version.isStable()) {
             return -1;
         }
 
-
         if (this.prerelease != null && version.prerelease != null) {
+            /*
+                Precedence for two pre-release versions with the same major, minor, and patch version MUST be determined
+                by comparing each dot separated identifier from left to right until a difference is found as follows:
+
+                    Identifiers consisting of only digits are compared numerically.
+
+                    Identifiers with letters or hyphens are compared lexically in ASCII sort order.
+
+                    Numeric identifiers always have lower precedence than non-numeric identifiers.
+
+                    A larger set of pre-release fields has a higher precedence than a smaller set,
+                    if all of the preceding identifiers are equal.
+             */
+
+            // separate prerelease identifiers by dot from left to right
+            var thisPrereleaseIdentifiers = this.prerelease.split("\\.");
+            var versionPrereleaseIdentifiers = version.prerelease.split("\\.");
+            for (int i = 0; i < thisPrereleaseIdentifiers.length; i++) {
+                if (i >= versionPrereleaseIdentifiers.length) {
+                    // this prerelease version has more identifiers than the other prerelease version
+                    return 1;
+                }
+
+                // Identifiers consisting of only digits are compared numerically.
+                if (isDigitString(thisPrereleaseIdentifiers[i]) && isDigitString(versionPrereleaseIdentifiers[i])) {
+                    var result = Integer.compare(
+                          Integer.parseInt(thisPrereleaseIdentifiers[i]),
+                          Integer.parseInt(versionPrereleaseIdentifiers[i]));
+                    if (result != 0) {
+                        return result;
+                    }
+                }
+
+                // Identifiers with letters or hyphens are compared lexically in ASCII sort order.
+                var result = thisPrereleaseIdentifiers[i].compareTo(versionPrereleaseIdentifiers[i]);
+                if (result != 0) {
+                    return result;
+                }
+            }
+
+
             // return reverse comparison because prerelease versions are compared lexicographically
-            return -version.prerelease.compareTo(this.prerelease);
+//            return -version.prerelease.compareTo(this.prerelease);
         }
 
         return 0;

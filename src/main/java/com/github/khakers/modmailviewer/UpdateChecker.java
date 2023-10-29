@@ -21,7 +21,7 @@ public class UpdateChecker {
 
     private final Version appVersion = new Version(ModmailViewer.TAG);
 
-    private final boolean isPrereleaseEligible = ModmailViewer.BRANCH.equalsIgnoreCase("develop") || (appVersion.prerelease != null && !appVersion.prerelease.isBlank());
+    private final boolean isPrereleaseEligible = ModmailViewer.BRANCH.equalsIgnoreCase("develop") || !appVersion.isStable();
 
     public static boolean isDockerContainer() {
         return false;
@@ -70,7 +70,7 @@ public class UpdateChecker {
             logger.debug("found version {} from github API. Current version is {}", latestVersion, currentVersion);
 
 
-            if (currentVersion.compareTo(latestVersion) > 0) {
+            if (currentVersion.isOlderThan(latestVersion)) {
                 var url = releases.get(0).get("html_url");
                 logger.warn("An update is available! Version v{} can be downloaded at {}. Out of date versions are not supported.", latestVersion.asVersionString(), url);
                 return true;
