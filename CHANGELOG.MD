@@ -1,6 +1,12 @@
 # Changelog
 Based on [common changelog spec](https://common-changelog.org/)
 
+## [1.0.0-alpha.3] - 2023-10-29
+
+### Changed
+
+- Update Javalin version to 5.6.3
+
 ## [1.0.0-alpha.2] - 2023-8-18
 
 ### Changed
