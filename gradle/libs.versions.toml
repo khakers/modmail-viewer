@@ -9,7 +9,7 @@ gradle-license = "0.9.2"
 gradle-git-properties = "2.4.1"
 
 javalin = "5.6.3"
-jte = "2.2.3"
+jte = "3.1.4"
 flexmark = "0.64.0"
 log4j = "2.19.0"
 jackson = "2.14.1"
