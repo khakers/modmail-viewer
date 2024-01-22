@@ -1,3 +1,4 @@
+@import com.github.khakers.modmailviewer.data.MessageType
 @import com.github.khakers.modmailviewer.data.internal.TicketStatus
 @import com.github.khakers.modmailviewer.util.DiscordUtils
 @import com.github.khakers.modmailviewer.util.Pagination
@@ -84,17 +85,29 @@
                         <a href="/logs/${entry.get().getKey()}${TextFragmentUtils.getTextFragmentAsSnippet(search)}"
                            up-follow up-target=".content" up-transition="move-left">${entry.get().getKey()}</a>
                     </h2>
-                    @if(entry.get().isOpen())
-                        <span class="badge rounded-pill text-bg-success fs-6"><i
-                                    class="bi bi-record-circle"></i> ${localize("LOG_STATUS_OPEN")}</span>
-                    @else
-                        <span class="badge rounded-pill text-bg-danger fs-6"><i
-                                    class="bi bi-check-circle"></i> ${localize("LOG_STATUS_CLOSED")}</span>
-                    @endif
-                    @if(entry.get().isNsfw())
-                        <span class="badge rounded-pill text-bg-warning fs-6"><i
-                                    class="bi bi-exclamation-triangle"></i> ${localize("LOG_NSFW")}</span>
-                    @endif
+                    <div class="message-badges d-xl-inline-block d-block">
+                        @if(entry.get().isOpen())
+                            <span class="badge rounded-pill text-bg-success fs-6"><i
+                                        class="bi bi-record-circle"></i> ${localize("LOG_STATUS_OPEN")}</span>
+                        @else
+                            <span class="badge rounded-pill text-bg-danger fs-6"><i
+                                        class="bi bi-check-circle"></i> ${localize("LOG_STATUS_CLOSED")}</span>
+                        @endif
+                        @if(entry.get().isNsfw())
+                            <span class="badge rounded-pill text-bg-warning fs-6" data-bs-toggle="tooltip"
+                                  data-bs-title="${localize("LOG_NSFW_TOOLTIP")}"><i
+                                        class="bi bi-exclamation-triangle"></i> ${localize("LOG_NSFW")}</span>
+                        @endif
+                        @if(entry.get().isOpen() && entry.get().getMessages()
+                        .stream()
+                        .filter(message -> message.getType().equals(MessageType.thread))
+                        .filter(message -> !message.getAuthor().id().equals(entry.get().getCreator().id()))
+                        .count() == 0)
+                            <span class="badge rounded-pill text-bg-info fs-6" data-bs-toggle="tooltip"
+                                  data-bs-title="${localize("LOG_STATUS_NEW_TOOLTIP")}"><i
+                                        class="bi bi-exclamation-circle"></i> ${localize("LOG_STATUS_NEW")}</span>
+                        @endif
+                    </div>
                     @if(entry.get().isOpen())
                         <span>Created by</span>
                         <span class="user-select-all d-inline-flex" data-bs-toggle="tooltip"
