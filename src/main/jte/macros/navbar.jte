@@ -1,6 +1,4 @@
-@import com.github.khakers.modmailviewer.Config
 @import com.github.khakers.modmailviewer.Page
-@import com.github.khakers.modmailviewer.auth.AuthHandler
 @import com.github.khakers.modmailviewer.auth.Role
 @import com.github.khakers.modmailviewer.util.DiscordUtils
 @import com.github.khakers.modmailviewer.util.RoleUtils
@@ -31,7 +29,7 @@
 </svg>
 <nav class="navbar navbar-expand-lg fixed-top bg-body-tertiary border-bottom border-tertiary">
     <div class="container-fluid">
-        <span class="navbar-brand h1" href="#">${Config.BRANDING}</span>
+        <span class="navbar-brand h1" href="#">${com.github.khakers.modmailviewer.configuration.Config.appConfig.branding()}</span>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>

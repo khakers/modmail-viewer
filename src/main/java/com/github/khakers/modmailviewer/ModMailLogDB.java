@@ -44,7 +44,10 @@ public class ModMailLogDB {
     private final ObjectMapper objectMapper;
     private final SingleItemCache<ModmailConfig> configCache = new SingleItemCache<>(300000L, this::fetchConfig);
 
-    public ModMailLogDB(MongoDatabase modmailDatabase) {
+    private long modmailBotId;
+
+    public ModMailLogDB(MongoDatabase modmailDatabase, long modmailBotId) {
+        this.modmailBotId = modmailBotId;
 
         this.objectMapper = JsonMapper.builder()
               .addModule(new JavaTimeModule())
@@ -55,13 +58,12 @@ public class ModMailLogDB {
               .withConfigOverride(Instant.class, cfg -> cfg.setFormat(JsonFormat.Value.forPattern(DateFormatters.PYTHON_STR_ISO_OFFSET_DATE_TIME_STRING)))
               .build();
 
-
         this.database = modmailDatabase;
 
         this.logCollection = JacksonMongoCollection.builder().withObjectMapper(objectMapper).build(database, "logs", ModMailLogEntry.class, UuidRepresentation.STANDARD);
         this.logAggregateCollection = database.getCollection("logs");
         this.configCollection = database.getCollection("config");
-        if (configCollection.countDocuments() > 1 && Config.BOT_ID == 0) {
+        if (configCollection.countDocuments() > 1 && modmailBotId == 0) {
             logger.warn("Multiple configuration documents were found in your MongoDB database. " +
                     "You *MUST* set the BOT_ID variable to your bots ID in order for the correct modmail configuration to be used.");
         }
@@ -413,18 +415,17 @@ public class ModMailLogDB {
      * @return the config from the database
      */
     private ModmailConfig fetchConfig() throws Exception {
-        Document conf = null;
-        if (Config.BOT_ID == 0) {
+        Document conf;
+        if (modmailBotId == 0) {
             conf = configCollection.find().first();
         } else {
-            conf = configCollection.find(Filters.eq("bot_id", Config.BOT_ID)).first();
+            conf = configCollection.find(Filters.eq("bot_id", modmailBotId)).first();
         }
 
         if (conf != null) {
             try {
                 logger.trace(conf.toJson());
-                var config = objectMapper.readValue(conf.toJson(), ModmailConfig.class);
-                return config;
+                return objectMapper.readValue(conf.toJson(), ModmailConfig.class);
             } catch (JsonProcessingException e) {
                 logger.error(e);
                 throw new RuntimeException(e);

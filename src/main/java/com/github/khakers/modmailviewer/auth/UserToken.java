@@ -3,6 +3,7 @@ package com.github.khakers.modmailviewer.auth;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -13,6 +14,7 @@ public class UserToken {
     long id;
     String username;
     String discriminator;
+    @Nullable
     String avatar;
 
     @JsonProperty("roles")
@@ -33,7 +35,7 @@ public class UserToken {
     public UserToken() {
 
     }
-    public UserToken(long id, String username, String discriminator, String avatar, long[] discordRoles, boolean isRealUser) {
+    public UserToken(long id, String username, String discriminator, @Nullable String avatar, long[] discordRoles, boolean isRealUser) {
         this.id = id;
         this.username = username;
         this.discriminator = discriminator;
@@ -102,6 +104,6 @@ public class UserToken {
     }
 
     public static UserToken getAnonymousUser() {
-        return new UserToken(0L, "anonymous", "0000", "", new long[]{}, false);
+        return new UserToken(0L, "anonymous", "0", null, new long[]{}, false);
     }
 }

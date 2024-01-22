@@ -2,13 +2,12 @@ package com.github.khakers.modmailviewer.auth;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.khakers.modmailviewer.Config;
-import com.github.khakers.modmailviewer.Main;
 import com.github.khakers.modmailviewer.ModMailLogDB;
 import com.github.khakers.modmailviewer.ModmailViewer;
+import com.github.khakers.modmailviewer.auditlog.OutboundAuditEventLogger;
 import com.github.khakers.modmailviewer.auditlog.event.AuditEvent;
-import com.github.khakers.modmailviewer.auditlog.event.AuditEventSource;
 import com.github.khakers.modmailviewer.auth.discord.GuildMember;
+import com.github.khakers.modmailviewer.util.DiscordUtils;
 import com.github.scribejava.apis.DiscordApi;
 import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.exceptions.OAuthException;
@@ -23,7 +22,6 @@ import io.javalin.security.RouteRole;
 import okhttp3.OkHttpClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bson.types.ObjectId;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -49,8 +47,16 @@ public class AuthHandler {
     private final Map<String, ClientState> ouathState = new Hashtable<>();
     private final SecureRandom secureRandom = new SecureRandom();
 
+    private final OutboundAuditEventLogger auditLogger;
 
-    public AuthHandler(String callback, String clientId, String clientSecret, String jwtSecret, ModMailLogDB modMailLogDB) {
+    private final long discordMainGuildId;
+
+    private final boolean secureCookies;
+
+
+    public AuthHandler(String callback, String clientId, String clientSecret, String jwtSecret, ModMailLogDB modMailLogDB, OutboundAuditEventLogger auditLogger, long discordMainGuildId, boolean secureCookies) {
+        this.auditLogger = auditLogger;
+        this.secureCookies = secureCookies;
         this.service = new ServiceBuilder(clientId)
                 .apiSecret(clientSecret)
                 .defaultScope("identify guilds.members.read")
@@ -60,6 +66,7 @@ public class AuthHandler {
                 .build(DiscordApi.instance());
         this.jwtAuth = new JwtAuth(jwtSecret);
         AuthHandler.modMailLogDB = modMailLogDB;
+        this.discordMainGuildId = discordMainGuildId;
     }
 
     public static Role getUserRole(UserToken token) {
@@ -147,7 +154,7 @@ public class AuthHandler {
         var key = new BigInteger(130, secureRandom).toString(32);
         var state = new ClientState(ctx.fullUrl());
         ouathState.put(key, state);
-        ctx.cookie(new Cookie("state", key, "/", -1, Config.isCookiesSecure, 1, true, "", "", SameSite.LAX));
+        ctx.cookie(new Cookie("state", key, "/", -1, this.secureCookies, 1, true, "", "", SameSite.LAX));
         return key;
     }
 
@@ -174,7 +181,7 @@ public class AuthHandler {
         // Same site strict cause browser not to send the cookie upon redirect from oauth
         // Which would mean we would need load a page that redirects the user with js
         var jwt = jwtAuth.generateJWT(user, roles);
-        ctx.cookie(new Cookie("jwt", jwt, "/", 10800, Config.isCookiesSecure, 1, true, "", "", SameSite.LAX));
+        ctx.cookie(new Cookie("jwt", jwt, "/", 10800, this.secureCookies, 1, true, "", "", SameSite.LAX));
         logger.trace("new JWT generated with value {}", jwt);
     }
 
@@ -203,7 +210,7 @@ public class AuthHandler {
                     var user = objectMapper.readValue(userResponse.getBody(), UserToken.class);
 
                     // Get and map the guild data
-                    var guildRequest = new OAuthRequest(Verb.GET, String.format("https://discord.com/api/v10/users/@me/guilds/%s/member", Config.DISCORD_GUILD_ID));
+                    var guildRequest = new OAuthRequest(Verb.GET, String.format("https://discord.com/api/v10/users/@me/guilds/%s/member", this.discordMainGuildId));
                     service.signRequest(token, guildRequest);
                     Response guildResponse = service.execute(guildRequest);
                     logger.trace(guildResponse.getBody());
@@ -217,22 +224,14 @@ public class AuthHandler {
                         return;
                     }
 
-//                    Main.auditLogger.pushAuditEventWithContext(ctx, );
-                    Main.auditLogger.pushEvent(
-                            new AuditEvent(
-                                    new ObjectId(),
-                                    "viewer.login",
-                                    Instant.now(),
-                                    "User logged in through discord",
-                                    new AuditEventSource(
-                                            user.getId(),
-                                            user.getUsername(),
-                                            ctx.ip(),
-                                            null,
-                                            ctx.userAgent(),
-                                            role,
-                                            "modmail-viewer")));
-
+                    this.auditLogger.pushEvent(
+                          new AuditEvent.Builder("viewer.login")
+                                .fromCtx(ctx)
+                                .withDescription("User logged in through discord")
+                                .withUserId(user.getId())
+                                .withUsername(user.getUsername() + DiscordUtils.getDiscriminatorString(user))
+                                .withRole(role)
+                                .build());
 
                     ctx.result(userResponse.getBody());
                     handleGenerateJWT(ctx, user, guild.roles());

@@ -4,13 +4,12 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.github.khakers.modmailviewer.auditlog.event.AuditEvent;
-import com.github.khakers.modmailviewer.auditlog.event.AuditEventSource;
 import com.github.khakers.modmailviewer.auth.AuthHandler;
-import com.github.khakers.modmailviewer.util.DiscordUtils;
-import com.mongodb.ConnectionString;
-import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.IndexOptions;
+import com.mongodb.client.model.Indexes;
 import io.javalin.http.Context;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,17 +25,17 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-public class MongoAuditEventLogger implements OutboundAuditEventLogger {
+public class MongoAuditEventLogger implements OutboundAuditEventLogger, AuditEventDAO {
 
     private static final Logger logger = LogManager.getLogger();
 
     private final MongoCollection<AuditEvent> auditCollection;
 
-    public MongoAuditEventLogger(MongoClient mongoClient, String connectionString, String defaultDatabase, String defaultCollection) {
+    public MongoAuditEventLogger(MongoDatabase modmailMongoDatabase) {
 
-        var connectionString1 = new ConnectionString(connectionString);
 
         var mongojackFeatures = new MongoJackModuleConfiguration().with(MongoJackModuleFeature.WRITE_INSTANT_AS_BSON_DATE);
 
@@ -50,31 +49,33 @@ public class MongoAuditEventLogger implements OutboundAuditEventLogger {
                 .configure(SerializationFeature.WRITE_ENUMS_USING_INDEX, true);
 
 
-        var mongoDatabase = mongoClient.getDatabase(connectionString1.getDatabase() == null ? defaultDatabase : connectionString1.getDatabase());
-
-
         this.auditCollection = JacksonMongoCollection
                 .builder()
                 .withObjectMapper(objectMapper)
                 .build(
-                        mongoDatabase,
+                      modmailMongoDatabase,
                         "audit_log",
                         AuditEvent.class,
                         UuidRepresentation.STANDARD
                 );
 
+        // create TTL index
+        auditCollection.createIndex(Indexes.ascending("timestamp"), new IndexOptions().expireAfter(30L, TimeUnit.DAYS));
 
     }
 
+    @Override
     public List<AuditEvent> getAuditEvents() {
         return this.auditCollection.find().into(new ArrayList<>());
     }
 
+    @Override
     public Optional<AuditEvent> getAuditEvent(String id) {
         logger.debug("Getting audit event with id: {}", id);
         return Optional.ofNullable(this.auditCollection.find(Filters.eq("_id", new ObjectId(id))).first());
     }
 
+    @Override
     public List<AuditEvent> searchAuditEvents(Instant rangeStart, Instant rangeEnd, List<Long> userIds, List<String> actions) {
         var timeFilter = Filters.and(
                 Filters.gte("timestamp", rangeStart),
@@ -114,25 +115,12 @@ public class MongoAuditEventLogger implements OutboundAuditEventLogger {
     @Override
     public void pushAuditEventWithContext(Context ctx, String event, String description) throws Exception {
         var user = AuthHandler.getUser(ctx);
-        ObjectId.get();
-        var auditEvent = new AuditEvent(
-                new ObjectId(),
-                event,
-                Instant.now(),
-                description,
-                new AuditEventSource(
-                        user.getId(),
-                        user.getUsername() + (DiscordUtils.isMigratedUserName(user) ? "" : "#" + user.getDiscriminator()),
-                        ctx.ip(),
-                        null,
-                        ctx.userAgent(),
-                        AuthHandler.getUserRole(ctx),
-                        "modmail-viewer"
-                )
-
-        );
-
-        this.pushEvent(auditEvent);
+        this.pushEvent(new AuditEvent.Builder(event)
+              .fromCtx(ctx)
+              .withDescription(description)
+              .withRole(AuthHandler.getUserRole(ctx))
+              .withUser(user)
+              .build());
     }
 
 }

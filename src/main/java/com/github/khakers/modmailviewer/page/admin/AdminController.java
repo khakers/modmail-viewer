@@ -1,5 +1,6 @@
 package com.github.khakers.modmailviewer.page.admin;
 
+import com.github.khakers.modmailviewer.auditlog.AuditEventDAO;
 import io.javalin.http.Handler;
 
 import java.time.LocalDate;
@@ -7,6 +8,7 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
@@ -14,7 +16,8 @@ public class AdminController {
 
     static final Pattern userPattern = Pattern.compile("(\\d{16,20})[,\\s]*?");
     static final Pattern actionPattern = Pattern.compile("([\\w.]+)[,\\s]*?");
-    public static Handler serveAdminPage = ctx -> {
+    private AuditEventDAO auditLogClient;
+    public Handler serveAdminPage = ctx -> {
 
         var tz = ctx.queryParamAsClass("tz", ZoneId.class).getOrDefault(ZoneOffset.UTC);
 
@@ -54,12 +57,12 @@ public class AdminController {
             actions = List.of();
         }
 
-        var page = new AdminPage(ctx, rangeStart, rangeEnd, users, actions, tz);
-
+        var page = new AdminPage(ctx, rangeStart, rangeEnd, users, actions, tz, this.auditLogClient.searchAuditEvents(rangeStart, rangeEnd, users, actions));
         page.render();
     };
 
-    public AdminController() {
-
+    public AdminController(AuditEventDAO auditLogClient) {
+        Objects.requireNonNull(auditLogClient, "auditLogClient cannot be null");
+        this.auditLogClient = auditLogClient;
     }
 }

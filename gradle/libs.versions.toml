@@ -22,6 +22,7 @@ okhttp = "4.10.0"
 mongodriver = "4.8.2"
 mongojack = "4.8.0"
 owasp-encoder = "1.2.3"
+gestalt = "0.24.3"
 
 bootstrap = "5.3.0"
 bootstrap-icons = "1.10.3"
@@ -66,6 +67,8 @@ okhttp-bom = { module = "com.squareup.okhttp3:okhttp-bom", version.ref = "okhttp
 okhttp = { module = "com.squareup.okhttp3:okhttp" }
 
 owasp-encoder = { module = "org.owasp.encoder:encoder", version.ref = "owasp-encoder" }
+
+gestalt = { module = "com.github.gestalt-config:gestalt-core", version.ref = "gestalt" }
 
 webjar-bootstrap = { module = "org.webjars.npm:bootstrap", version.ref = "bootstrap" }
 webjar-bootstrap-icons = { module = "org.webjars.npm:bootstrap-icons", version.ref = "bootstrap-icons" }

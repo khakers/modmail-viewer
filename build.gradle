@@ -70,6 +70,8 @@ dependencies {
     implementation platform(libs.okhttp.bom)
     implementation libs.okhttp
 
+    implementation(libs.gestalt)
+
     testImplementation libs.junit.jupiter.api
     testRuntimeOnly libs.junit.jupiter.engine
     testImplementation libs.junit.jupiter.params

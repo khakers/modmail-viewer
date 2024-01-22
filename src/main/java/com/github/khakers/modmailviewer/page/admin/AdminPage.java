@@ -1,6 +1,5 @@
 package com.github.khakers.modmailviewer.page.admin;
 
-import com.github.khakers.modmailviewer.Main;
 import com.github.khakers.modmailviewer.Page;
 import com.github.khakers.modmailviewer.auditlog.event.AuditEvent;
 import io.javalin.http.Context;
@@ -24,14 +23,14 @@ public class AdminPage extends Page {
 
     public final List<AuditEvent> auditEvents;
 
-    AdminPage(Context ctx, Instant rangeStartTime, Instant rangeEndTime, List<Long> users, List<String> actions, ZoneId tz) {
+    AdminPage(Context ctx, Instant rangeStartTime, Instant rangeEndTime, List<Long> users, List<String> actions, ZoneId tz, List<AuditEvent> auditEvents) {
         super(ctx);
         this.startTime = rangeStartTime;
         this.endTime = rangeEndTime;
         this.users = users;
         this.actions = actions;
         this.tz = tz;
-        auditEvents = Main.AuditLogClient.searchAuditEvents(rangeStartTime, rangeEndTime, users, actions);
+        this.auditEvents = auditEvents;
     }
 
     @Override
