@@ -22,9 +22,6 @@ _If you are upgrading: please see [`UPGRADING.md`](UPGRADING.md)._
 
 ### Fixed
 
-# Changelog
-Based on [common changelog spec](https://common-changelog.org/)
-
 ## [1.0.0-alpha.3] - 2023-10-29
 
 ### Changed
