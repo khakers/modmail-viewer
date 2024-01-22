@@ -53,8 +53,9 @@ import org.github.gestalt.config.Gestalt;
 import org.github.gestalt.config.builder.GestaltBuilder;
 import org.github.gestalt.config.exceptions.GestaltException;
 import org.github.gestalt.config.path.mapper.SnakeCasePathMapper;
-import org.github.gestalt.config.source.ClassPathConfigSource;
-import org.github.gestalt.config.source.EnvironmentConfigSource;
+import org.github.gestalt.config.source.ClassPathConfigSourceBuilder;
+import org.github.gestalt.config.source.EnvironmentConfigSourceBuilder;
+import org.github.gestalt.config.source.SystemPropertiesConfigSourceBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URI;
@@ -104,8 +105,9 @@ public class Main {
         Gestalt gestalt = new GestaltBuilder()
               .setTreatNullValuesInClassAsErrors(true)
               .setTreatMissingValuesAsErrors(false)
-              .addSource(new ClassPathConfigSource("/default.properties"))
-              .addSource(new EnvironmentConfigSource(envPrepend))
+              .addSource(ClassPathConfigSourceBuilder.builder().setResource("/default.properties").build())
+              .addSource(EnvironmentConfigSourceBuilder.builder().setPrefix(envPrepend).setFailOnErrors(true).build())
+              .addSource(SystemPropertiesConfigSourceBuilder.builder().setFailOnErrors(true).build())
               .addDefaultPathMappers()
               .addPathMapper(new SnakeCasePathMapper())
 //              .addSource(new ClassPathConfigSource("/default.properties"))  // Load the default property files from resources.
