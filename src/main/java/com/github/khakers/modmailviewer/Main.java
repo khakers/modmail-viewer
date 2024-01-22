@@ -105,14 +105,18 @@ public class Main {
         Gestalt gestalt = new GestaltBuilder()
               .setTreatNullValuesInClassAsErrors(true)
               .setTreatMissingValuesAsErrors(false)
-              .addSource(ClassPathConfigSourceBuilder.builder().setResource("/default.properties").build())
-              .addSource(EnvironmentConfigSourceBuilder.builder().setPrefix(envPrepend).setFailOnErrors(true).build())
-              .addSource(SystemPropertiesConfigSourceBuilder.builder().setFailOnErrors(true).build())
+              .addSource(ClassPathConfigSourceBuilder.builder()
+                    .setResource("/default.properties")
+                    .build()) // Load the default property files from resources.
+              .addSource(EnvironmentConfigSourceBuilder.builder()
+                    .setPrefix(envPrepend)
+                    .setFailOnErrors(true)
+                    .build())
+              .addSource(SystemPropertiesConfigSourceBuilder.builder()
+                    .setFailOnErrors(true)
+                    .build())
               .addDefaultPathMappers()
               .addPathMapper(new SnakeCasePathMapper())
-//              .addSource(new ClassPathConfigSource("/default.properties"))  // Load the default property files from resources.
-//              .addSource(new FileConfigSource(devFile))
-//              .addSource(new MapConfigSource(configs))
               .build();
         gestalt.loadConfigs();
 
