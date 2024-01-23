@@ -110,10 +110,10 @@ public class Main {
                     .build()) // Load the default property files from resources.
               .addSource(EnvironmentConfigSourceBuilder.builder()
                     .setPrefix(envPrepend)
-                    .setFailOnErrors(true)
+                    .setRemovePrefix(true)
                     .build())
               .addSource(SystemPropertiesConfigSourceBuilder.builder()
-                    .setFailOnErrors(true)
+                    .setFailOnErrors(false)
                     .build())
               .addDefaultPathMappers()
               .addPathMapper(new SnakeCasePathMapper())
