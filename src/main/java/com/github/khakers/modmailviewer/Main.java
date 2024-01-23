@@ -118,9 +118,24 @@ public class Main {
               .addDefaultPathMappers()
               .addPathMapper(new SnakeCasePathMapper())
               .build();
-        gestalt.loadConfigs();
 
-        var appConfig = gestalt.getConfig("app", AppConfig.class);
+        try {
+            gestalt.loadConfigs();
+        } catch (GestaltException e) {
+            logger.fatal(e);
+            System.exit(1);
+            throw new RuntimeException();
+        }
+
+        AppConfig appConfigInit;
+        try {
+            appConfigInit = gestalt.getConfig("app", AppConfig.class);
+        } catch (GestaltException e) {
+            logger.fatal(e);
+            System.exit(1);
+            throw new RuntimeException();
+        }
+        var appConfig = appConfigInit;
         logger.debug(appConfig.toString());
         var auditLogConfig = appConfig.auditLogConfig();
 //        var cspConfig = appConfig.cspConfig();
