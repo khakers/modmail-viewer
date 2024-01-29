@@ -30,7 +30,7 @@ unpoly = "3.0.0-rc2"
 [libraries]
 javalin = { module = "io.javalin:javalin", version.ref = "javalin" }
 # Had to do a manual version number here because javalin-rendering does not have a 5.6.3 release and doesn't look like it's likely to.
-javalin-rendering = { module = "io.javalin:javalin-rendering", version = "5.6.2" }
+javalin-rendering = { module = "io.javalin:javalin-rendering", version = "6.0.0" }
 javalin-ssl-plugin = { module = "io.javalin.community.ssl:ssl-plugin", version.ref = "javalin" }
 
 jte = { module = "gg.jte:jte", version.ref = "jte" }
