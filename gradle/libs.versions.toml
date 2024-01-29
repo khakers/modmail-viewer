@@ -5,7 +5,7 @@ docker-tag = "17-jre"
 
 gradle-release = "3.0.2"
 docker-java-application = "9.0.0"
-gradle-license = "0.9.2"
+gradle-license = "0.9.4"
 gradle-git-properties = "2.4.1"
 
 javalin = "5.6.3"
