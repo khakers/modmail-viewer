@@ -1,5 +1,6 @@
 @import com.github.khakers.modmailviewer.Main
 @import com.github.khakers.modmailviewer.data.MessageType
+@import com.github.khakers.modmailviewer.util.AttachmentFormatUtils
 @import com.github.khakers.modmailviewer.util.DiscordUtils
 @import static com.github.khakers.modmailviewer.jte.JteContext.*
 
@@ -8,6 +9,7 @@
 !{var parser = Main.PARSER;}
 !{var renderer = Main.RENDERER;}
 !{var modmailLog = page.log;}
+!{var nf = java.text.NumberFormat.getInstance(getLocale());}
 
 @template.layout.Page(page = page, content = @`
     <div class="container py-4">
@@ -70,13 +72,21 @@
                                 <div class="text-wrap text-break messageContent">
                                     $unsafe{renderer.render(parser.parse(message.get().getContent()))}
                                 </div>
-                                @if(!message.get().getAttachments().isEmpty())
-                                    @for(var attachment: message.get().getAttachments())
-                                        @if(attachment.isImage())
-                                            @template.macros.imageAttachment(attachment = attachment, message = message.get(), nsfw = modmailLog.isNsfw())
-                                        @endif
-                                    @endfor
-                                @endif
+                                @template.macros.AttachmentsContainer(attachments = message.get().getAttachments(), message = message)
+<%--                                @if(message.get().getAttachments() != null && !message.get().getAttachments().isEmpty())--%>
+<%--                                    <div class="media-attachments mb-2 row" data-gallery="${"gallery"+message.getIndex()}">--%>
+<%--                                        @for(var attachment: message.get().getAttachments().stream().filter(AttachmentFormatUtils::isMediaAttachment).toList())--%>
+<%--                                            <div class="col-md-auto col-12">--%>
+<%--                                                @template.macros.MediaAttachment(attachment = attachment, message = message.get(), nsfw = modmailLog.isNsfw(), galleryIndex = message.getIndex())--%>
+<%--                                            </div>--%>
+<%--                                        @endfor--%>
+<%--                                    </div>--%>
+<%--                                    <div class="non-media-attachments mb-2">--%>
+<%--                                        @for(var attachment: message.get().getAttachments().stream().filter(a -> !AttachmentFormatUtils.isMediaAttachment(a)).toList())--%>
+<%--                                            @template.macros.FileAttachment(attachment = attachment, message = message.get(), nsfw = modmailLog.isNsfw(), numberFormat = nf)--%>
+<%--                                        @endfor--%>
+<%--                                    </div>--%>
+<%--                                @endif--%>
                             </div>
                         </div>
                     </li>
@@ -140,13 +150,22 @@
                                         @if(message.get().isEdited())
                                             <span class="fw-light">(${localize("MESSAGE_EDITED_FLAG")})</span>
                                         @endif
-                                        @if(!message.get().getAttachments().isEmpty())
-                                            @for(var attachment: message.get().getAttachments())
-                                                @if(attachment.isImage())
-                                                    @template.macros.imageAttachment(attachment = attachment, message = message.get(), nsfw = modmailLog.isNsfw())
-                                                @endif
-                                            @endfor
-                                        @endif
+                                        @template.macros.AttachmentsContainer(attachments = message.get().getAttachments(), message = message)
+
+<%--                                        @if(message.get().getAttachments() != null && !message.get().getAttachments().isEmpty())--%>
+<%--                                            <div class="media-attachments mb-2 row" data-gallery="${"gallery"+message.getIndex()}">--%>
+<%--                                                @for(var attachment: message.get().getAttachments().stream().filter(AttachmentFormatUtils::isMediaAttachment).toList())--%>
+<%--                                                    <div class="col-md-auto col-12">--%>
+<%--                                                        @template.macros.MediaAttachment(attachment = attachment, message = message.get(), nsfw = modmailLog.isNsfw(), galleryIndex = message.getIndex())--%>
+<%--                                                    </div>--%>
+<%--                                                @endfor--%>
+<%--                                            </div>--%>
+<%--                                            <div class="non-media-attachments mb-2">--%>
+<%--                                                @for(var attachment: message.get().getAttachments().stream().filter(a -> !AttachmentFormatUtils.isMediaAttachment(a)).toList())--%>
+<%--                                                    @template.macros.FileAttachment(attachment = attachment, message = message.get(), nsfw = modmailLog.isNsfw(), numberFormat = nf)--%>
+<%--                                                @endfor--%>
+<%--                                            </div>--%>
+<%--                                        @endif--%>
                                     </div>
                                 </div>
                             </div>

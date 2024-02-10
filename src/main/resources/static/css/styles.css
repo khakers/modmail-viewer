@@ -77,10 +77,10 @@ img.emoji {
     vertical-align: -0.1em;
 }
 
-.image {
-    max-width: 256px;
-    max-height: 256px;
-}
+/*.image {*/
+/*    max-width: 256px;*/
+/*    max-height: 256px;*/
+/*}*/
 
 
 div.spoilerImage {
@@ -90,10 +90,17 @@ div.spoilerImage {
     padding: 0;
 }
 
-div.spoilerImage img {
+div.spoilerImage a img, div.spoilerImage a video {
     vertical-align: bottom;
     filter: blur(30px);
     transition: 0.3s;
+}
+
+/*
+    So lightboxes don't get opened on images that are still hidden by spoilers (or nsfw)
+ */
+div.spoilerImage input:not(:checked) ~ a {
+    pointer-events: none;
 }
 
 .spoilerImageButton {
@@ -130,7 +137,7 @@ div.spoilerImage input {
     height: 0;
 }
 
-div.spoilerImage input:checked ~ img {
+div.spoilerImage input:checked ~ a img, div.spoilerImage input:checked ~ a video {
     filter: none;
 }
 
@@ -264,6 +271,31 @@ up-modal-box {
 
 #updateToast .toast-header .bi::before {
     vertical-align: .125em;
+}
+
+.media-attachments {
+    max-width: 48rem;
+}
+.non-media-attachments {
+    max-width: 48rem;
+}
+
+.media-attachments video, .media-attachments image {
+    max-height: 350px;
+}
+
+.attachment-card+.attachment-card {
+    margin-top: .5rem;
+}
+
+.attachment-card video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.attachment-card audio {
+    width: 100%;
 }
 
 .chart {
