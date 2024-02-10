@@ -1,6 +1,7 @@
 package com.github.khakers.modmailviewer;
 
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.github.khakers.modmailviewer.attachments.MongoAttachmentClient;
 import com.github.khakers.modmailviewer.auditlog.AuditEventDAO;
 import com.github.khakers.modmailviewer.auditlog.MongoAuditEventLogger;
 import com.github.khakers.modmailviewer.auditlog.NoopAuditEventLogger;
@@ -9,6 +10,7 @@ import com.github.khakers.modmailviewer.auth.AuthHandler;
 import com.github.khakers.modmailviewer.auth.Role;
 import com.github.khakers.modmailviewer.configuration.AppConfig;
 import com.github.khakers.modmailviewer.configuration.CSPConfig;
+import com.github.khakers.modmailviewer.configuration.Config;
 import com.github.khakers.modmailviewer.configuration.SSLConfig;
 import com.github.khakers.modmailviewer.log.LogController;
 import com.github.khakers.modmailviewer.markdown.channelmention.ChannelMentionExtension;
@@ -18,6 +20,7 @@ import com.github.khakers.modmailviewer.markdown.timestamp.TimestampExtension;
 import com.github.khakers.modmailviewer.markdown.underline.UnderlineExtension;
 import com.github.khakers.modmailviewer.markdown.usermention.UserMentionExtension;
 import com.github.khakers.modmailviewer.page.admin.AdminController;
+import com.github.khakers.modmailviewer.page.attachment.AttachmentController;
 import com.github.khakers.modmailviewer.page.audit.AuditController;
 import com.github.khakers.modmailviewer.page.dashboard.DashboardController;
 import com.github.khakers.modmailviewer.page.dashboard.MetricsAccessor;
@@ -49,13 +52,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.pojo.PojoCodecProvider;
-import org.github.gestalt.config.Gestalt;
-import org.github.gestalt.config.builder.GestaltBuilder;
 import org.github.gestalt.config.exceptions.GestaltException;
-import org.github.gestalt.config.path.mapper.SnakeCasePathMapper;
-import org.github.gestalt.config.source.ClassPathConfigSourceBuilder;
-import org.github.gestalt.config.source.EnvironmentConfigSourceBuilder;
-import org.github.gestalt.config.source.SystemPropertiesConfigSourceBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URI;
@@ -102,45 +99,11 @@ public class Main {
 
     public static void main(String[] args) throws GestaltException {
 
-        Gestalt gestalt = new GestaltBuilder()
-              .setTreatNullValuesInClassAsErrors(true)
-              .setTreatMissingValuesAsErrors(false)
-              .addSource(ClassPathConfigSourceBuilder.builder()
-                    .setResource("/default.properties")
-                    .build()) // Load the default property files from resources.
-              .addSource(EnvironmentConfigSourceBuilder.builder()
-                    .setPrefix(envPrepend)
-                    .setRemovePrefix(true)
-                    .build())
-              .addSource(SystemPropertiesConfigSourceBuilder.builder()
-                    .setFailOnErrors(false)
-                    .build())
-              .addDefaultPathMappers()
-              .addPathMapper(new SnakeCasePathMapper())
-              .build();
-
-        try {
-            gestalt.loadConfigs();
-        } catch (GestaltException e) {
-            logger.fatal(e);
-            System.exit(1);
-            throw new RuntimeException();
-        }
-
-        AppConfig appConfigInit;
-        try {
-            appConfigInit = gestalt.getConfig("app", AppConfig.class);
-        } catch (GestaltException e) {
-            logger.fatal(e);
-            System.exit(1);
-            throw new RuntimeException();
-        }
-        var appConfig = appConfigInit;
+        var appConfig = Config.appConfig;
         logger.debug(appConfig.toString());
         var auditLogConfig = appConfig.auditLogConfig();
 //        var cspConfig = appConfig.cspConfig();
         var authConfig = appConfig.auth().orElse(null);
-
 
 
         TemplateEngine templateEngine;
@@ -206,6 +169,7 @@ public class Main {
         var logController = new LogController(auditLogger);
         var dashboardController = new DashboardController();
 
+        var attachmentController = new AttachmentController(new MongoAttachmentClient(mongoClientDatabase));
 
         var app = Javalin.create(javalinConfig -> {
                   try {
@@ -237,6 +201,7 @@ public class Main {
               .get("/dashboard", dashboardController.serveDashboardPage, RoleUtils.atLeastSupporter())
               .get("/admin", adminController.serveAdminPage, RoleUtils.atLeastAdministrator())
               .get("/audit/{id}", auditController.serveAuditPage, RoleUtils.atLeastAdministrator())
+              .get("/attachment/{id}", attachmentController.getHandler(), RoleUtils.atLeastSupporter())
               .after("/api/*", ctx -> {
                   if (auditLogConfig.isApiAuditingEnabled()) {
                       if (ctx.statusCode() == HttpStatus.FORBIDDEN.getCode()) {
@@ -274,7 +239,7 @@ public class Main {
 
         config.showJavalinBanner = false;
         config.jsonMapper(new JavalinJackson().updateMapper(objectMapper -> objectMapper.registerModule(new Jdk8Module())));
-        config.plugins.enableGlobalHeaders(() -> configureHeaders(sslOptions.get(), cspConfig));
+        config.plugins.enableGlobalHeaders(() -> configureHeaders(sslOptions.get(), cspConfig, appConfig));
         if (sslOptions.isPresent() && sslOptions.get().httpsOnly()) {
             logger.info("HTTPS only is ENABLED");
             config.plugins.enableSslRedirects();
@@ -333,7 +298,7 @@ public class Main {
         });
     }
 
-    private static GlobalHeaderConfig configureHeaders(SSLConfig sslOptions, CSPConfig cspConfig) {
+    private static GlobalHeaderConfig configureHeaders(SSLConfig sslOptions, CSPConfig cspConfig, AppConfig appConfig) {
         var globalHeaderConfig =  new GlobalHeaderConfig();
         globalHeaderConfig.xFrameOptions(GlobalHeaderConfig.XFrameOptions.DENY);
         globalHeaderConfig.xContentTypeOptionsNoSniff();
@@ -348,12 +313,12 @@ public class Main {
         } else {
             globalHeaderConfig.contentSecurityPolicy(String.format(
                         "default-src 'self'; " +
-                        "img-src * 'self' data:; " +
+                        "img-src * 'self' data: "+appConfig.s3Url().orElse("")+"; " +
                         "object-src 'none'; " +
-                        "media-src media.discordapp.com cdn.discordapp.com; " +
+                        "media-src 'self' media.discordapp.com cdn.discordapp.com "+appConfig.s3Url().orElse("")+"; " +
                         "style-src-attr 'unsafe-hashes' 'self' 'sha256-biLFinpqYMtWHmXfkA1BPeCY0/fNt46SAZ+BBk5YUog=' 'sha256-ubXkvHkNI/o3njlOwWcW1Nrt3/3G2eJn8mN1u9LCnXo='; " +
                         "style-src 'self' 'sha256-Jt4TB/uiervjq+0TSAyeKjWbMJlLUrE4uXVVOyC/xQA='; "+
-                        "frame-src 'self' https://cdn.discordapp.com https://media.discordapp.com; " +
+                        "frame-src 'self' https://cdn.discordapp.com https://media.discordapp.com "+appConfig.s3Url().orElse("")+"; " +
                         "script-src-elem 'self' https://cdn.jsdelivr.net/npm/@twemoji/api@14.1.0/dist/twemoji.min.js %s;",
                   cspConfig.extraScriptSources().orElse("")));
         }

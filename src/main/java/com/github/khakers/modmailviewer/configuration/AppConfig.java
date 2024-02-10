@@ -30,6 +30,8 @@ public record AppConfig(
       CSPConfig cspConfig,
       long botId,
       String branding,
-      Optional<String> analytics
+      Optional<String> analytics,
+
+      Optional<String> s3Url
 ) {
 }

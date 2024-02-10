@@ -11,12 +11,17 @@
 
 <div class="card attachment-card">
     <div class="card-body">
-        <h5 class="card-title"><a href="${attachment.url()}">${attachment.filename()}</a></h5>
-        <h6 class="card-subtitle mb-2 text-body-secondary">${attachment.size()}</h6>
+        !{var uri = attachment.getAttachmentURI().orElse(null);}
+        <h5 class="card-title"><a href="${uri}">${attachment.filename()}</a></h5>
+        @if(attachment.getAttachmentURI().isEmpty())
+            <i class="bi bi-exclamation-triangle"></i>
+            <span class="text-body-secondary">Attachment not found</span>
+        @endif
+        <h6 class="card-subtitle mb-2 text-body-secondary">${attachment.size()} Bytes</h6>
         @if(AttachmentFormatUtils.isAudio(attachment))
-            <audio controls src="${attachment.url()}" preload="metadata"></audio>
+            <audio controls src="${uri}" preload="metadata"></audio>
         @elseif(AttachmentFormatUtils.isVideo(attachment))
-            <video controls src="${attachment.url()}" preload="metadata"></video>
+            <video controls src="${uri}" preload="metadata"></video>
         @endif
     </div>
 </div>
