@@ -36,13 +36,13 @@ import gg.jte.ContentType;
 import gg.jte.TemplateEngine;
 import gg.jte.resolve.DirectoryCodeResolver;
 import io.javalin.Javalin;
-import io.javalin.community.ssl.SSLPlugin;
+import io.javalin.community.ssl.SslPlugin;
 import io.javalin.config.JavalinConfig;
 import io.javalin.http.HttpStatus;
 import io.javalin.http.NotFoundResponse;
 import io.javalin.http.staticfiles.Location;
 import io.javalin.json.JavalinJackson;
-import io.javalin.plugin.bundled.GlobalHeaderConfig;
+import io.javalin.plugin.bundled.GlobalHeadersConfig;
 import io.javalin.rendering.template.JavalinJte;
 import io.javalin.validation.JavalinValidation;
 import org.apache.logging.log4j.LogManager;
@@ -150,9 +150,6 @@ public class Main {
         } else {
             templateEngine = TemplateEngine.createPrecompiled(ContentType.Html);
         }
-        JavalinJte.init(templateEngine);
-
-        registerValidators();
 
 
         var uri = URI.create(appConfig.url()); // Validate the URL
@@ -209,6 +206,7 @@ public class Main {
 
         var app = Javalin.create(javalinConfig -> {
                   try {
+                      javalinConfig.fileRenderer(new JavalinJte(templateEngine));
                       Main.configure(javalinConfig, appConfig);
                   } catch (GestaltException e) {
                       throw new RuntimeException(e);
@@ -274,10 +272,11 @@ public class Main {
 
         config.showJavalinBanner = false;
         config.jsonMapper(new JavalinJackson().updateMapper(objectMapper -> objectMapper.registerModule(new Jdk8Module())));
-        config.plugins.enableGlobalHeaders(() -> configureHeaders(sslOptions.get(), cspConfig));
+        config.bundledPlugins.enableGlobalHeaders(globalHeadersConfig -> configureHeaders(globalHeadersConfig,sslOptions.get(), cspConfig));
+        registerValidators(config);
         if (sslOptions.isPresent() && sslOptions.get().httpsOnly()) {
             logger.info("HTTPS only is ENABLED");
-            config.plugins.enableSslRedirects();
+            config.bundledPlugins.enableSslRedirects();
         }
         if (appConfig.dev()) {
             logger.info("Loading static files from {}", System.getProperty("user.dir") + "/src/main/resources/static");
@@ -299,7 +298,7 @@ public class Main {
         if (appConfig.dev()) {
             logger.info("Dev mode is ENABLED");
             config.showJavalinBanner = true;
-            config.plugins.enableDevLogging();
+            config.bundledPlugins.enableDevLogging();
         }
         if (appConfig.isAuthEnabled()) {
             logger.debug("Authentication is ENABLED");
@@ -311,8 +310,8 @@ public class Main {
         if (sslOptions.isPresent() && sslOptions.get().enabled()) {
             logger.info("SSL is ENABLED");
             logger.debug(sslOptions.get().toString());
-            SSLPlugin sslPlugin = getSslPlugin(appConfig, sslOptions.get());
-            config.plugins.register(sslPlugin);
+            SslPlugin sslPlugin = getSslPlugin(appConfig, sslOptions.get());
+            config.registerPlugin(sslPlugin);
         } else {
             if (sslOptions.isPresent())
                 logger.warn("SSL options are present but SSL was disabled");
@@ -321,8 +320,8 @@ public class Main {
     }
 
     @NotNull
-    private static SSLPlugin getSslPlugin(AppConfig appConfig, SSLConfig sslOptions) {
-        return new SSLPlugin(sslConfig -> {
+    private static SslPlugin getSslPlugin(AppConfig appConfig, SSLConfig sslOptions) {
+        return new SslPlugin(sslConfig -> {
             sslConfig.pemFromPath(sslOptions.cert().get(), sslOptions.key().get());
             sslConfig.insecurePort = appConfig.httpPort();
             sslConfig.securePort = appConfig.httpsPort();
@@ -333,20 +332,19 @@ public class Main {
         });
     }
 
-    private static GlobalHeaderConfig configureHeaders(SSLConfig sslOptions, CSPConfig cspConfig) {
-        var globalHeaderConfig =  new GlobalHeaderConfig();
-        globalHeaderConfig.xFrameOptions(GlobalHeaderConfig.XFrameOptions.DENY);
-        globalHeaderConfig.xContentTypeOptionsNoSniff();
-        globalHeaderConfig.xPermittedCrossDomainPolicies(GlobalHeaderConfig.CrossDomainPolicy.NONE);
-        globalHeaderConfig.crossOriginOpenerPolicy(GlobalHeaderConfig.CrossOriginOpenerPolicy.SAME_ORIGIN);
-        globalHeaderConfig.crossOriginResourcePolicy(GlobalHeaderConfig.CrossOriginResourcePolicy.SAME_ORIGIN);
+    private static void configureHeaders(GlobalHeadersConfig globalHeadersConfig, SSLConfig sslOptions, CSPConfig cspConfig) {
+        globalHeadersConfig.xFrameOptions(GlobalHeadersConfig.XFrameOptions.DENY);
+        globalHeadersConfig.xContentTypeOptionsNoSniff();
+        globalHeadersConfig.xPermittedCrossDomainPolicies(GlobalHeadersConfig.CrossDomainPolicy.NONE);
+        globalHeadersConfig.crossOriginOpenerPolicy(GlobalHeadersConfig.CrossOriginOpenerPolicy.SAME_ORIGIN);
+        globalHeadersConfig.crossOriginResourcePolicy(GlobalHeadersConfig.CrossOriginResourcePolicy.SAME_ORIGIN);
         if (sslOptions.isSTSEnabled()) {
-            globalHeaderConfig.strictTransportSecurity(Duration.ofDays(356), false);
+            globalHeadersConfig.strictTransportSecurity(Duration.ofDays(356), false);
         }
         if (cspConfig.override().isPresent() && !cspConfig.override().get().isBlank()) {
-            globalHeaderConfig.contentSecurityPolicy(cspConfig.override().get());
+            globalHeadersConfig.contentSecurityPolicy(cspConfig.override().get());
         } else {
-            globalHeaderConfig.contentSecurityPolicy(String.format(
+            globalHeadersConfig.contentSecurityPolicy(String.format(
                         "default-src 'self';  " +
                         "img-src * 'self' data:; " +
                         "object-src 'none'; " +
@@ -356,13 +354,12 @@ public class Main {
                   cspConfig.extraScriptSources().orElse("")));
         }
 
-        return globalHeaderConfig;
     }
 
-    private static void registerValidators() {
+    private static void registerValidators(JavalinConfig config) {
         // Javalin uses these in param validators to convert the string to the correct type
-        JavalinValidation.register(LocalTime.class, LocalTime::parse);
-        JavalinValidation.register(LocalDate.class, LocalDate::parse);
-        JavalinValidation.register(ZoneId.class, ZoneId::of);
+        config.validation.register(LocalTime.class, LocalTime::parse);
+        config.validation.register(LocalDate.class, LocalDate::parse);
+        config.validation.register(ZoneId.class, ZoneId::of);
     }
 }
