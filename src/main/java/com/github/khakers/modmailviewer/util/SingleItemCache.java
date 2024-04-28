@@ -3,7 +3,6 @@ package com.github.khakers.modmailviewer.util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.time.Instant;
 import java.util.concurrent.Callable;
 
 public class SingleItemCache<T> {
@@ -15,9 +14,9 @@ public class SingleItemCache<T> {
     private T item;
 
     /**
-     * The last time the item was updated
+     * The last time the item was updated, stored as a system.nanotime value
      */
-    private Instant lastUpdated;
+    private long lastUpdated;
 
     /**
      * Time in milliseconds to cache the item for
@@ -45,26 +44,45 @@ public class SingleItemCache<T> {
     }
 
     /**
+     * Returns true if the elapsed time since the last update is greater than the cache expiration length
+     *
+     * @return True if the cache is expired
+     */
+    private boolean isExpired() {
+        return cacheExpirationLength * 1000000 < System.nanoTime() - lastUpdated;
+    }
+
+    /**
      * Get the cached item, refreshing it using the getValueFunc if it is expired
      *
      * @return The cached item
      * @throws Exception If the item could not be retrieved
      */
     public synchronized T getItem() throws Exception {
-        if (this.item == null || lastUpdated == null || Instant.now().isAfter(lastUpdated.plusMillis(cacheExpirationLength))) {
+        logger.traceEntry();
+        if (this.item == null || lastUpdated == 0 || isExpired()) {
             this.item = getValueFunc.call();
-            lastUpdated = Instant.now();
-            logger.debug("grabbed new {} from {}", item.getClass().toString(), lastUpdated.toString());
+            lastUpdated = System.nanoTime();
+            logger.trace("grabbed new {} from {}", item.getClass().toString(), lastUpdated);
+            logger.traceExit(this.item);
             return this.item;
         }
-        logger.debug("grabbed cached {} from {}", item.getClass().toString(), lastUpdated.toString());
+        logger.trace("grabbed cached {} from {}", item.getClass().toString(), lastUpdated);
+        logger.traceExit(item);
         return item;
     }
 
+    /**
+     * Manually set the cache value.
+     * <p>
+     * This will update the last updated time to the current time.
+     *
+     * @param item The item to set the cache value to
+     */
     public synchronized void setItem(T item) {
         this.item = item;
-        lastUpdated = Instant.now();
-        logger.debug("manually set {}", item.getClass().toString());
+        lastUpdated = System.nanoTime();
+        logger.trace("manually set {}", item.getClass().toString());
 
     }
 }
