@@ -34,7 +34,7 @@ humanize-duration = "3.28.0"
 [libraries]
 javalin = { module = "io.javalin:javalin", version.ref = "javalin" }
 javalin-rendering = { module = "io.javalin:javalin-rendering", version.ref = "javalin" }
-javalin-ssl-plugin = { module = "io.javalin.community.ssl:ssl-plugin", version.prefer = "6.1.2" }
+javalin-ssl-plugin = { module = "io.javalin.community.ssl:ssl-plugin", version.ref = "javalin" }
 
 jte = { module = "gg.jte:jte", version.ref = "jte" }
 
