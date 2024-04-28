@@ -10,6 +10,8 @@ import com.github.khakers.modmailviewer.auth.Role;
 import com.github.khakers.modmailviewer.configuration.AppConfig;
 import com.github.khakers.modmailviewer.configuration.CSPConfig;
 import com.github.khakers.modmailviewer.configuration.SSLConfig;
+import com.github.khakers.modmailviewer.data.modmail.ModmailConfigDao;
+import com.github.khakers.modmailviewer.data.modmail.MongoModmailConfigDAO;
 import com.github.khakers.modmailviewer.log.LogController;
 import com.github.khakers.modmailviewer.markdown.channelmention.ChannelMentionExtension;
 import com.github.khakers.modmailviewer.markdown.customemoji.CustomEmojiExtension;
@@ -200,6 +202,9 @@ public class Main {
 
         metricsAccessor = new MetricsAccessor(mongoClientDatabase);
 
+        ModmailConfigDao modmailConfigDao = new MongoModmailConfigDAO(mongoClientDatabase, appConfig.botId());
+
+        var loginController = new LoginPageController();
         var adminController = new AdminController(auditLogClient);
         var auditController = new AuditController(auditLogClient);
         var logController = new LogController(auditLogger);
@@ -260,6 +265,7 @@ public class Main {
 
                       }, RoleUtils.atLeastAdministrator())
                       .get("/api/config", ctx -> ctx.json(modMailLogDB.getConfig()), RoleUtils.atLeastAdministrator());
+                  .get("/api/config", ctx -> ctx.json(modmailConfigDao.getConfig()), RoleUtils.atLeastAdministrator());
 
                 app.get("/callback", authHandler::handleCallback, Role.ANYONE);
             }
