@@ -298,7 +298,8 @@ public class Main {
         if (appConfig.dev()) {
             logger.info("Dev mode is ENABLED");
             config.showJavalinBanner = true;
-            config.bundledPlugins.enableDevLogging();
+            // Static files are skipped based on their endings
+            config.bundledPlugins.enableDevLogging(conf -> conf.skipStaticFiles = appConfig.logStaticFiles());
         }
         if (appConfig.isAuthEnabled()) {
             logger.debug("Authentication is ENABLED");

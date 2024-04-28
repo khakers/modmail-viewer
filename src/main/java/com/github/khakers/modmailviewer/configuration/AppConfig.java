@@ -24,6 +24,8 @@ public record AppConfig(
       @Config(path = "auth")
       Optional<AuthConfig> auth,
       boolean dev,
+      @Config(defaultVal = "false")
+      boolean logStaticFiles,
       @Config(path = "audit")
       AuditLogConfig auditLogConfig,
       @Config(path = "csp")
