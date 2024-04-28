@@ -92,7 +92,7 @@ public class Main {
     public static final HtmlRenderer RENDERER = HtmlRenderer.builder(OPTIONS)
           .escapeHtml(true)
           .build();
-    public static final UpdateChecker updateChecker = new UpdateChecker();
+    public static UpdateChecker updateCheckerService;
     private static final Logger logger = LogManager.getLogger();
     public static final String envPrepend = "MODMAIL_VIEWER";
     public static ModMailLogDB modMailLogDB;
@@ -150,6 +150,8 @@ public class Main {
         } else {
             templateEngine = TemplateEngine.createPrecompiled(ContentType.Html);
         }
+
+        updateCheckerService = appConfig.dev() ? new NoopUpdateChecker() : new GithubUpdateCheckerService();
 
 
         var uri = URI.create(appConfig.url()); // Validate the URL

@@ -1,6 +1,7 @@
-package com.github.khakers.modmailviewer;
+package com.github.khakers.modmailviewer.updatecheck;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.khakers.modmailviewer.ModmailViewer;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -16,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class UpdateChecker implements AutoCloseable {
+public class GithubUpdateCheckerService implements AutoCloseable, UpdateChecker {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -34,7 +35,7 @@ public class UpdateChecker implements AutoCloseable {
 
     private final Version CURRENT_VERSION;
 
-    public UpdateChecker() {
+    public GithubUpdateCheckerService() {
 
         if (ModmailViewer.VERSION.isEmpty()) {
             CURRENT_VERSION = new Version("0.0.0");
@@ -51,10 +52,6 @@ public class UpdateChecker implements AutoCloseable {
     }
 
 
-    public static boolean isContainerized() {
-        return System.getProperty("ENV_TYPE").equalsIgnoreCase("containerized");
-    }
-
     private void runUpdateLoop() {
         var version = fetchLatestVersion();
 
@@ -69,14 +66,17 @@ public class UpdateChecker implements AutoCloseable {
         });
     }
 
+    @Override
     public boolean isUpdateAvailable() {
         return updateAvailable.get();
     }
 
+    @Override
     public Optional<Version> getLatestVersion() {
         return Optional.ofNullable(latestVersion.get());
     }
 
+    @Override
     public Optional<Instant> getUpdateFoundTime() {
         return Optional.ofNullable(updateFoundTime.get());
     }
@@ -115,6 +115,7 @@ public class UpdateChecker implements AutoCloseable {
         return Optional.empty();
     }
 
+    @Override
     public boolean isSemVerUpdateAvailable(String version) {
 
 

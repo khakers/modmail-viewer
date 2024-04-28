@@ -1,5 +1,6 @@
 package com.github.khakers.modmailviewer;
 
+import com.github.khakers.modmailviewer.updatecheck.Version;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;

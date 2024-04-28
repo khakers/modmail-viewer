@@ -1,4 +1,4 @@
-package com.github.khakers.modmailviewer;
+package com.github.khakers.modmailviewer.updatecheck;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
