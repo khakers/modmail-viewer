@@ -16,8 +16,10 @@ public class ModmailViewer {
     public static final String BRANCH;
     public static final String TAG;
     private static final Logger logger = LogManager.getLogger();
+    public  static final boolean DIRTY;
 
     static {
+        boolean dirty1;
         String BRANCH1;
         String VERSION1;
         String COMMIT_ID_DESCRIBE1;
@@ -50,6 +52,7 @@ public class ModmailViewer {
             }
 
             TAG1 = gitProperties.getProperty("git.tags", "UNKNOWN");
+            dirty1 = gitProperties.getProperty("git.dirty", "false").equals("true");
         } catch (IOException e) {
             logger.error(e);
             BUILD_TIMESTAMP1 = Instant.EPOCH;
@@ -68,7 +71,8 @@ public class ModmailViewer {
         BUILD_TIMESTAMP = BUILD_TIMESTAMP1;
         TAG = TAG1;
         PRECISE_GIT_VERSION_ID = PRECISE_GIT_VERSION_ID_TEMP;
-
+        dirty1 = false;
+        DIRTY = dirty1;
     }
 
     public static boolean isSemVerRelease() {
