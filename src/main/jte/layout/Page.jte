@@ -5,7 +5,7 @@
 @import com.github.khakers.modmailviewer.auth.Role
 @import com.github.khakers.modmailviewer.util.RoleUtils
 @import gg.jte.Content
-@import com.github.khakers.modmailviewer.UpdateChecker
+@import com.github.khakers.modmailviewer.updatecheck.GithubUpdateCheckerService
 
 
 @param Page page

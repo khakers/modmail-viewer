@@ -1,10 +1,10 @@
 package com.github.khakers.modmailviewer.util;
 
 import com.github.khakers.modmailviewer.auth.UserToken;
-import com.github.khakers.modmailviewer.data.Message;
-import com.github.khakers.modmailviewer.data.MessageType;
-import com.github.khakers.modmailviewer.data.ModMailLogEntry;
-import com.github.khakers.modmailviewer.data.User;
+import com.github.khakers.modmailviewer.data.modmail.Message;
+import com.github.khakers.modmailviewer.data.modmail.MessageType;
+import com.github.khakers.modmailviewer.data.modmail.ModMailLogEntry;
+import com.github.khakers.modmailviewer.data.modmail.User;
 
 import java.util.Optional;
 

@@ -3,7 +3,7 @@ package com.github.khakers.modmailviewer.log;
 import com.github.khakers.modmailviewer.Main;
 import com.github.khakers.modmailviewer.ModMailLogDB;
 import com.github.khakers.modmailviewer.Page;
-import com.github.khakers.modmailviewer.data.ModMailLogEntry;
+import com.github.khakers.modmailviewer.data.modmail.ModMailLogEntry;
 import com.github.khakers.modmailviewer.data.internal.TicketStatus;
 import io.javalin.http.Context;
 

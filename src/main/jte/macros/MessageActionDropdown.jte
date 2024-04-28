@@ -1,5 +1,5 @@
-@import com.github.khakers.modmailviewer.data.Message
-@import com.github.khakers.modmailviewer.data.ModMailLogEntry
+@import com.github.khakers.modmailviewer.data.modmail.Message
+@import com.github.khakers.modmailviewer.data.modmail.ModMailLogEntry
 @import com.github.khakers.modmailviewer.util.DiscordUtils
 
 @import java.util.Optional

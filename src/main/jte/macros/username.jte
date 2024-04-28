@@ -1,4 +1,4 @@
-@import com.github.khakers.modmailviewer.data.User
+@import com.github.khakers.modmailviewer.data.modmail.User
 @import com.github.khakers.modmailviewer.util.DiscordUtils
 
 

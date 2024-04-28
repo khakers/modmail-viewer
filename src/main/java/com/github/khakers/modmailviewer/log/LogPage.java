@@ -2,7 +2,7 @@ package com.github.khakers.modmailviewer.log;
 
 import com.github.khakers.modmailviewer.Main;
 import com.github.khakers.modmailviewer.Page;
-import com.github.khakers.modmailviewer.data.ModMailLogEntry;
+import com.github.khakers.modmailviewer.data.modmail.ModMailLogEntry;
 import io.javalin.http.Context;
 import io.javalin.http.NotFoundResponse;
 

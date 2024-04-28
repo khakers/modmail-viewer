@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.khakers.modmailviewer.auth.Role;
 import com.github.khakers.modmailviewer.auth.UserToken;
-import com.github.khakers.modmailviewer.data.User;
+import com.github.khakers.modmailviewer.data.modmail.User;
 import com.github.khakers.modmailviewer.util.DiscordUtils;
 import io.javalin.http.Context;
 import org.bson.codecs.pojo.annotations.BsonProperty;

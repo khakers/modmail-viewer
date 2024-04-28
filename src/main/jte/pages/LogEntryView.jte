@@ -1,5 +1,5 @@
 @import com.github.khakers.modmailviewer.Main
-@import com.github.khakers.modmailviewer.data.MessageType
+@import com.github.khakers.modmailviewer.data.modmail.MessageType
 @import com.github.khakers.modmailviewer.util.DiscordUtils
 @import static com.github.khakers.modmailviewer.jte.JteContext.*
 
@@ -103,7 +103,7 @@
                                             ${localize("USER_BADGE_MODERATOR")}
                                         </span>
                                             @endif
-                                            @if(message.get().getType()==com.github.khakers.modmailviewer.data.MessageType.anonymous)
+                                            @if(message.get().getType()==com.github.khakers.modmailviewer.data.modmail.MessageType.anonymous)
                                                 <span class="badge text-bg-secondary align-middle fst-normal user-badge">
                                             <i class="bi bi-incognito"></i>
                                             ${localize("MESSAGE_TYPE_ANONYMOUS")}
@@ -115,7 +115,7 @@
                                             ${localize("MESSAGE_TYPE_SYSTEM")}
                                         </span>
                                             @endif
-                                            @if(message.get().getType()==com.github.khakers.modmailviewer.data.MessageType.internal)
+                                            @if(message.get().getType()==com.github.khakers.modmailviewer.data.modmail.MessageType.internal)
                                                 <span class="badge text-bg-secondary align-middle fst-normal user-badge">
                                             <i class="bi bi-eye-slash"></i>
                                             ${localize("MESSAGE_TYPE_INTERNAL")}

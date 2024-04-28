@@ -1,4 +1,4 @@
-@import com.github.khakers.modmailviewer.data.MessageType
+@import com.github.khakers.modmailviewer.data.modmail.MessageType
 @import com.github.khakers.modmailviewer.data.internal.TicketStatus
 @import com.github.khakers.modmailviewer.util.DiscordUtils
 @import com.github.khakers.modmailviewer.util.Pagination

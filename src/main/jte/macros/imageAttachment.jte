@@ -1,5 +1,5 @@
-@import com.github.khakers.modmailviewer.data.Attachment
-@import com.github.khakers.modmailviewer.data.Message
+@import com.github.khakers.modmailviewer.data.modmail.Attachment
+@import com.github.khakers.modmailviewer.data.modmail.Message
 
 @param Attachment attachment
 @param Message message
