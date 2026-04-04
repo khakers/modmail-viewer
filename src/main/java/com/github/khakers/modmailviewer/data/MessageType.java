@@ -12,5 +12,6 @@ public enum MessageType {
     thread,
     internal,
     system,
-    anonymous
+    anonymous,
+    note
 }
