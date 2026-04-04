@@ -31,11 +31,13 @@ import org.jetbrains.annotations.Nullable;
 import org.mongojack.JacksonMongoCollection;
 import org.mongojack.internal.MongoJackModule;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-public class ModMailLogDB {
+public class ModMailLogDB implements Closeable {
 
     public static final int DEFAULT_ITEMS_PER_PAGE = 8;
     private static final Logger logger = LogManager.getLogger();
@@ -48,6 +50,8 @@ public class ModMailLogDB {
 
     private ModmailConfig cachedConfig = null;
     private Instant cacheTime;
+
+    private final MongoClient mongoClient;
 
     public ModMailLogDB(String connectionString) {
 
@@ -64,13 +68,17 @@ public class ModMailLogDB {
         CodecRegistry codecRegistry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
                 pojoCodecRegistry);
 
+
+
         var settings = MongoClientSettings.builder()
                 .applyConnectionString(new ConnectionString(connectionString))
                 .codecRegistry(codecRegistry)
                 .build();
 
-        MongoClient mongoClient = MongoClients.create(settings);
-        this.database = mongoClient.getDatabase("modmail_bot");
+        this.mongoClient = MongoClients.create(settings);
+
+        var databaseName = Objects.requireNonNullElse((new ConnectionString(connectionString)).getDatabase(), "modmail_bot");
+        this.database = mongoClient.getDatabase(databaseName);
         database.listCollectionNames().forEach(logger::debug);
         this.logCollection = JacksonMongoCollection.builder().withObjectMapper(objectMapper).build(database, "logs", ModMailLogEntry.class, UuidRepresentation.STANDARD);
         this.configCollection = database.getCollection("config");
@@ -353,5 +361,10 @@ public class ModMailLogDB {
 
     public JacksonMongoCollection<ModMailLogEntry> getLogCollection() {
         return logCollection;
+    }
+
+    @Override
+    public void close() throws IOException {
+        this.mongoClient.close();
     }
 }
